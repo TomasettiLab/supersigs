@@ -11,29 +11,8 @@ library(dplyr)
 library(assertthat)
 library(here)
 
-# Given a set of features, convert them to a union set of fundamental mutation features
-convert_to_level3 = function(features){
-  if(length(features) > 1){
-    out = sapply(features, function(x) muts_children_level3[[x]])
-    out = unname(unlist(out))
-  } else {
-    out = unname(muts_children_level3[[features]])
-  }
-  return(out)
-}
-
-# Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations if possible
-condense_mutations = function(features){
-  out = vector('character')
-  for(i in seq_along(muts_children_level3)){
-    v = muts_children_level3[[i]]
-    if(all(v %in% features)){
-      out = c(out, names(muts_children_level3)[i])
-      features = setdiff(features, v)
-    }
-  }
-  return(out)
-}
+source(here("code", "condense_mutations.R"))
+source(here("code", "convert_to_level3.R"))
 
 # in$input_ls is a named list of length 2. Each element is a vector of mutation features
 # in$condense toggles whether new_partition should return mutations in condensed form

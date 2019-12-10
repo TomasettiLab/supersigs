@@ -5,6 +5,8 @@
 #
 # Functions for calculating AUC using the Mann-Whitney U Statistic
 
+source(here("code", "AllMyAuc.R"))
+
 # Calculate AUC for one column x with the true binary separator y
 MyAuc <- function(y, x){
   # Handle missing observations
@@ -20,10 +22,4 @@ MyAuc <- function(y, x){
   n0 <- sum(y == 0)
   diff_rank <- sum(rank(x)[ind]) - n1*(n1+1)/2 # diff_rank = 0 if all the largest values in x were y == 1
   return(diff_rank/(n1*n0))                    # n1*n0 = max difference possible
-}
-
-# Calculate AUC for every column
-AllMyAuc <- function(z, DpnVar){
-  cols = setdiff(colnames(z), DpnVar)
-  apply(z[, cols], MARGIN = 2, FUN = MyAuc, y = z %>% pull(!!DpnVar))
 }
