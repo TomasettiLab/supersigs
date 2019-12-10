@@ -1,12 +1,18 @@
 # AllMyAuc.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jul 15, 2019
-#
-# Functions for calculating AUC using the Mann-Whitney U Statistic
+# Date last modified: Dec 10, 2019
 
-# Calculate AUC for every column
-AllMyAuc <- function(z, DpnVar){
-  cols = setdiff(colnames(z), DpnVar)
-  apply(z[, cols], MARGIN = 2, FUN = MyAuc, y = z %>% pull(!!DpnVar))
+#' Calculate AUC for every column
+#' 
+#' AllMyAuc calls MyAuc to calculate the AUC for every column other than the indicator variable
+#' 
+#' @param z Data matrix
+#' @param IndVar Indicator variable for exposure
+#' 
+#' @return output A list of AUCs, one for every column (feature)
+#' 
+AllMyAuc <- function(z, IndVar){
+  cols = setdiff(colnames(z), IndVar)
+  apply(z[, cols], MARGIN = 2, FUN = MyAuc, y = z %>% pull(!!IndVar))
 }

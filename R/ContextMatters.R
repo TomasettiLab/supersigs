@@ -1,7 +1,7 @@
 # ContextMatters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Aug 6, 2019
+# Date last modified: Dec 10, 2019
 #
 # Function for binomial testing using a hierarchical tree structure
 
@@ -10,50 +10,42 @@ library(rsample)
 library(assertthat)
 library(here)
 
-# in$muts_df is the dataset of mutations
-# in$p_thresh is the alpha level for testing
-# in$min_median and in$min_samples is the minimum threshold to test 96 instead of 6 mutations (deprecated)
-# in$pseudo_counts is a toggle for the bootstrap + pseudocount methodology
-# output is a vector of survival mutations that passed the tree binomial testing
-ContextMatters <- function(muts_df, p_thresh = 0.05, 
-                           min_median = 20, min_samples = 60,
-                           use_pseudo = T){
+#' Function for binomial testing using a hierarchical tree structure
+#' 
+#' Obtain a list of candidate features by performing a series of nested binomial 
+#' tests for selecting and pruning significant mutations
+#' 
+#' @param muts_dif dataset of mutations
+#' @param p_thresh alpha level for binomial test (default = 0.05)
+#' @param tot_pseudo pseudo-count value (default = 1000)
+#' 
+#' @return output vector of candidate features (survival mutations) that pass
+#' the binomial tree testing
+#' 
+ContextMatters <- function(muts_df, 
+                           p_thresh = 0.05,
+                           tot_pseudo = 1000){
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
   
-  if(use_pseudo){
-    bootstrapped_df <- muts_df %>% select(c("TOTAL_MUTATIONS", names(muts_formula))) %>%
-      bootstraps(times = 100)
-    
-    # Bootstrap
-    muts_counts <- bootstrapped_df$splits %>%
-      sapply(FUN = function(x){
-        z <- as_tibble(x) %>% colSums()}) %>%
-      apply(MARGIN = 1, FUN = median, na.rm = T)
-   
-    # Pseudo-count
-    tot_pseudo <- 1000
-    for(feature in names(muts_counts)){
-      all_possible_tri["TOTAL_MUTATIONS"] = 3
-      muts_counts[feature] = muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
-    }
-    muts_counts <- sapply(muts_counts, round)
-    test_all_96 <- T
-    bonf_correction <- 150
-  } else {
-    muts_counts <- muts_df %>% colSums() 
-    test_all_96 <- (median(muts_df$TOTAL_MUTATIONS, na.rm=T) > min_median) && 
-      (nrow(muts_df) >= min_samples)
-    bonf_correction <- 150
-    
-    # Limit feature space to the 6 central mutations if minimums not met
-    if(!test_all_96){
-      background_probs <- background_probs %>%
-        filter(feature %in% c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G"))
-      bonf_correction <- 6
-    }
+  bootstrapped_df <- muts_df %>% select(c("TOTAL_MUTATIONS", names(muts_formula))) %>%
+    bootstraps(times = 100)
+  
+  # Bootstrap
+  muts_counts <- bootstrapped_df$splits %>%
+    sapply(FUN = function(x){
+      z <- as_tibble(x) %>% colSums()}) %>%
+    apply(MARGIN = 1, FUN = median, na.rm = T)
+  
+  # Pseudo-count
+  for(feature in names(muts_counts)){
+    all_possible_tri["TOTAL_MUTATIONS"] = 3
+    muts_counts[feature] = muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
   }
+  muts_counts <- sapply(muts_counts, round)
+  test_all_96 <- T
+  bonf_correction <- 150
   
   # Create "tree"
   tree <- tibble(feature = names(h_muts_index),

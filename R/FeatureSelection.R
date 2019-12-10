@@ -1,7 +1,7 @@
 # FeatureSelection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Sep 24, 2018
+# Date last modified: Dec 10, 2019
 #
 # Function for selecting features (formerly part of MyLDAEnvClassifier.R)
 
@@ -17,7 +17,6 @@ source(here("code", "PredictiveFeatures.R"))
 # in$test_ind is the indices for the test data
 # in$middle_dt is the middle aged samples (NULL if factor is not age)
 # in$factor is the factor to be tested (e.g. Age, Smoking)
-# in$min_samples_keep and in$min_samples_indvar are used in ContextMatters (deprecated)
 # in$keep_nonpredictive is toggle to combine non-predictive features as one feature
 # out$mutation_dt is a data frame of median AUCs and normal p_values
 # out$features_context_0 is a vector of survival mutations for IndVar = 0
@@ -26,14 +25,25 @@ source(here("code", "PredictiveFeatures.R"))
 # out$features_selected is a vector of ranked candidate features (e.g. F2, F5, ...)
 # out$select_n is a vector of the best n for each classifier
 # out$dt_new is the transformed data of mutations from TransformData
-FeatureSelection <- function(dt, test_ind = NULL, 
+
+#' Function for feature selection
+#' 
+#' Perform feature selection given dataset of mutations by calling 
+#' a series of other functions to find significant and predictive features
+#' 
+#' @param dt signature_dt with total_mutations greater than 0
+#' @param test_ind indices for the test data
+#' @param middle_dt the middle aged samples (NULL if factor is not age)
+#' @param factor factor/exposure (e.g. age, smoking)
+#' @param keep_nonpredictive boolean toggle to combine 
+#' non-predictive features as one feature (default is FALSE)
+#' 
+#' @return output Return a list of features, features partition and data output
+FeatureSelection <- function(dt, 
+                             test_ind = NULL, 
                              middle_dt,
                              factor,
-                             min_samples_keep = 60, min_samples_indvar = 20, 
-                             keep_nonpredictive = F,
-                             nmf_out,
-                             unsupervised_sig,
-                             random_out){
+                             keep_nonpredictive = F){
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)
     test_ind <- train_ind
@@ -67,10 +77,10 @@ FeatureSelection <- function(dt, test_ind = NULL,
   # (Note: Removed Mutrelative2TotalPval section)
   
   # Test for significant features
-  features_context_0 <- ContextMatters(train_0, min_samples = min_samples_0)
+  features_context_0 <- ContextMatters(train_0)
   assert_that(length(features_context_0) >= 1, 
               msg = "No significant features found for ind0 by ContextMatters")
-  features_context_1 <- ContextMatters(train_1, min_samples = min_samples_1)
+  features_context_1 <- ContextMatters(train_1)
   assert_that(length(features_context_1) >= 1, 
               msg = "No significant features found for ind1 by ContextMatters")
   input_ls <- list(var0 = features_context_0, var1 = features_context_1)
@@ -88,10 +98,7 @@ FeatureSelection <- function(dt, test_ind = NULL,
   # Test for predictive features
   predictive_out <- PredictiveFeatures(train = dt_new[train_ind, ], 
                                        new_partition = new_partition,
-                                       factor = factor,
-                                       nmf_out = nmf_out,
-                                       unsupervised_sig = unsupervised_sig,
-                                       random_out = random_out)
+                                       factor = factor)
   features_selected <- predictive_out$features_selected
   
   # Add combined non-predictive features (Rest) to features_selected
@@ -132,8 +139,6 @@ muts_formula <- readRDS(here("data", "muts_formula.rds"))
 #   filter(TOTAL_MUTATIONS > 0)
 # 
 # test_ind = NULL
-# min_samples_keep = 60
-# min_samples_indvar = 20
 # middle_dt = NULL
 # 
 # if(factor == "AGE"){

@@ -1,7 +1,7 @@
 # PredictiveFeatures.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Sep 18, 2019
+# Date last modified: Dec 10, 2019
 #
 # Function for testing and choosing predictive features (formerly part of MyLDAEnvClassifier.R)
 
@@ -27,10 +27,7 @@ get_mad_quantiles <- function(df){
 # out$features_selected is a vector of predictive features
 PredictiveFeatures <- function(train, 
                                new_partition,
-                               factor,
-                               nmf_out,
-                               unsupervised_sig,
-                               random_out){
+                               factor){
   # Use rates for non-age factors
   if(factor != "AGE"){
     train <- train %>%
@@ -133,9 +130,6 @@ PredictiveFeatures <- function(train,
       inner_aucs[[ij]] = MyLDAEnvClassifier(dt = train, 
                          test_ind = inner_partitions[[i, j]],
                          factor,
-                         nmf_out,
-                         unsupervised_sig,
-                         random_out,
                          classifier = methods, 
                          keep_classifier = F,
                          calculate_corr = F,

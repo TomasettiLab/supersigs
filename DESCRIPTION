@@ -7,7 +7,7 @@ Authors@R: c(
 	email = "albertkuo@jhu.edu", 
 	comment = c(ORCID = "0000-0001-5155-0748")) 
 Depends: R (>= 3.6.1)
-Imports: tidyverse
+Imports: dplyr, rsample, assertthat
 Suggests:
 	knitr
 Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations. The methodology is based on the paper "Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer."

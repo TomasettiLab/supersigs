@@ -1,11 +1,16 @@
-# GenerateMinSigmaAlgebra.R
+# condense_mutations.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
 # Date last modified: Dec 10, 2019
 #
 # Helper function for GenerateMinSigmaAlgebra.R
 
-# Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations if possible
+#' Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations
+#' 
+#' @param features A vector of level 3 features
+#'
+#' @return output A vector of condensed features
+#' 
 condense_mutations = function(features){
   out = vector('character')
   for(i in seq_along(muts_children_level3)){

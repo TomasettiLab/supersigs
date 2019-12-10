@@ -7,7 +7,13 @@
 
 source(here("code", "AllMyAuc.R"))
 
-# Calculate AUC for one column x with the true binary separator y
+#' Calculate AUC for one column using the Mann-Whitney U statistic
+#' 
+#' @param y Indicator variable column, i.e. "true value"
+#' @param x A feature column
+#' 
+#' @return output AUC value
+#' 
 MyAuc <- function(y, x){
   # Handle missing observations
   missing_x = is.na(x)
