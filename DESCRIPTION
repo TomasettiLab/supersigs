@@ -1,13 +1,16 @@
-Package: supersigsnew
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+Package: supersigs
+Title: Generate SuperSigs (Supervised Signatures)
+Version: 0.1.0
+Date: 2019-12-10
+Authors@R: c(
+	person("Albert", "Kuo", role = c("aut", "che"),
+	email = "albertkuo@jhu.edu", 
+	comment = c(ORCID = "0000-0001-5155-0748")) 
+Depends: R (>= 3.6.1)
+Imports: tidyverse
+Suggests:
+	knitr
+Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations. The methodology is based on the paper "Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer."
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
