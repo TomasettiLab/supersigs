@@ -41,6 +41,7 @@
 #' \item \code{new_partition} is a list of the partitioned candidate features,
 #' where each feature is represented by a vector of fundamental mutations
 #' \item \code{select_n} is the number of top features to retain for each method
+#' \item \code{mutation_dt} is a sorted data frame of candidate features and their AUC
 #' \item \code{dt_new} is the transformed data from \code{TransformData}
 #' }
 #' 
@@ -79,11 +80,7 @@ FeatureSelection <- function(dt,
   
   # Test for significant features
   features_context_0 <- ContextMatters(train_0)
-  assert_that(length(features_context_0) >= 1, 
-              msg = "No significant features found for ind0 by ContextMatters")
   features_context_1 <- ContextMatters(train_1)
-  assert_that(length(features_context_1) >= 1, 
-              msg = "No significant features found for ind1 by ContextMatters")
   input_ls <- list(var0 = features_context_0, var1 = features_context_1)
   new_partition <- GenerateMinSigmaAlgebra(input_ls)
   features_selected <- names(new_partition)
@@ -120,6 +117,7 @@ FeatureSelection <- function(dt,
               features_selected = features_selected,
               new_partition = new_partition,
               select_n = predictive_out$select_n,
+              mutation_dt = predictive_out$mutation_dt,
               dt_new = dt_new) 
   
   return(out)
