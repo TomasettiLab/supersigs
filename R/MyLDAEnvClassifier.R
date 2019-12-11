@@ -28,6 +28,8 @@ source(here("code", "MyCor.R"))
 #' @param features_selected vector of candidate features ranked by AUC
 #' @param select_n number of top features to retain for each method
 #' 
+#' @export
+#' 
 #' @return output a list of several elements:
 #' auc is a vector of AUCs for each classifier
 #' signature is the signature (mean differences or rates), created only when

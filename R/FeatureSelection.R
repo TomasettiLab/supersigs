@@ -25,6 +25,8 @@ source(here("code", "PredictiveFeatures.R"))
 #' @param keep_nonpredictive boolean toggle to combine 
 #' non-predictive features as one feature (default is FALSE)
 #' 
+#' @export
+#' 
 #' @return output a list of several elements:
 #' features_context_0 is a vector of survival mutations for the unexposed group
 #' features_context_1 is a vector of survival mutations for the exposed group
