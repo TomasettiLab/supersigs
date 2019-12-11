@@ -3,16 +3,18 @@
 # Author:             Albert Kuo
 # Date last modified: Dec 10, 2019
 
-library(dplyr)
-library(here)
+# library(dplyr)
+# library(here)
 # source(here("code", "GenerateMinSigmaAlgebra.R"))
 
 #' Transform mutation data to only contain necessary columns
 #' 
-#' @param dt data frame of mutations
+#' @param dt data frame ofutations
 #' @param features_context_0 candidate features for unexposed group returned by ContextMatters
 #' @param features_context_1 candidate features for exposed group returned by ContextMatters
 #' @param new_partition partition of features from GenerateMinSigmaAlgebra
+#' 
+#' @import dplyr
 #' 
 #' @return output transformed data of mutations, with columns corresponding to
 #' selected candidate features with projected counts and other necessary data

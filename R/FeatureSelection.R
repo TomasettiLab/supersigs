@@ -5,9 +5,9 @@
 #
 # Function for selecting features (formerly part of MyLDAEnvClassifier.R)
 
-library(dplyr)
-library(assertthat)
-library(here)
+# library(dplyr)
+# library(assertthat)
+# library(here)
 # source(here("code", "ContextMatters.R"))
 # source(here("code", "GenerateMinSigmaAlgebra.R"))
 # source(here("code", "TransformData.R"))
@@ -24,6 +24,9 @@ library(here)
 #' @param factor factor/exposure (e.g. age, smoking)
 #' @param keep_nonpredictive boolean toggle to combine 
 #' non-predictive features as one feature (default is FALSE)
+#' 
+#' @import dplyr
+#' @import assertthat
 #' 
 #' @export
 #' 
@@ -120,7 +123,7 @@ FeatureSelection <- function(dt,
 # muts_formula <- readRDS(here("data", "muts_formula.rds"))
 
 # Test function
-# signature_caf <- readRDS(here("data", "signature_caf.rds"))
+# signature_caf <- readRDS(here("super_sigs", "data", "signature_caf.rds"))
 # factor <- "AGE"
 # tissue <- "UCEC"
 # ind <- which((signature_caf["Factor",] == factor) & (signature_caf["Tissue",] == tissue))

@@ -13,7 +13,7 @@ TransformData(
 )
 }
 \arguments{
-\item{dt}{data frame of mutations}
+\item{dt}{data frame ofutations}
 
 \item{features_context_0}{candidate features for unexposed group returned by ContextMatters}
 

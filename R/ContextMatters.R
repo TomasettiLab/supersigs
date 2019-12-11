@@ -5,10 +5,10 @@
 #
 # Function for binomial testing using a hierarchical tree structure
 
-library(dplyr)
-library(rsample)
-library(assertthat)
-library(here)
+# library(dplyr)
+# library(rsample)
+# library(assertthat)
+# library(here)
 
 #' Function for binomial testing using a hierarchical tree structure
 #' 
@@ -18,6 +18,10 @@ library(here)
 #' @param muts_dif dataset of mutations
 #' @param p_thresh alpha level for binomial test (default = 0.05)
 #' @param tot_pseudo pseudo-count value (default = 1000)
+#' 
+#' @import dplyr
+#' @import rsample
+#' @import assertthat
 #' 
 #' @return output vector of survival mutations that pass
 #' the binomial tree testing

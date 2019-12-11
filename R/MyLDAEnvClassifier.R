@@ -5,11 +5,11 @@
 #
 # Function for classification and correlation using LDA, logistic, or random forest
 
-library(randomForest)
-library(MASS)
-library(dplyr) # Note that you must load dplyr after MASS to preserve select function
-library(rsample)
-library(here)
+# library(randomForest)
+# library(MASS)
+# library(dplyr) # Note that you must load dplyr after MASS to preserve select function
+# library(rsample)
+# library(here)
 # source(here("code", "MyCor.R"))
 
 #' Classification and correlation using signatures
@@ -27,6 +27,11 @@ library(here)
 #' @param features_selected vector of candidate features ranked by AUC
 #' @param select_n number of top features to retain for each method
 #' 
+#' @import dplyr
+#' @import rsample
+#' @importFrom randomForest randomForest
+#' @importFrom MASS lda
+#'
 #' @export
 #' 
 #' @return output a list of several elements:

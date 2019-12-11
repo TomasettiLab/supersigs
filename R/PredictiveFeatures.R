@@ -5,10 +5,10 @@
 #
 # Function for testing and choosing predictive features (formerly part of MyLDAEnvClassifier.R)
 
-library(dplyr)
-library(caret)
-library(rsample)
-library(here)
+# library(dplyr)
+# library(caret)
+# library(rsample)
+# library(here)
 # source(here("code", "MyAuc.R"))
 
 #' Select predictive features from candidate features
@@ -19,6 +19,10 @@ library(here)
 #' @param train training data from TransformData
 #' @param new_partition new_partition from GenerateMinSigmaAlgebra
 #' @param factor factor/exposure (e.g. age, smoking)
+#' 
+#' @import dplyr
+#' @import caret
+#' @import rsample
 #' 
 #' @return output a list of two elements: 
 #' features_selected is a vector of candidate features ranked by AUC

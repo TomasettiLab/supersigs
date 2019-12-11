@@ -2,3 +2,9 @@
 
 export(FeatureSelection)
 export(MyLDAEnvClassifier)
+import(assertthat)
+import(caret)
+import(dplyr)
+import(rsample)
+importFrom(MASS,lda)
+importFrom(randomForest,randomForest)

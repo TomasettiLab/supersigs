@@ -6,9 +6,9 @@
 # Function to create the smallest non-overlapping partition that generates 
 # the minimal sigma algebra containing two sets of mutation features
 
-library(dplyr)
-library(assertthat)
-library(here)
+# library(dplyr)
+# library(assertthat)
+# library(here)
 
 # source(here("code", "condense_mutations.R"))
 # source(here("code", "convert_to_level3.R"))
@@ -19,6 +19,9 @@ library(here)
 #' @param input_ls a named list of length 2, where each element is a vector of mutation features
 #' @param condense boolean toggle for whether the output new_partition should return
 #' mutations in condensed form (default = FALSE)
+#' 
+#' @import dplyr
+#' @import assertthat
 #' 
 #' @return output is a list of 1 element, new_partition, which is the partition of features
 #' 
