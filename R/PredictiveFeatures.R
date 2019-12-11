@@ -111,13 +111,13 @@ PredictiveFeatures <- function(train,
         pull(mutation)
       
       inner_aucs[[ij]] = SuperSigClassifier(dt = train, 
-                         test_ind = inner_partitions[[i, j]],
-                         factor,
-                         classifier = methods, 
-                         keep_classifier = F,
-                         adjusted_formula = F,
-                         features_selected = features_selected,
-                         select_n = c("LDA" = k, "RF" = k, "Logit" = k))
+                                            test_ind = inner_partitions[[i, j]],
+                                            factor,
+                                            classifier = methods, 
+                                            keep_classifier = F,
+                                            adjusted_formula = F,
+                                            features_selected = features_selected,
+                                            select_n = c("LDA" = k, "RF" = k, "Logit" = k))
     }
     
     inner_aucs_mat <- matrix(inner_aucs, nrow = n_fold)
