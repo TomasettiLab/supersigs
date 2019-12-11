@@ -6,7 +6,6 @@
 # Function for classification and correlation using LDA, logistic, or random forest
 
 library(randomForest)
-library(nnls)
 library(MASS)
 library(dplyr) # Note that you must load dplyr after MASS to preserve select function
 library(rsample)
