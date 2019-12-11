@@ -16,6 +16,7 @@ muts_formula = readRDS(here("data", "muts_formula.rds"))
 muts_level3 = readRDS(here("data", "muts_level3.rds"))
 prop_muts_all = readRDS(here("data", "prop_muts_all.rds"))
 
+# Write internal data to R/sysdata.rda
 use_data(all_possible_tri,
          background_probs,
          h_muts_index,
