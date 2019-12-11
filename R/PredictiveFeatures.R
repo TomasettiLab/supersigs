@@ -3,7 +3,7 @@
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 10, 2019
 #
-# Function for testing and choosing predictive features (formerly part of MyLDAEnvClassifier.R)
+# Function for testing and choosing predictive features
 
 # library(dplyr)
 # library(caret)
@@ -110,7 +110,7 @@ PredictiveFeatures <- function(train,
         top_n(n = k, wt = auc) %>%
         pull(mutation)
       
-      inner_aucs[[ij]] = MyLDAEnvClassifier(dt = train, 
+      inner_aucs[[ij]] = SuperSigClassifier(dt = train, 
                          test_ind = inner_partitions[[i, j]],
                          factor,
                          classifier = methods, 

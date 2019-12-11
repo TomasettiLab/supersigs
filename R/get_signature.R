@@ -39,7 +39,7 @@ get_signature <- function(dt, factor){
   features_out = suppressWarnings(FeatureSelection(dt, factor))
   
   # Get apparent AUC and model
-  classification_out = MyLDAEnvClassifier(dt = features_out$dt_new,
+  classification_out = SuperSigClassifier(dt = features_out$dt_new,
                                           factor = factor,
                                           classifier = c("Logit"),
                                           keep_classifier = T,

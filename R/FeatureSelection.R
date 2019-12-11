@@ -3,7 +3,7 @@
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 11, 2019
 #
-# Function for selecting features (formerly part of MyLDAEnvClassifier.R)
+# Function for selecting features
 
 # library(dplyr)
 # library(assertthat)

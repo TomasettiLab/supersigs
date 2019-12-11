@@ -1,4 +1,4 @@
-# MyLDAEnvClassifier.R
+# SuperSigClassifier.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 10, 2019
@@ -36,7 +36,7 @@
 #'
 #' @export
 #' 
-#' @return `MyLDAEnvClassifier` returns a list of several elements:
+#' @return `SuperSigClassifier` returns a list of several elements:
 #' \itemize{
 #' \item \code{auc} is a vector of AUCs for each classifier
 #' \item \code{signature} is a vector of mean differences or rates
@@ -45,7 +45,7 @@
 #' (created only when \code{keep_classifier} is \code{TRUE})
 #' }
 #' 
-MyLDAEnvClassifier <- function(dt, test_ind = NULL,
+SuperSigClassifier <- function(dt, test_ind = NULL,
                                factor,
                                classifier, # Options are "LDA", "Logit", "RF"
                                keep_classifier = F,
@@ -257,7 +257,7 @@ MyLDAEnvClassifier <- function(dt, test_ind = NULL,
 # select_n = features_out$select_n
 # test_ind = NULL
 # 
-# test_out = MyLDAEnvClassifier(dt = dt, test_ind = NULL,
+# test_out = SuperSigClassifier(dt = dt, test_ind = NULL,
 #                               factor = factor,
 #                               classifier = c("LDA", "Logit", "RF", "NNLS"),
 #                               keep_classifier = F,
@@ -265,7 +265,7 @@ MyLDAEnvClassifier <- function(dt, test_ind = NULL,
 #                               select_n = select_n)
 
 # Create test objects for Shiny app
-# test_model = MyLDAEnvClassifier(dt = dt, test_ind = NULL,
+# test_model = SuperSigClassifier(dt = dt, test_ind = NULL,
 #                                 factor = factor,
 #                                 classifier = c("LDA"),
 #                                 keep_classifier = T,
