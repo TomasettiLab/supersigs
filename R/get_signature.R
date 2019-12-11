@@ -1,7 +1,7 @@
 # get_signature.R
 # -----------------------------------------------------------------------------
-# Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Author:             Albert Kuo
+# Date last modified: Dec 11, 2019
 #
 # (Export) Function to calculate signature
 
