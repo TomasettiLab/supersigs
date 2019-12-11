@@ -27,8 +27,8 @@
 #' is "age")
 #' \item \code{Features} is a list of features that comprise the signature and 
 #' their representation in terms of the fundamental (trinucleotide) mutations
-#' \item \code{Apparent AUC} is the apparent AUC obtained within the provided data
-#' using the generated SuperSig
+#' \item \code{AUC} is the apparent AUC (i.e. not cross-validated) obtained within 
+#' the provided data using the generated SuperSig
 #' \item \code{Model} is the logistic regression model trained on the data and
 #' the generated SuperSig
 #' }
@@ -36,7 +36,7 @@
 
 get_signature <- function(dt, factor){
   # Get features
-  features_out = FeatureSelection(dt, factor)
+  features_out = suppressWarnings(FeatureSelection(dt, factor))
   
   # Get apparent AUC and model
   classification_out = MyLDAEnvClassifier(dt = features_out$dt_new,
@@ -46,12 +46,10 @@ get_signature <- function(dt, factor){
                                           features_selected = features_out$features_selected,
                                           select_n = features_out$select_n)
   
-  out = list()
-  
-  out["Signature"] = classification_out$signature$mean_diffs
-  out["Features"] = features_out$new_partition[names(out["Signature"])]
-  out["Apparent AUC"] = classification_out$auc
-  out["Model"] = classification_out$classifier
+  out = list(Signature = classification_out$signature$mean_diffs,
+             Features = features_out$new_partition[names(out["Signature"])],
+             AUC = classification_out$auc,
+             Model = classification_out$classifier)
   
   return(out)
 }
