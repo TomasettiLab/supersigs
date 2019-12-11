@@ -42,7 +42,7 @@ PredictiveFeatures <- function(train,
     bootstraps(1000, strata = "IndVar")
   
   auc_mat <- sapply(boot_dt$splits, function(x) 
-    AllMyAuc(as_tibble(x), DpnVar = "IndVar"))
+    AllMyAuc(as_tibble(x), IndVar = "IndVar"))
   
   if(factor == "AGE"){
     auc_mat <- auc_mat  # Only count AUC > 0.5 for age

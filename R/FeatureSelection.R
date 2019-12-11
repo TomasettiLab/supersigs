@@ -51,13 +51,9 @@ FeatureSelection <- function(dt,
   if(factor != "AGE"){ 
     train_0 <- train %>% filter(IndVar == 0)
     train_1 <- train %>% filter(IndVar == 1)
-    min_samples_0 <- min_samples_keep
-    min_samples_1 <- min_samples_indvar
   } else {
     train_0 <- rbind(train, middle_dt) 
     train_1 <- train_0
-    min_samples_0 <- min_samples_keep
-    min_samples_1 <- min_samples_keep
   }
   
   # Add up counts for every mutation
