@@ -25,6 +25,8 @@
 #' @import rsample
 #' @import assertthat
 #' 
+#' @export
+#' 
 #' @return \code{ContextMatters} returns a vector of survival mutations that pass
 #' the binomial tree testing
 #' 
