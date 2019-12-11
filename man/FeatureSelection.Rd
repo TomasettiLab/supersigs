@@ -33,6 +33,8 @@ for the unexposed group
 \item \code{features_context_1} is a vector of survival mutations
 for the exposed group
 \item \code{features_selected} is a vector of candidate features ranked by AUC
+\item \code{new_partition} is a list of the partitioned candidate features,
+where each feature is represented by a vector of fundamental mutations
 \item \code{select_n} is the number of top features to retain for each method
 \item \code{dt_new} is the transformed data from \code{TransformData}
 }

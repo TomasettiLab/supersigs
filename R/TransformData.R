@@ -48,7 +48,7 @@ TransformData <- function(dt,
       features_context <- features_context_ls[[j]]
       # Generate partition within each IndVar group first
       features_context_partition <- GenerateMinSigmaAlgebra(input_ls = list("V1" = features_context,
-                                                                            "V1" = features_context))$new_partition
+                                                                            "V1" = features_context))
       dt_new_ls[[j]] <- dt %>% 
         filter(IndVar == (j-1))
       

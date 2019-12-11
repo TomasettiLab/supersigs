@@ -38,6 +38,8 @@
 #' \item \code{features_context_1} is a vector of survival mutations
 #' for the exposed group
 #' \item \code{features_selected} is a vector of candidate features ranked by AUC
+#' \item \code{new_partition} is a list of the partitioned candidate features,
+#' where each feature is represented by a vector of fundamental mutations
 #' \item \code{select_n} is the number of top features to retain for each method
 #' \item \code{dt_new} is the transformed data from \code{TransformData}
 #' }
@@ -66,7 +68,7 @@ FeatureSelection <- function(dt,
   
   # Add up counts for every mutation
   train_0 <- train_0 %>%
-    transmute_(.dots = muts_formula) %>% 
+    transmute_(.dots = muts_formula) %>%
     mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
   
   train_1 <- train_1 %>%
@@ -83,8 +85,7 @@ FeatureSelection <- function(dt,
   assert_that(length(features_context_1) >= 1, 
               msg = "No significant features found for ind1 by ContextMatters")
   input_ls <- list(var0 = features_context_0, var1 = features_context_1)
-  features_gmsa <- GenerateMinSigmaAlgebra(input_ls)
-  new_partition <- features_gmsa$new_partition
+  new_partition <- GenerateMinSigmaAlgebra(input_ls)
   features_selected <- names(new_partition)
   
   # Transform data
@@ -117,6 +118,7 @@ FeatureSelection <- function(dt,
   out <- list(features_context_0 = features_context_0,
               features_context_1 = features_context_1,
               features_selected = features_selected,
+              new_partition = new_partition,
               select_n = predictive_out$select_n,
               dt_new = dt_new) 
   

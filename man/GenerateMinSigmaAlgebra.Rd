@@ -14,11 +14,9 @@ vector of mutation features}
 `new_partition` should return mutations in condensed form (default is \code{FALSE})}
 }
 \value{
-\code{GenerateMinSigmaAlgebra} returns a list of 1 element:
-\itemize{
-\item \code{new_partition} is a list of partitioned features, where each element
-is a vector of the fundamental (level 3) mutations that make up each feature
-}
+\code{GenerateMinSigmaAlgebra} returns a list of partitioned features,
+where each feature is represented by a vector of the fundamental (level 3)
+mutations
 }
 \description{
 Find the smallest non-overlapping partition that generates 

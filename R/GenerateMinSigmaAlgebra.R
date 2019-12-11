@@ -26,11 +26,9 @@
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @return \code{GenerateMinSigmaAlgebra} returns a list of 1 element:
-#' \itemize{
-#' \item \code{new_partition} is a list of partitioned features, where each element
-#' is a vector of the fundamental (level 3) mutations that make up each feature
-#' }
+#' @return \code{GenerateMinSigmaAlgebra} returns a list of partitioned features,
+#' where each feature is represented by a vector of the fundamental (level 3)
+#' mutations
 #' 
 GenerateMinSigmaAlgebra <- function(input_ls, 
                                     condense = F){
@@ -73,9 +71,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
     new_partition <- lapply(new_partition, condense_mutations) 
   
   # Return output
-  out <- list(new_partition = new_partition)
-  
-  return(out)
+  return(new_partition)
 }
 
 # Load data dependencies
