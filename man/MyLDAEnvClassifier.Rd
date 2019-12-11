@@ -2,7 +2,7 @@
 % Please edit documentation in R/MyLDAEnvClassifier.R
 \name{MyLDAEnvClassifier}
 \alias{MyLDAEnvClassifier}
-\title{Classification and correlation using signatures}
+\title{Classification of exposure using signatures}
 \usage{
 MyLDAEnvClassifier(
   dt,
@@ -16,31 +16,36 @@ MyLDAEnvClassifier(
 )
 }
 \arguments{
-\item{dt}{transformed data from FeatureSelection}
+\item{dt}{a transformed data frame from FeatureSelection}
 
-\item{test_ind}{indices for test data}
+\item{test_ind}{an optional vector of indices for the test data}
 
-\item{factor}{factor/exposure (e.g. age, smoking)}
+\item{factor}{the factor/exposure (e.g. "age", "smoking")}
 
-\item{classifier}{classifier method to use for prediction (options are "LDA", "Logit", and/or "RF",
-must pass as a vector)}
+\item{classifier}{a vector of the classifier method(s) to use for prediction
+(options are "LDA", "Logit", and "RF")}
 
-\item{keep_classifier}{boolean toggle for saving the classifier model (default is FALSE)}
+\item{keep_classifier}{an optional logical value indicating whether to save
+the classifier model (default is `FALSE`)}
 
-\item{adjusted_formula}{boolean toggle for using the adjusted formula (default is FALSE)}
+\item{adjusted_formula}{an optional logical value indicating whether to
+use the adjusted formula for non-age factors (default is `FALSE`)}
 
-\item{features_selected}{vector of candidate features ranked by AUC}
+\item{features_selected}{a vector of candidate features ranked by AUC}
 
-\item{select_n}{number of top features to retain for each method}
+\item{select_n}{the number of top features to retain for each method}
 }
 \value{
-output a list of several elements:
-auc is a vector of AUCs for each classifier
-signature is the signature (mean differences or rates), created only when
-classifier includes "Logit"
-classifier is a list of saved models for each input classifier
+`MyLDAEnvClassifier` returns a list of several elements:
+\itemize{
+\item `auc` is a vector of AUCs for each classifier
+\item `signature` is a vector of mean differences or rates (created only when
+`classifier` includes "Logit")
+\item `classifier` is a list of saved models for each input classifier (created
+only when `keep_classifier` is `TRUE`)
+}
 }
 \description{
-Classification and correlation using signatures with the option of three 
+Calculate the AUC using signatures with the option of three 
 different classifiers
 }

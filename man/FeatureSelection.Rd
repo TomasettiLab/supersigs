@@ -6,33 +6,35 @@
 \usage{
 FeatureSelection(
   dt,
-  test_ind = NULL,
-  middle_dt,
   factor,
+  test_ind = NULL,
+  middle_dt = NULL,
   keep_nonpredictive = F
 )
 }
 \arguments{
-\item{dt}{data frame of mutations}
+\item{dt}{a data frame of mutations}
 
-\item{test_ind}{indices for the test data}
+\item{factor}{the factor/exposure (e.g. "age", "smoking")}
 
-\item{middle_dt}{the middle aged samples (NULL if factor is not age)}
+\item{test_ind}{an optional vector of indices for the test data}
 
-\item{factor}{factor/exposure (e.g. age, smoking)}
+\item{middle_dt}{a data frame of the middle aged samples (`NULL` if the factor is not age)}
 
-\item{keep_nonpredictive}{boolean toggle to combine 
-non-predictive features as one feature (default is FALSE)}
+\item{keep_nonpredictive}{logical value indicating whether to combine 
+non-predictive features as one feature (default is `FALSE`)}
 }
 \value{
-output a list of several elements:
-features_context_0 is a vector of survival mutations for the unexposed group
-features_context_1 is a vector of survival mutations for the exposed group
-features_selected is a vector of candidate features ranked by AUC
-select_n is the number of top features to retain for each method
-dt_new is the transformed data from TransformData
+`FeatureSelection` returns a list of several elements:
+\itemize{
+\item `features_context_0` is a vector of survival mutations for the unexposed group
+\item `features_context_1` is a vector of survival mutations for the exposed group
+\item `features_selected` is a vector of candidate features ranked by AUC
+\item `select_n` is the number of top features to retain for each method
+\item `dt_new` is the transformed data from `TransformData`
+}
 }
 \description{
-Perform feature selection given dataset of mutations by calling 
+Perform feature selection given a dataset of mutations by calling 
 a series of other functions to find significant and predictive features
 }

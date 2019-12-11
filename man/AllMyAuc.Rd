@@ -7,12 +7,12 @@
 AllMyAuc(z, IndVar)
 }
 \arguments{
-\item{z}{Data matrix}
+\item{z}{a matrix}
 
-\item{IndVar}{Indicator variable for exposure}
+\item{IndVar}{indicator variable for the exposure}
 }
 \value{
-output A list of AUCs, one for every column (feature)
+`AllMyAuc` returns a list of AUCs, one for every column (feature)
 }
 \description{
 AllMyAuc calls MyAuc to calculate the AUC for every column other than the indicator variable

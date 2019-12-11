@@ -13,17 +13,24 @@
 # source(here("code", "condense_mutations.R"))
 # source(here("code", "convert_to_level3.R"))
 
-#' Create the smallest non-overlapping partition that generates 
+#' Generate partition of features
+#' 
+#' Find the smallest non-overlapping partition that generates 
 #' the minimal sigma algebra containing two sets of mutation features
 #' 
-#' @param input_ls a named list of length 2, where each element is a vector of mutation features
-#' @param condense boolean toggle for whether the output new_partition should return
-#' mutations in condensed form (default = FALSE)
+#' @param input_ls a named list of length 2, where each element is a
+#' vector of mutation features
+#' @param condense an optional logical value indicating whether the output value
+#' `new_partition` should return mutations in condensed form (default is `FALSE`)
 #' 
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @return output is a list of 1 element, new_partition, which is the partition of features
+#' @return `GenerateMinSigmaAlgebra` returns a list of 1 element:
+#' \itemize{
+#' \item `new_partition` is a list of partitioned features, where each element
+#' is a vector of the fundamental (level 3) mutations that make up each feature
+#' }
 #' 
 GenerateMinSigmaAlgebra <- function(input_ls, 
                                     condense = F){

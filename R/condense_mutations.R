@@ -7,9 +7,9 @@
 
 #' Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations
 #' 
-#' @param features A vector of level 3 features
+#' @param features a vector of level 3 features
 #'
-#' @return output A vector of condensed features
+#' @return `condense_mutations` returns a vector of condensed features
 #' 
 condense_mutations = function(features){
   out = vector('character')

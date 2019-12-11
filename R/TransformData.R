@@ -7,17 +7,22 @@
 # library(here)
 # source(here("code", "GenerateMinSigmaAlgebra.R"))
 
-#' Transform mutation data to only contain necessary columns
+#' Transform data frame of mutations
 #' 
-#' @param dt data frame ofutations
-#' @param features_context_0 candidate features for unexposed group returned by ContextMatters
-#' @param features_context_1 candidate features for exposed group returned by ContextMatters
-#' @param new_partition partition of features from GenerateMinSigmaAlgebra
+#' Transform data frame of mutations by projecting counts for candidate features
+#' 
+#' @param dt a data frame of mutations
+#' @param features_context_0 a vector of candidate features for the unexposed group
+#' returned by `ContextMatters`
+#' @param features_context_1 a vector of candidate features for the exposed group
+#' returned by `ContextMatters`
+#' @param new_partition a partition of features from `GenerateMinSigmaAlgebra`
 #' 
 #' @import dplyr
 #' 
-#' @return output transformed data of mutations, with columns corresponding to
-#' selected candidate features with projected counts and other necessary data
+#' @return `TransformData` returns a transformed data frame of mutations, with
+#' columns corresponding to the candidate features with projected counts
+#' and other necessary columns (`IndVar`, `AGE`, `TOTAL_MUTATIONS`, and `DIVISON`)
 #' 
 TransformData <- function(dt, 
                           features_context_0, 

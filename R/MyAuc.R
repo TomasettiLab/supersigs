@@ -7,12 +7,14 @@
 
 # source(here("code", "AllMyAuc.R"))
 
+#' Calculate AUC for a column
+#' 
 #' Calculate AUC for one column using the Mann-Whitney U statistic
 #' 
-#' @param y Indicator variable column, i.e. "true value"
-#' @param x A feature column
+#' @param y an indicator variable column, i.e. the "true value" column
+#' @param x a column of numeric values, e.g. the projected counts of a feature
 #' 
-#' @return output AUC value
+#' @return `MyAuc` returns a numeric AUC value
 #' 
 MyAuc <- function(y, x){
   # Handle missing observations

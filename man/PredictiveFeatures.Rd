@@ -2,23 +2,26 @@
 % Please edit documentation in R/PredictiveFeatures.R
 \name{PredictiveFeatures}
 \alias{PredictiveFeatures}
-\title{Select predictive features from candidate features}
+\title{Select predictive features}
 \usage{
 PredictiveFeatures(train, new_partition, factor)
 }
 \arguments{
-\item{train}{training data from TransformData}
+\item{train}{a transformed data of mutations from `TransformData`}
 
-\item{new_partition}{new_partition from GenerateMinSigmaAlgebra}
+\item{new_partition}{a partition of features from `GenerateMinSigmaAlgebra`}
 
-\item{factor}{factor/exposure (e.g. age, smoking)}
+\item{factor}{the factor/exposure (e.g. "age", "smoking")}
 }
 \value{
-output a list of two elements: 
-features_selected is a vector of candidate features ranked by AUC
-select_n is the number of top features to retain for each method
+`PredictiveFeatures` returns a list of two elements:
+\itemize{
+\item `features_selected` is a vector of candidate features ranked by AUC
+\item `select_n` is the number of top features to retain for each method,
+chosen by cross-validation
+}
 }
 \description{
-Rank candidate features by their median bootstrap AUC and select
-the top n features, where n is chosen by cross-validation
+Rank candidate features by their median bootstrap AUC and find the top n features
+for each classifier method, where n is chosen by cross-validation
 }

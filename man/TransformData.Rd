@@ -2,7 +2,7 @@
 % Please edit documentation in R/TransformData.R
 \name{TransformData}
 \alias{TransformData}
-\title{Transform mutation data to only contain necessary columns}
+\title{Transform data frame of mutations}
 \usage{
 TransformData(
   dt,
@@ -13,18 +13,21 @@ TransformData(
 )
 }
 \arguments{
-\item{dt}{data frame ofutations}
+\item{dt}{a data frame of mutations}
 
-\item{features_context_0}{candidate features for unexposed group returned by ContextMatters}
+\item{features_context_0}{a vector of candidate features for the unexposed group
+returned by `ContextMatters`}
 
-\item{features_context_1}{candidate features for exposed group returned by ContextMatters}
+\item{features_context_1}{a vector of candidate features for the exposed group
+returned by `ContextMatters`}
 
-\item{new_partition}{partition of features from GenerateMinSigmaAlgebra}
+\item{new_partition}{a partition of features from `GenerateMinSigmaAlgebra`}
 }
 \value{
-output transformed data of mutations, with columns corresponding to
-selected candidate features with projected counts and other necessary data
+`TransformData` returns a transformed data frame of mutations, with
+columns corresponding to the candidate features with projected counts
+and other necessary columns (`IndVar`, `AGE`, `TOTAL_MUTATIONS`, and `DIVISON`)
 }
 \description{
-Transform mutation data to only contain necessary columns
+Transform data frame of mutations by projecting counts for candidate features
 }

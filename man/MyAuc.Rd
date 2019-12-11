@@ -2,17 +2,17 @@
 % Please edit documentation in R/MyAuc.R
 \name{MyAuc}
 \alias{MyAuc}
-\title{Calculate AUC for one column using the Mann-Whitney U statistic}
+\title{Calculate AUC for a column}
 \usage{
 MyAuc(y, x)
 }
 \arguments{
-\item{y}{Indicator variable column, i.e. "true value"}
+\item{y}{an indicator variable column, i.e. the "true value" column}
 
-\item{x}{A feature column}
+\item{x}{a column of numeric values, e.g. the projected counts of a feature}
 }
 \value{
-output AUC value
+`MyAuc` returns a numeric AUC value
 }
 \description{
 Calculate AUC for one column using the Mann-Whitney U statistic

@@ -2,21 +2,25 @@
 % Please edit documentation in R/GenerateMinSigmaAlgebra.R
 \name{GenerateMinSigmaAlgebra}
 \alias{GenerateMinSigmaAlgebra}
-\title{Create the smallest non-overlapping partition that generates 
-the minimal sigma algebra containing two sets of mutation features}
+\title{Generate partition of features}
 \usage{
 GenerateMinSigmaAlgebra(input_ls, condense = F)
 }
 \arguments{
-\item{input_ls}{a named list of length 2, where each element is a vector of mutation features}
+\item{input_ls}{a named list of length 2, where each element is a
+vector of mutation features}
 
-\item{condense}{boolean toggle for whether the output new_partition should return
-mutations in condensed form (default = FALSE)}
+\item{condense}{an optional logical value indicating whether the output value
+`new_partition` should return mutations in condensed form (default is `FALSE`)}
 }
 \value{
-output is a list of 1 element, new_partition, which is the partition of features
+`GenerateMinSigmaAlgebra` returns a list of 1 element:
+\itemize{
+\item `new_partition` is a list of partitioned features, where each element
+is a vector of the fundamental (level 3) mutations that make up each feature
+}
 }
 \description{
-Create the smallest non-overlapping partition that generates 
+Find the smallest non-overlapping partition that generates 
 the minimal sigma algebra containing two sets of mutation features
 }

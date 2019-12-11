@@ -8,10 +8,10 @@ mutation features}
 convert_to_level3(features)
 }
 \arguments{
-\item{features}{vector of features}
+\item{features}{a vector of features}
 }
 \value{
-output vector of features
+`convert_to-level3` returns a vector of fundamental (level 3) features
 }
 \description{
 Given a set of features, convert them to a union set of fundamental (level 3) 

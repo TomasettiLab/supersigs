@@ -7,10 +7,10 @@
 #' 
 #' AllMyAuc calls MyAuc to calculate the AUC for every column other than the indicator variable
 #' 
-#' @param z Data matrix
-#' @param IndVar Indicator variable for exposure
-#' 
-#' @return output A list of AUCs, one for every column (feature)
+#' @param z a matrix
+#' @param IndVar indicator variable for the exposure
+#'
+#' @return `AllMyAuc` returns a list of AUCs, one for every column (feature)
 #' 
 AllMyAuc <- function(z, IndVar){
   cols = setdiff(colnames(z), IndVar)

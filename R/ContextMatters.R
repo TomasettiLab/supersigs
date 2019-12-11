@@ -15,15 +15,15 @@
 #' Obtain a list of survival mutations by performing a series of nested binomial 
 #' tests for selecting and pruning significant mutations
 #' 
-#' @param muts_dif dataset of mutations
-#' @param p_thresh alpha level for binomial test (default = 0.05)
-#' @param tot_pseudo pseudo-count value (default = 1000)
+#' @param muts_df a data frame of mutations
+#' @param p_thresh an optional numeric value for the alpha level used in the binomial test (default is `0.05`)
+#' @param tot_pseudo an optional numeric value for the pseudo-count value (default is `1000`)
 #' 
 #' @import dplyr
 #' @import rsample
 #' @import assertthat
 #' 
-#' @return output vector of survival mutations that pass
+#' @return `ContextMatters` returns a vector of survival mutations that pass
 #' the binomial tree testing
 #' 
 ContextMatters <- function(muts_df, 

@@ -12,20 +12,22 @@
 # library(here)
 # source(here("code", "MyCor.R"))
 
-#' Classification and correlation using signatures
+#' Classification of exposure using signatures
 #' 
-#' Classification and correlation using signatures with the option of three 
+#' Calculate the AUC using signatures with the option of three 
 #' different classifiers
 #' 
-#' @param dt transformed data from FeatureSelection
-#' @param test_ind indices for test data
-#' @param factor factor/exposure (e.g. age, smoking)
-#' @param classifier classifier method to use for prediction (options are "LDA", "Logit", and/or "RF",
-#' must pass as a vector)
-#' @param keep_classifier boolean toggle for saving the classifier model (default is FALSE)
-#' @param adjusted_formula boolean toggle for using the adjusted formula (default is FALSE)
-#' @param features_selected vector of candidate features ranked by AUC
-#' @param select_n number of top features to retain for each method
+#' @param dt a transformed data frame from FeatureSelection
+#' @param test_ind an optional vector of indices for the test data
+#' @param factor the factor/exposure (e.g. "age", "smoking")
+#' @param classifier a vector of the classifier method(s) to use for prediction
+#' (options are "LDA", "Logit", and "RF")
+#' @param keep_classifier an optional logical value indicating whether to save
+#' the classifier model (default is `FALSE`)
+#' @param adjusted_formula an optional logical value indicating whether to
+#' use the adjusted formula for non-age factors (default is `FALSE`)
+#' @param features_selected a vector of candidate features ranked by AUC
+#' @param select_n the number of top features to retain for each method
 #' 
 #' @import dplyr
 #' @import rsample
@@ -34,11 +36,14 @@
 #'
 #' @export
 #' 
-#' @return output a list of several elements:
-#' auc is a vector of AUCs for each classifier
-#' signature is the signature (mean differences or rates), created only when
-#' classifier includes "Logit"
-#' classifier is a list of saved models for each input classifier
+#' @return `MyLDAEnvClassifier` returns a list of several elements:
+#' \itemize{
+#' \item `auc` is a vector of AUCs for each classifier
+#' \item `signature` is a vector of mean differences or rates (created only when
+#' `classifier` includes "Logit")
+#' \item `classifier` is a list of saved models for each input classifier (created
+#' only when `keep_classifier` is `TRUE`)
+#' }
 #' 
 MyLDAEnvClassifier <- function(dt, test_ind = NULL,
                                factor,

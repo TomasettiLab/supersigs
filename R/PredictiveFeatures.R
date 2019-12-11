@@ -11,22 +11,25 @@
 # library(here)
 # source(here("code", "MyAuc.R"))
 
-#' Select predictive features from candidate features
+#' Select predictive features
 #' 
-#' Rank candidate features by their median bootstrap AUC and select
-#' the top n features, where n is chosen by cross-validation
+#' Rank candidate features by their median bootstrap AUC and find the top n features
+#' for each classifier method, where n is chosen by cross-validation
 #' 
-#' @param train training data from TransformData
-#' @param new_partition new_partition from GenerateMinSigmaAlgebra
-#' @param factor factor/exposure (e.g. age, smoking)
+#' @param train a transformed data of mutations from `TransformData`
+#' @param new_partition a partition of features from `GenerateMinSigmaAlgebra`
+#' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
 #' @import caret
 #' @import rsample
 #' 
-#' @return output a list of two elements: 
-#' features_selected is a vector of candidate features ranked by AUC
-#' select_n is the number of top features to retain for each method
+#' @return `PredictiveFeatures` returns a list of two elements:
+#' \itemize{
+#' \item `features_selected` is a vector of candidate features ranked by AUC
+#' \item `select_n` is the number of top features to retain for each method,
+#' chosen by cross-validation
+#' }
 #' 
 PredictiveFeatures <- function(train, 
                                new_partition,

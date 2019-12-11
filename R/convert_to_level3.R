@@ -8,9 +8,9 @@
 #' Given a set of features, convert them to a union set of fundamental (level 3) 
 #' mutation features
 #' 
-#' @param features vector of features
+#' @param features a vector of features
 #' 
-#' @return output vector of features
+#' @return `convert_to-level3` returns a vector of fundamental (level 3) features
 #' 
 convert_to_level3 = function(features){
   if(length(features) > 1){
