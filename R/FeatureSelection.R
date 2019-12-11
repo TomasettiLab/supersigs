@@ -1,7 +1,7 @@
 # FeatureSelection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Dec 11, 2019
 #
 # Function for selecting features (formerly part of MyLDAEnvClassifier.R)
 
@@ -47,8 +47,8 @@
 #' 
 FeatureSelection <- function(dt,
                              factor,
-                             test_ind = NULL, 
-                             middle_dt = NULL,
+                             test_ind = NULL,     # to be deprecated
+                             middle_dt = NULL,    # to be deprecated
                              keep_nonpredictive = F){
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)

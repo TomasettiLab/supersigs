@@ -1,7 +1,7 @@
 # GenerateMinSigmaAlgebra.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Dec 11, 2019
 #
 # Function to create the smallest non-overlapping partition that generates 
 # the minimal sigma algebra containing two sets of mutation features
@@ -10,8 +10,8 @@
 # library(assertthat)
 # library(here)
 
-# source(here("code", "condense_mutations.R"))
-# source(here("code", "convert_to_level3.R"))
+# source(here("code", "CondenseMutations.R"))
+# source(here("code", "ConvertToLevel3.R"))
 
 #' Generate partition of features
 #' 
@@ -40,7 +40,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
 
   # Convert to fundamental (i.e. level 3) mutations
   feat_ls <- unique(unlist(input_ls))
-  feat_ls <- lapply(feat_ls, convert_to_level3)
+  feat_ls <- lapply(feat_ls, ConvertToLevel3)
   
   # Create matrix of indicator values
   temp <- setNames(rep(F, length(muts_level3)), muts_level3)
@@ -70,7 +70,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
   
   # Condense mutations
   if(condense)
-    new_partition <- lapply(new_partition, condense_mutations) 
+    new_partition <- lapply(new_partition, CondenseMutations) 
   
   # Return output
   return(new_partition)

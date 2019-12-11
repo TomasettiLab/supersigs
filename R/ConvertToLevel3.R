@@ -1,4 +1,4 @@
-# convert_to_level3.R
+# ConvertToLevel3.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
 # Date last modified: Dec 10, 2019
@@ -10,9 +10,9 @@
 #' 
 #' @param features a vector of features
 #' 
-#' @return \code{convert_to-level3} returns a vector of fundamental (level 3) features
+#' @return \code{ConvertToLevel3} returns a vector of fundamental (level 3) features
 #' 
-convert_to_level3 = function(features){
+ConvertToLevel3 = function(features){
   if(length(features) > 1){
     out = sapply(features, function(x) muts_children_level3[[x]])
     out = unname(unlist(out))
