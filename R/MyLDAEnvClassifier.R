@@ -180,8 +180,8 @@ MyLDAEnvClassifier <- function(dt, test_ind = NULL,
     # Logistic Regression
     if("Logit" %in% classifier){
       z <- dt %>%
-        select(c(features_selected[1:select_n["Logit"]], "IndVar")) %>%
-        rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
+        select(c(features_selected[1:select_n["Logit"]], "IndVar")) # %>%
+        # rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
       
       x <- z[train_ind, ]
       newdata <- z[test_ind, ]
