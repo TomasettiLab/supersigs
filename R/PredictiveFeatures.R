@@ -19,10 +19,16 @@
 #' @param train a transformed data of mutations from \code{TransformData}
 #' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
 #' @param factor the factor/exposure (e.g. "age", "smoking")
+#' @param n_iter an optional parameter specifying the number of 
+#' cross-validation iterations (default is \code{5})
+#' @param n_fold an optional parameter specifying the number of folds
+#' for each cross-validation iteration (default is \code{2})
 #' 
 #' @import dplyr
 #' @import caret
 #' @import rsample
+#' 
+#' @export
 #' 
 #' @return `PredictiveFeatures` returns a list of two elements:
 #' \itemize{
@@ -33,11 +39,13 @@
 #' 
 PredictiveFeatures <- function(train, 
                                new_partition,
-                               factor){
+                               factor,
+                               n_iter = 5,
+                               n_fold = 2){
   # Use rates for non-age factors
   if(factor != "AGE"){
     train <- train %>%
-      mutate_at(vars(names(new_partition)), funs(./AGE))
+      mutate_at(vars(names(new_partition)), ~(./AGE))
   }
   
   # Initialize variables
@@ -58,7 +66,7 @@ PredictiveFeatures <- function(train,
   }
   
   # Compute median AUC
-  auc_medians <- apply(auc_mat, 1, median)
+  auc_medians <- apply(auc_mat, 1, function(x) median(x, na.rm = T))
   auc_medians <- sapply(auc_medians, function(x) ifelse(is.na(x), 0, x)) # Replace missing AUCs with 0
   
   # Create mutation_dt
@@ -85,14 +93,12 @@ PredictiveFeatures <- function(train,
   }
   
   # Inner loop of CV to find the best select_n for each classifier
-  print("Begin cross-validated selection of features...")
   max_n = nrow(mutation_dt)
   auc_by_methods_mean = vector("list", max_n)
   methods <- c("LDA", "Logit", "RF")
+  print(paste("Begin cross-validated selection over", max_n, "features..."))
   for(k in 1:max_n){
-    print(paste("...testing", k, "features..."))
-    n_iter = 5
-    n_fold = 5
+    print(paste("...testing n_features =", k))
     inner_partitions <- sapply(1:n_iter, FUN = function(x) createFolds(y = train$IndVar, k = n_fold))
     inner_aucs <- vector(length = length(inner_partitions), mode = "list")
     
@@ -128,12 +134,15 @@ PredictiveFeatures <- function(train,
   names(select_n) = methods
   
   # All candidate features ranked (except those thrown out for age)
+  mutation_dt <- mutation_dt %>%
+    arrange(desc(auc))
+  
   features_selected <- mutation_dt %>%
-    arrange(desc(auc)) %>%
     pull(mutation)
 
   out <- list(features_selected = features_selected,
-              select_n = select_n)
+              select_n = select_n,
+              mutation_dt = mutation_dt)
   return(out)
 }
 
