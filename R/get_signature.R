@@ -47,7 +47,7 @@ get_signature <- function(dt, factor){
                                           select_n = features_out$select_n)
   
   out = list(Signature = classification_out$signature$mean_diffs,
-             Features = features_out$new_partition[names(out["Signature"])],
+             Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
              AUC = classification_out$auc,
              Model = classification_out$classifier)
   
