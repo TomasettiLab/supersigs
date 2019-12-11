@@ -1,19 +1,22 @@
 # TransformData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Sep 24, 2019
+# Date last modified: Dec 10, 2019
 
 library(dplyr)
 library(here)
 source(here("code", "GenerateMinSigmaAlgebra.R"))
-# Function to return transformed data with only relevant data (projected features + signatures)
 
-# in$dt = data frame of mutations
-# in$features_context_0/1 = features returned by ContextMatters
-# in$new_partition = new_partition from GenerateMinSigmaAlgebra
-# in$project_features = toggle for whether want to use projected features or original counts
-# out$dt_new = transformed data of mutations, with columns corresponding to 
-# selected features, signatures, division, and total mutations
+#' Transform mutation data to only contain necessary columns
+#' 
+#' @param dt data frame of mutations
+#' @param features_context_0 candidate features for unexposed group returned by ContextMatters
+#' @param features_context_1 candidate features for exposed group returned by ContextMatters
+#' @param new_partition partition of features from GenerateMinSigmaAlgebra
+#' 
+#' @return output transformed data of mutations, with columns corresponding to
+#' selected candidate features with projected counts and other necessary data
+#' 
 TransformData <- function(dt, 
                           features_context_0, 
                           features_context_1,
@@ -73,14 +76,9 @@ TransformData <- function(dt,
       mutate_(.dots = new_partition_formula)
   }
   
-  features_add = NULL
-  if(factor == "SMOKING"){
-    features_add = "SMOKING_PACKS"
-  }
-  
   dt_new <- dt_new %>%
     arrange(tracking_ind) %>%
-    select(c(features_selected, features_add, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("Signature|DIVISION"))) 
+    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("DIVISION"))) 
   
   return(dt_new)
 }

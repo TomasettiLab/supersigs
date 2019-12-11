@@ -13,29 +13,35 @@ library(rsample)
 library(here)
 source(here("code", "MyCor.R"))
 
-
-# in$dt is dt_new returned by FeatureSelection
-# in$test_ind is the indices for the test data
-# in$factor is the factor to be tested (e.g. Age, Smoking)
-# in$classifier = any or all of c("LDA", "Logit", "RF", "NNLS")
-# in$keep_classifier is a toggle for whether to return the model
-# in$calculate_corr is a toggle for whether to calculate the correlations
-# in$adjusted_formula is a toggle for whether to use adjusted formula for exposed/unexposed
-# in$features_selected is a vector of predictive features (e.g. F2, F5, ...)
-# in$select_n is a vector of the best n for each classifier
-# out$auc is a vector of AUCs for each classifier
-# out$corr is a vector of correlations with a continuous exposure (when applicable)
-# out$signature is the signature we generated on the whole set (not NMF or Alexandrov's)
-# out$dt is the data we use for prediction (both training and test)
-# out$classifier is a list of saved models for each classifier
+#' Classification and correlation using signatures
+#' 
+#' Classification and correlation using signatures with the option of three 
+#' different classifiers
+#' 
+#' @param dt transformed data from FeatureSelection
+#' @param test_ind indices for test data
+#' @param factor factor/exposure (e.g. age, smoking)
+#' @param classifier classifier method to use for prediction (options are "LDA", "Logit", and/or "RF",
+#' must pass as a vector)
+#' @param keep_classifier boolean toggle for saving the classifier model (default is FALSE)
+#' @param adjusted_formula boolean toggle for using the adjusted formula (default is FALSE)
+#' @param features_selected vector of candidate features ranked by AUC
+#' @param select_n number of top features to retain for each method
+#' 
+#' @return output a list of several elements:
+#' auc is a vector of AUCs for each classifier
+#' signature is the signature (mean differences or rates), created only when
+#' classifier includes "Logit"
+#' classifier is a list of saved models for each input classifier
+#' 
 MyLDAEnvClassifier <- function(dt, test_ind = NULL,
                                factor,
                                classifier, # Options are "LDA", "Logit", "RF"
                                keep_classifier = F,
-                               calculate_corr = T,
                                adjusted_formula = F,
                                features_selected,
                                select_n){
+  # Split training and test set
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)
     test_ind <- train_ind
@@ -53,31 +59,21 @@ MyLDAEnvClassifier <- function(dt, test_ind = NULL,
   # Initialize output
   test_indvar <- dt[test_ind, "IndVar"]
   out <- list(auc = c(),
-              corr = c(),
               signature = list(),
               classifier = list())
-  
 
-  # Calculate median rates and transform data
-  if(factor == "AGE"){
-      # Calculate median rates -> signature
-      median_rates <- train %>%
-        summarize_at(.vars = features_selected,
-                     .funs = funs(median(. , na.rm = T)/median(AGE, na.rm = T)))
-  } else {
-    # Calculate grouped rates = unexposed and exposed signature
-    grouped_rates <- train %>%
-      group_by(IndVar) %>%
-      summarize_at(.vars = features_selected,
-                   .funs = funs(median(.,na.rm=T)/median(AGE,na.rm=T)))
-    
-    unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
-    exposed_rates <- grouped_rates %>% filter(IndVar == T) %>% select(-IndVar)
-    
-    # Calculate median rates = difference in rates between exposed and unexposed -> signature
-    median_rates <- exposed_rates - unexposed_rates
-    
+  # Transform data
+  if(factor != "AGE"){
     if(adjusted_formula){
+      # Calculate grouped median rates
+      grouped_rates <- train %>%
+        group_by(IndVar) %>%
+        summarize_at(.vars = features_selected,
+                     .funs = funs(median(., na.rm=T)/median(AGE, na.rm=T)))
+      
+      unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
+      exposed_rates <- grouped_rates %>% filter(IndVar == T) %>% select(-IndVar)
+      
       # Remove unexposed median rate (i.e. aging rate) from training and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
         sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
@@ -220,99 +216,6 @@ MyLDAEnvClassifier <- function(dt, test_ind = NULL,
         if(keep_classifier) 
           out$classifier$Logit <- logit_classifier
       })
-    }
-    
-    # NNLS
-    if("NNLS_Logit_means" %in% classifier && "Logit" %in% classifier){
-      newdata <- dt[test_ind, features_selected[1:select_n["Logit"]], drop = F]
-      out$auc <- c(out$auc, "NNLS_Logit_means" = NA)
-      nnls_coeffs <- NA
-      try({
-        nnls_coeffs <- newdata %>%
-          apply(MARGIN = 1, FUN = function(y)
-            nnls(matrix(as.numeric(mean_diffs), ncol = 1),
-                 matrix(y, ncol = 1))$x)
-        out$auc["NNLS_Logit_means"] <- MyAuc(test_indvar, nnls_coeffs)
-        if(keep_classifier)
-          out$classifier$NNLS_Logit_means <- mean_diffs
-      })
-    }
-    
-    if("NNLS_Logit_betas" %in% classifier && "Logit" %in% classifier){
-      newdata <- dt[test_ind, features_selected[1:select_n["Logit"]], drop = F]
-      out$auc <- c(out$auc, "NNLS_Logit_betas" = NA)
-      nnls_betas_coeffs <- NA
-      try({
-        nnls_betas_coeffs <- newdata %>%
-          apply(MARGIN = 1, FUN = function(y)
-            nnls(matrix(as.numeric(logit_betas), ncol = 1),
-                 matrix(y, ncol = 1))$x)
-        out$auc["NNLS_Logit_betas"] <- MyAuc(test_indvar, nnls_betas_coeffs)
-        if(keep_classifier)
-          out$classifier$NNLS_Logit_betas <- logit_betas
-      })
-    }
-    
-    # Correlation
-    if(calculate_corr){
-      if(factor == "AGE"){
-        continuous_factor = dt[test_ind, "AGE"]
-        # Supervised correlations
-        if("LDA" %in% classifier){
-          out$corr <- c(out$corr, LDA = MyCor(x = lda_prediction, 
-                                              y = continuous_factor, 
-                                              method = "spearman", use = "na.or.complete"))
-        }
-        if("RF" %in% classifier){
-          out$corr <- c(out$corr, RF = MyCor(x = rf_prediction, 
-                                             y = continuous_factor, 
-                                             method = "spearman", use = "na.or.complete"))
-        }
-        if("Logit" %in% classifier){
-          out$corr <- c(out$corr, Logit = MyCor(x = logit_prediction, 
-                                                y = continuous_factor, 
-                                                method = "spearman", use = "na.or.complete")) 
-        }
-        if("NNLS_Logit_means" %in% classifier){
-          out$corr <- c(out$corr, "NNLS_Logit_means" = MyCor(x = nnls_coeffs, 
-                                               y = continuous_factor, 
-                                               method = "spearman", use = "na.or.complete"))
-        }
-        if("NNLS_Logit_betas" %in% classifier){
-          out$corr <- c(out$corr, "NNLS_Logit_betas" = MyCor(x = nnls_betas_coeffs, 
-                                                             y = continuous_factor, 
-                                                             method = "spearman", use = "na.or.complete"))
-        }
-      } else if(factor == "SMOKING"){
-        continuous_factor = dt[test_ind, "SMOKING_PACKS"]/dt[test_ind, "AGE"]
-        total_mutations = dt[test_ind, "TOTAL_MUTATIONS"]
-        # Supervised correlations
-        if("LDA" %in% classifier){
-          out$corr <- c(out$corr, LDA = MyCor(x = lda_prediction, 
-                                              y = continuous_factor, 
-                                              method = "spearman", use = "na.or.complete"))
-        }
-        if("RF" %in% classifier){
-          out$corr <- c(out$corr, RF = MyCor(x = rf_prediction, 
-                                             y = continuous_factor, 
-                                             method = "spearman", use = "na.or.complete"))
-        }
-        if("Logit" %in% classifier){
-          out$corr <- c(out$corr, Logit = MyCor(x = logit_prediction, 
-                                                y = continuous_factor, 
-                                                method = "spearman", use = "na.or.complete"))
-        }
-        if("NNLS_Logit_means" %in% classifier){
-          out$corr <- c(out$corr, "NNLS_Logit_means" = MyCor(x = nnls_coeffs/(total_mutations - nnls_coeffs), # Why this formula?
-                                               y = continuous_factor, 
-                                               method = "spearman", use = "na.or.complete"))
-        }
-        if("NNLS_Logit_betas" %in% classifier){
-          out$corr <- c(out$corr, "NNLS_Logit_betas" = MyCor(x = nnls_betas_coeffs/(total_mutations - nnls_betas_coeffs), # Why this formula?
-                                                             y = continuous_factor, 
-                                                             method = "spearman", use = "na.or.complete"))
-        }
-      }
     }
   }
   

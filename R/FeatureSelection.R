@@ -13,32 +13,25 @@ source(here("code", "GenerateMinSigmaAlgebra.R"))
 source(here("code", "TransformData.R"))
 source(here("code", "PredictiveFeatures.R"))
 
-# in$dt is signature_dt with total_mutations greater than 0
-# in$test_ind is the indices for the test data
-# in$middle_dt is the middle aged samples (NULL if factor is not age)
-# in$factor is the factor to be tested (e.g. Age, Smoking)
-# in$keep_nonpredictive is toggle to combine non-predictive features as one feature
-# out$mutation_dt is a data frame of median AUCs and normal p_values
-# out$features_context_0 is a vector of survival mutations for IndVar = 0
-# out$features_context_1 is a vector of survival mutations for IndVar = 1
-# out$features_gmsa is the full output from GenerateMinSigmaAlgebra (for testing purposes)
-# out$features_selected is a vector of ranked candidate features (e.g. F2, F5, ...)
-# out$select_n is a vector of the best n for each classifier
-# out$dt_new is the transformed data of mutations from TransformData
-
 #' Function for feature selection
 #' 
 #' Perform feature selection given dataset of mutations by calling 
 #' a series of other functions to find significant and predictive features
 #' 
-#' @param dt signature_dt with total_mutations greater than 0
+#' @param dt data frame of mutations
 #' @param test_ind indices for the test data
 #' @param middle_dt the middle aged samples (NULL if factor is not age)
 #' @param factor factor/exposure (e.g. age, smoking)
 #' @param keep_nonpredictive boolean toggle to combine 
 #' non-predictive features as one feature (default is FALSE)
 #' 
-#' @return output Return a list of features, features partition and data output
+#' @return output a list of several elements:
+#' features_context_0 is a vector of survival mutations for the unexposed group
+#' features_context_1 is a vector of survival mutations for the exposed group
+#' features_selected is a vector of candidate features ranked by AUC
+#' select_n is the number of top features to retain for each method
+#' dt_new is the transformed data from TransformData
+#' 
 FeatureSelection <- function(dt, 
                              test_ind = NULL, 
                              middle_dt,
@@ -115,13 +108,11 @@ FeatureSelection <- function(dt,
   assert_that(length(features_selected) >= 1, 
               msg = "No predictive features found")
   
-  out <- list(mutation_dt = predictive_out$mutation_dt,
-              features_context_0 = features_context_0,
+  out <- list(features_context_0 = features_context_0,
               features_context_1 = features_context_1,
-              features_gmsa = features_gmsa, # formerly FeaturesSelectedNew
               features_selected = features_selected,
-              dt_new = dt_new,
-              select_n = predictive_out$select_n) 
+              select_n = predictive_out$select_n,
+              dt_new = dt_new) 
   
   return(out)
 }

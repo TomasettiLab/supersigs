@@ -12,14 +12,14 @@ library(here)
 
 #' Function for binomial testing using a hierarchical tree structure
 #' 
-#' Obtain a list of candidate features by performing a series of nested binomial 
+#' Obtain a list of survival mutations by performing a series of nested binomial 
 #' tests for selecting and pruning significant mutations
 #' 
 #' @param muts_dif dataset of mutations
 #' @param p_thresh alpha level for binomial test (default = 0.05)
 #' @param tot_pseudo pseudo-count value (default = 1000)
 #' 
-#' @return output vector of candidate features (survival mutations) that pass
+#' @return output vector of survival mutations that pass
 #' the binomial tree testing
 #' 
 ContextMatters <- function(muts_df, 

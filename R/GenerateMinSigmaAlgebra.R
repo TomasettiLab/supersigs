@@ -1,11 +1,10 @@
 # GenerateMinSigmaAlgebra.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jul 28, 2019
+# Date last modified: Dec 10, 2019
 #
 # Function to create the smallest non-overlapping partition that generates 
-# the minimal sigma algebra containing two sets of mutation features, and
-# complementary helper functions convert_to_level3 and condense_mutations
+# the minimal sigma algebra containing two sets of mutation features
 
 library(dplyr)
 library(assertthat)
@@ -14,11 +13,15 @@ library(here)
 source(here("code", "condense_mutations.R"))
 source(here("code", "convert_to_level3.R"))
 
-# in$input_ls is a named list of length 2. Each element is a vector of mutation features
-# in$condense toggles whether new_partition should return mutations in condensed form
-# out$new_partition is the partition (note: new_partition_formula has been moved to TransformData)
-# out$sup_partition is formula of input_ls based on the new partition (mainly for testing purposes)
-# out$sup_partition_formula is the corresponding formula string
+#' Create the smallest non-overlapping partition that generates 
+#' the minimal sigma algebra containing two sets of mutation features
+#' 
+#' @param input_ls a named list of length 2, where each element is a vector of mutation features
+#' @param condense boolean toggle for whether the output new_partition should return
+#' mutations in condensed form (default = FALSE)
+#' 
+#' @return output is a list of 1 element, new_partition, which is the partition of features
+#' 
 GenerateMinSigmaAlgebra <- function(input_ls, 
                                     condense = F){
   # Check input
@@ -50,28 +53,17 @@ GenerateMinSigmaAlgebra <- function(input_ls,
     new_partition <- new_partition[!duplicated(new_partition)]
   }
   names(new_partition) <- paste0("F", seq_along(new_partition))
+  
+  # Add back other mutations as "Remaining" feature
   if(length(other_muts) > 0)
-    new_partition[["Remaining"]] <- other_muts # add back the other mutations
+    new_partition[["Remaining"]] <- other_muts 
+  
+  # Condense mutations
   if(condense)
     new_partition <- lapply(new_partition, condense_mutations) 
   
-  # Get the partition values that make up the original input feat_ls
-  sup_partition <- sapply(input_ls, FUN = function(feats){
-    sapply(new_partition, FUN = function(feats_new){
-      length(intersect(feats, feats_new)) > 0})}) %>%
-    apply(MARGIN = 2, FUN = function(col) names(which(col)))
-  
-  if(!is.null(dim(sup_partition))){
-    sp_names <- colnames(sup_partition)
-    sup_partition <- lapply(seq_len(ncol(sup_partition)), function(i) sup_partition[,i])
-    names(sup_partition) <- sp_names
-  }
-  
   # Return output
-  out <- list(new_partition = new_partition,
-              sup_partition = sup_partition,
-              sup_partition_formula = sapply(sup_partition, function(x) 
-                paste("`", x, "`", sep = "", collapse = "+")))
+  out <- list(new_partition = new_partition)
   
   return(out)
 }
