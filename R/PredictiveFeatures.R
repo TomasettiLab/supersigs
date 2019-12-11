@@ -9,7 +9,7 @@ library(dplyr)
 library(caret)
 library(rsample)
 library(here)
-source(here("code", "MyAuc.R"))
+# source(here("code", "MyAuc.R"))
 
 #' Select predictive features from candidate features
 #' 

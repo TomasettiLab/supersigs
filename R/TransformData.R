@@ -5,7 +5,7 @@
 
 library(dplyr)
 library(here)
-source(here("code", "GenerateMinSigmaAlgebra.R"))
+# source(here("code", "GenerateMinSigmaAlgebra.R"))
 
 #' Transform mutation data to only contain necessary columns
 #' 

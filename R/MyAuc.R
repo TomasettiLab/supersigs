@@ -5,7 +5,7 @@
 #
 # Functions for calculating AUC using the Mann-Whitney U Statistic
 
-source(here("code", "AllMyAuc.R"))
+# source(here("code", "AllMyAuc.R"))
 
 #' Calculate AUC for one column using the Mann-Whitney U statistic
 #' 

@@ -10,8 +10,8 @@ library(dplyr)
 library(assertthat)
 library(here)
 
-source(here("code", "condense_mutations.R"))
-source(here("code", "convert_to_level3.R"))
+# source(here("code", "condense_mutations.R"))
+# source(here("code", "convert_to_level3.R"))
 
 #' Create the smallest non-overlapping partition that generates 
 #' the minimal sigma algebra containing two sets of mutation features

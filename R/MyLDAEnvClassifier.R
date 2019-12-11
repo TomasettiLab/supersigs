@@ -11,7 +11,7 @@ library(MASS)
 library(dplyr) # Note that you must load dplyr after MASS to preserve select function
 library(rsample)
 library(here)
-source(here("code", "MyCor.R"))
+# source(here("code", "MyCor.R"))
 
 #' Classification and correlation using signatures
 #' 
