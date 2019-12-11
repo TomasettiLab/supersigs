@@ -19,19 +19,22 @@ FeatureSelection(
 
 \item{test_ind}{an optional vector of indices for the test data}
 
-\item{middle_dt}{a data frame of the middle aged samples (`NULL` if the factor is not age)}
+\item{middle_dt}{a data frame of the middle aged samples (\code{NULL}
+if the factor is not age)}
 
 \item{keep_nonpredictive}{logical value indicating whether to combine 
-non-predictive features as one feature (default is `FALSE`)}
+non-predictive features as one feature (default is \code{FALSE})}
 }
 \value{
-`FeatureSelection` returns a list of several elements:
+\code{FeatureSelection} returns a list of several elements:
 \itemize{
-\item `features_context_0` is a vector of survival mutations for the unexposed group
-\item `features_context_1` is a vector of survival mutations for the exposed group
-\item `features_selected` is a vector of candidate features ranked by AUC
-\item `select_n` is the number of top features to retain for each method
-\item `dt_new` is the transformed data from `TransformData`
+\item \code{features_context_0} is a vector of survival mutations
+for the unexposed group
+\item \code{features_context_1} is a vector of survival mutations
+for the exposed group
+\item \code{features_selected} is a vector of candidate features ranked by AUC
+\item \code{select_n} is the number of top features to retain for each method
+\item \code{dt_new} is the transformed data from \code{TransformData}
 }
 }
 \description{

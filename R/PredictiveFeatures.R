@@ -16,8 +16,8 @@
 #' Rank candidate features by their median bootstrap AUC and find the top n features
 #' for each classifier method, where n is chosen by cross-validation
 #' 
-#' @param train a transformed data of mutations from `TransformData`
-#' @param new_partition a partition of features from `GenerateMinSigmaAlgebra`
+#' @param train a transformed data of mutations from \code{TransformData}
+#' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
@@ -26,8 +26,8 @@
 #' 
 #' @return `PredictiveFeatures` returns a list of two elements:
 #' \itemize{
-#' \item `features_selected` is a vector of candidate features ranked by AUC
-#' \item `select_n` is the number of top features to retain for each method,
+#' \item \code{features_selected} is a vector of candidate features ranked by AUC
+#' \item \code{select_n} is the number of top features to retain for each method,
 #' chosen by cross-validation
 #' }
 #' 

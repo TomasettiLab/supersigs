@@ -11,7 +11,7 @@ convert_to_level3(features)
 \item{features}{a vector of features}
 }
 \value{
-`convert_to-level3` returns a vector of fundamental (level 3) features
+\code{convert_to-level3} returns a vector of fundamental (level 3) features
 }
 \description{
 Given a set of features, convert them to a union set of fundamental (level 3) 

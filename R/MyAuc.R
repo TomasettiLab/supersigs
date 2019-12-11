@@ -14,7 +14,7 @@
 #' @param y an indicator variable column, i.e. the "true value" column
 #' @param x a column of numeric values, e.g. the projected counts of a feature
 #' 
-#' @return `MyAuc` returns a numeric AUC value
+#' @return \code{MyAuc} returns a numeric AUC value
 #' 
 MyAuc <- function(y, x){
   # Handle missing observations

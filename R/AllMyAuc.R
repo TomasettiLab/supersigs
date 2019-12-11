@@ -10,7 +10,7 @@
 #' @param z a matrix
 #' @param IndVar indicator variable for the exposure
 #'
-#' @return `AllMyAuc` returns a list of AUCs, one for every column (feature)
+#' @return \code{AllMyAuc} returns a list of AUCs, one for every column (feature)
 #' 
 AllMyAuc <- function(z, IndVar){
   cols = setdiff(colnames(z), IndVar)

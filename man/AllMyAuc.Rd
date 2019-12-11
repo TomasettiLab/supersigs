@@ -12,7 +12,7 @@ AllMyAuc(z, IndVar)
 \item{IndVar}{indicator variable for the exposure}
 }
 \value{
-`AllMyAuc` returns a list of AUCs, one for every column (feature)
+\code{AllMyAuc} returns a list of AUCs, one for every column (feature)
 }
 \description{
 AllMyAuc calls MyAuc to calculate the AUC for every column other than the indicator variable

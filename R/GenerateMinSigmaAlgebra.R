@@ -21,14 +21,14 @@
 #' @param input_ls a named list of length 2, where each element is a
 #' vector of mutation features
 #' @param condense an optional logical value indicating whether the output value
-#' `new_partition` should return mutations in condensed form (default is `FALSE`)
+#' `new_partition` should return mutations in condensed form (default is \code{FALSE})
 #' 
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @return `GenerateMinSigmaAlgebra` returns a list of 1 element:
+#' @return \code{GenerateMinSigmaAlgebra} returns a list of 1 element:
 #' \itemize{
-#' \item `new_partition` is a list of partitioned features, where each element
+#' \item \code{new_partition} is a list of partitioned features, where each element
 #' is a vector of the fundamental (level 3) mutations that make up each feature
 #' }
 #' 

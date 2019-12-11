@@ -10,7 +10,7 @@ condense_mutations(features)
 \item{features}{a vector of level 3 features}
 }
 \value{
-`condense_mutations` returns a vector of condensed features
+\code{condense_mutations} returns a vector of condensed features
 }
 \description{
 Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations

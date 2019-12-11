@@ -12,7 +12,7 @@ MyAuc(y, x)
 \item{x}{a column of numeric values, e.g. the projected counts of a feature}
 }
 \value{
-`MyAuc` returns a numeric AUC value
+\code{MyAuc} returns a numeric AUC value
 }
 \description{
 Calculate AUC for one column using the Mann-Whitney U statistic

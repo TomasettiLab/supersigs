@@ -23,9 +23,9 @@
 #' @param classifier a vector of the classifier method(s) to use for prediction
 #' (options are "LDA", "Logit", and "RF")
 #' @param keep_classifier an optional logical value indicating whether to save
-#' the classifier model (default is `FALSE`)
+#' the classifier model (default is \code{FALSE})
 #' @param adjusted_formula an optional logical value indicating whether to
-#' use the adjusted formula for non-age factors (default is `FALSE`)
+#' use the adjusted formula for non-age factors (default is \code{FALSE})
 #' @param features_selected a vector of candidate features ranked by AUC
 #' @param select_n the number of top features to retain for each method
 #' 
@@ -38,11 +38,11 @@
 #' 
 #' @return `MyLDAEnvClassifier` returns a list of several elements:
 #' \itemize{
-#' \item `auc` is a vector of AUCs for each classifier
-#' \item `signature` is a vector of mean differences or rates (created only when
-#' `classifier` includes "Logit")
-#' \item `classifier` is a list of saved models for each input classifier (created
-#' only when `keep_classifier` is `TRUE`)
+#' \item \code{auc} is a vector of AUCs for each classifier
+#' \item \code{signature} is a vector of mean differences or rates
+#' (created only when \code{classifier} includes "Logit")
+#' \item \code{classifier} is a list of saved models for each input classifier
+#' (created only when \code{keep_classifier} is \code{TRUE})
 #' }
 #' 
 MyLDAEnvClassifier <- function(dt, test_ind = NULL,

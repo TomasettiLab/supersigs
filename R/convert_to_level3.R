@@ -10,7 +10,7 @@
 #' 
 #' @param features a vector of features
 #' 
-#' @return `convert_to-level3` returns a vector of fundamental (level 3) features
+#' @return \code{convert_to-level3} returns a vector of fundamental (level 3) features
 #' 
 convert_to_level3 = function(features){
   if(length(features) > 1){

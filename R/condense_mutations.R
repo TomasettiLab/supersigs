@@ -9,7 +9,7 @@
 #' 
 #' @param features a vector of level 3 features
 #'
-#' @return `condense_mutations` returns a vector of condensed features
+#' @return \code{condense_mutations} returns a vector of condensed features
 #' 
 condense_mutations = function(features){
   out = vector('character')

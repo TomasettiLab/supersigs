@@ -9,12 +9,14 @@ ContextMatters(muts_df, p_thresh = 0.05, tot_pseudo = 1000)
 \arguments{
 \item{muts_df}{a data frame of mutations}
 
-\item{p_thresh}{an optional numeric value for the alpha level used in the binomial test (default is `0.05`)}
+\item{p_thresh}{an optional numeric value for the alpha level used in the
+binomial test (default is `0.05`)}
 
-\item{tot_pseudo}{an optional numeric value for the pseudo-count value (default is `1000`)}
+\item{tot_pseudo}{an optional numeric value for the pseudo-count value
+(default is `1000`)}
 }
 \value{
-`ContextMatters` returns a vector of survival mutations that pass
+\code{ContextMatters} returns a vector of survival mutations that pass
 the binomial tree testing
 }
 \description{

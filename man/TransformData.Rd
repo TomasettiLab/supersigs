@@ -16,17 +16,18 @@ TransformData(
 \item{dt}{a data frame of mutations}
 
 \item{features_context_0}{a vector of candidate features for the unexposed group
-returned by `ContextMatters`}
+returned by \code{ContextMatters}}
 
 \item{features_context_1}{a vector of candidate features for the exposed group
-returned by `ContextMatters`}
+returned by \code{ContextMatters}}
 
-\item{new_partition}{a partition of features from `GenerateMinSigmaAlgebra`}
+\item{new_partition}{a partition of features from \code{GenerateMinSigmaAlgebra}}
 }
 \value{
-`TransformData` returns a transformed data frame of mutations, with
+\code{TransformData} returns a transformed data frame of mutations, with
 columns corresponding to the candidate features with projected counts
-and other necessary columns (`IndVar`, `AGE`, `TOTAL_MUTATIONS`, and `DIVISON`)
+and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
+and \code{DIVISON})
 }
 \description{
 Transform data frame of mutations by projecting counts for candidate features

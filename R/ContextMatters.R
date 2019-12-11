@@ -16,14 +16,16 @@
 #' tests for selecting and pruning significant mutations
 #' 
 #' @param muts_df a data frame of mutations
-#' @param p_thresh an optional numeric value for the alpha level used in the binomial test (default is `0.05`)
-#' @param tot_pseudo an optional numeric value for the pseudo-count value (default is `1000`)
+#' @param p_thresh an optional numeric value for the alpha level used in the
+#' binomial test (default is `0.05`)
+#' @param tot_pseudo an optional numeric value for the pseudo-count value
+#' (default is `1000`)
 #' 
 #' @import dplyr
 #' @import rsample
 #' @import assertthat
 #' 
-#' @return `ContextMatters` returns a vector of survival mutations that pass
+#' @return \code{ContextMatters} returns a vector of survival mutations that pass
 #' the binomial tree testing
 #' 
 ContextMatters <- function(muts_df, 

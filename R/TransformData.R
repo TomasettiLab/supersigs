@@ -13,16 +13,17 @@
 #' 
 #' @param dt a data frame of mutations
 #' @param features_context_0 a vector of candidate features for the unexposed group
-#' returned by `ContextMatters`
+#' returned by \code{ContextMatters}
 #' @param features_context_1 a vector of candidate features for the exposed group
-#' returned by `ContextMatters`
-#' @param new_partition a partition of features from `GenerateMinSigmaAlgebra`
+#' returned by \code{ContextMatters}
+#' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
 #' 
 #' @import dplyr
 #' 
-#' @return `TransformData` returns a transformed data frame of mutations, with
+#' @return \code{TransformData} returns a transformed data frame of mutations, with
 #' columns corresponding to the candidate features with projected counts
-#' and other necessary columns (`IndVar`, `AGE`, `TOTAL_MUTATIONS`, and `DIVISON`)
+#' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
+#' and \code{DIVISON})
 #' 
 TransformData <- function(dt, 
                           features_context_0, 

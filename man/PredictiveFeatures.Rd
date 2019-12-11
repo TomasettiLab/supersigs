@@ -7,17 +7,17 @@
 PredictiveFeatures(train, new_partition, factor)
 }
 \arguments{
-\item{train}{a transformed data of mutations from `TransformData`}
+\item{train}{a transformed data of mutations from \code{TransformData}}
 
-\item{new_partition}{a partition of features from `GenerateMinSigmaAlgebra`}
+\item{new_partition}{a partition of features from \code{GenerateMinSigmaAlgebra}}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking")}
 }
 \value{
 `PredictiveFeatures` returns a list of two elements:
 \itemize{
-\item `features_selected` is a vector of candidate features ranked by AUC
-\item `select_n` is the number of top features to retain for each method,
+\item \code{features_selected} is a vector of candidate features ranked by AUC
+\item \code{select_n} is the number of top features to retain for each method,
 chosen by cross-validation
 }
 }
