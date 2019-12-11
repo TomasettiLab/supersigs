@@ -36,6 +36,7 @@ for the exposed group
 \item \code{new_partition} is a list of the partitioned candidate features,
 where each feature is represented by a vector of fundamental mutations
 \item \code{select_n} is the number of top features to retain for each method
+\item \code{mutation_dt} is a sorted data frame of candidate features and their AUC
 \item \code{dt_new} is the transformed data from \code{TransformData}
 }
 }

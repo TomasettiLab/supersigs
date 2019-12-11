@@ -4,7 +4,7 @@
 \alias{PredictiveFeatures}
 \title{Select predictive features}
 \usage{
-PredictiveFeatures(train, new_partition, factor)
+PredictiveFeatures(train, new_partition, factor, n_iter = 5, n_fold = 2)
 }
 \arguments{
 \item{train}{a transformed data of mutations from \code{TransformData}}
@@ -12,6 +12,12 @@ PredictiveFeatures(train, new_partition, factor)
 \item{new_partition}{a partition of features from \code{GenerateMinSigmaAlgebra}}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking")}
+
+\item{n_iter}{an optional parameter specifying the number of 
+cross-validation iterations (default is \code{5})}
+
+\item{n_fold}{an optional parameter specifying the number of folds
+for each cross-validation iteration (default is \code{2})}
 }
 \value{
 `PredictiveFeatures` returns a list of two elements:
