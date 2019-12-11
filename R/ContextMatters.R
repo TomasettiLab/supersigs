@@ -165,11 +165,11 @@ ContextMatters <- function(muts_df,
 }
 
 # Load data dependencies
-background_probs <- readRDS(here("data", "background_probs.rds"))
-muts_children_level3_df <- readRDS(here("data", "muts_children_level3_df.rds"))
-muts_formula <- readRDS(here("data", "muts_formula.rds"))
-h_muts_index <- readRDS(here("data", "h_muts_index.rds"))
-all_possible_tri <- readRDS(here("data", "all_possible_tri.rds"))
+# background_probs <- readRDS(here("data", "background_probs.rds"))
+# muts_children_level3_df <- readRDS(here("data", "muts_children_level3_df.rds"))
+# muts_formula <- readRDS(here("data", "muts_formula.rds"))
+# h_muts_index <- readRDS(here("data", "h_muts_index.rds"))
+# all_possible_tri <- readRDS(here("data", "all_possible_tri.rds"))
 
 # Test function
 # signature_caf <- readRDS(here("data", "signature_caf.rds"))

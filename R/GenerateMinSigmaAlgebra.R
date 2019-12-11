@@ -69,8 +69,8 @@ GenerateMinSigmaAlgebra <- function(input_ls,
 }
 
 # Load data dependencies
-muts_level3 = readRDS(here("data", "muts_level3.rds"))
-muts_children_level3 = readRDS(here("data", "muts_children_level3.rds"))
+# muts_level3 = readRDS(here("data", "muts_level3.rds"))
+# muts_children_level3 = readRDS(here("data", "muts_children_level3.rds"))
 
 # Test function
 # h_mix = readRDS(here("data", "h_mix.rds"))
