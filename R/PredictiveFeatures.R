@@ -102,7 +102,6 @@ PredictiveFeatures <- function(train,
                          factor,
                          classifier = methods, 
                          keep_classifier = F,
-                         calculate_corr = F,
                          adjusted_formula = F,
                          features_selected = features_selected,
                          select_n = c("LDA" = k, "RF" = k, "Logit" = k))
@@ -123,7 +122,7 @@ PredictiveFeatures <- function(train,
   
   # All candidate features ranked (except those thrown out for age)
   features_selected <- mutation_dt %>%
-    arrange(desc(auc))
+    arrange(desc(auc)) %>%
     pull(mutation)
 
   out <- list(features_selected = features_selected,
