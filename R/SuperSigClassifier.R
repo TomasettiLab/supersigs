@@ -36,7 +36,7 @@
 #'
 #' @export
 #' 
-#' @return `SuperSigClassifier` returns a list of several elements:
+#' @return \code{SuperSigClassifier} returns a list of several elements:
 #' \itemize{
 #' \item \code{auc} is a vector of AUCs for each classifier
 #' \item \code{signature} is a vector of mean differences or rates
