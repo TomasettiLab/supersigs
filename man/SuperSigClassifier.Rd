@@ -36,7 +36,7 @@ use the adjusted formula for non-age factors (default is \code{FALSE})}
 \item{select_n}{the number of top features to retain for each method}
 }
 \value{
-`SuperSigClassifier` returns a list of several elements:
+\code{SuperSigClassifier} returns a list of several elements:
 \itemize{
 \item \code{auc} is a vector of AUCs for each classifier
 \item \code{signature} is a vector of mean differences or rates

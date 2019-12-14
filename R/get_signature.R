@@ -33,7 +33,9 @@
 #' the generated SuperSig
 #' }
 #' 
-
+#' @examples
+#' get_signature(mutation_data, "age")
+#' 
 get_signature <- function(dt, factor){
   # Get features
   features_out = suppressWarnings(FeatureSelection(dt, factor))

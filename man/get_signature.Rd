@@ -30,3 +30,7 @@ Generate a tissue-specific SuperSig for a given dataset of mutations and
 exposure factor. Returns the SuperSig and a classification model trained with
 the SuperSig.
 }
+\examples{
+get_signature(mutation_data, "age")
+
+}
