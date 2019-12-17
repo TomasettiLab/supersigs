@@ -3,7 +3,7 @@
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 10, 2019
 #
-# Function for classification and correlation using LDA, logistic, or random forest
+# Function for classification using LDA, logistic, or random forest
 
 # library(randomForest)
 # library(MASS)
@@ -74,33 +74,33 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
               classifier = list())
 
   # Transform data
-  if(factor != "AGE"){
+  if(factor != "age"){
     if(adjusted_formula){
       # Calculate grouped median rates
       grouped_rates <- train %>%
         group_by(IndVar) %>%
         summarize_at(.vars = features_selected,
-                     .funs = funs(median(., na.rm=T)/median(AGE, na.rm=T)))
+                     .funs = funs(median(., na.rm=T)/median(age, na.rm=T)))
       
       unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
       exposed_rates <- grouped_rates %>% filter(IndVar == T) %>% select(-IndVar)
       
       # Remove unexposed median rate (i.e. aging rate) from training and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
-        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
+        sapply(FUN = function(x) paste0("`", x, "`", "-age*", unexposed_rates[x]))
       
       dt <- dt %>%
         mutate_(.dots = remove_age_formula) %>%
         mutate_at(.vars = features_selected,
-                  .funs = funs(./TOTAL_MUTATIONS))
+                  .funs = funs(./total_mutations))
     } else {
       dt <- dt %>%
         mutate_at(.vars = features_selected,
-                  .funs = funs(./AGE))
+                  .funs = funs(./age))
     }
     
     # Remove observations missing age
-    missing_ind <- which(is.na(dt$AGE))
+    missing_ind <- which(is.na(dt$age))
     train_ind <- setdiff(train_ind, missing_ind)
     test_ind <- setdiff(test_ind, missing_ind)
     train <- dt[train_ind, ]
@@ -115,16 +115,11 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
     # Return NA to AUC
     auc <- sapply(classifier, function(x) NA)
     out$auc <- c(out$auc, auc)
-    
-    # Return NA to corr
-    if(factor %in% c("AGE", "SMOKING")){
-      corr <- sapply(classifier, function(x) NA)
-      out$corr <- c(out$corr, corr)
-    }
+
   } else {
     # Linear Discriminant Analysis
     if("LDA" %in% classifier){
-      if(factor == "AGE"){
+      if(factor == "age"){
         # Take log2 for counts for age for better normal distribution
         # dt <- dt %>%
         #   mutate_at(.vars = features_selected[1:select_n["LDA"]],
@@ -194,7 +189,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
         logit_betas <- coef(logit_classifier)[-1] # beta vector except beta_0
         
         # Calculate empirical mean differences
-        if(factor == "AGE"){
+        if(factor == "age"){
           grouped_rates <- dt %>%
             slice(train_ind) %>%
             group_by(IndVar) %>%
@@ -205,7 +200,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
             slice(train_ind) %>%
             group_by(IndVar) %>%
             summarize_at(.vars = features_selected[1:select_n["Logit"]],
-                         .funs = funs(mean(./AGE, na.rm = T)))
+                         .funs = funs(mean(./age, na.rm = T)))
         }
         
         unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
@@ -238,13 +233,13 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
 
 # Test function
 # signature_caf <- readRDS(here("data", "signature_caf.rds"))
-# factor <- "AGE"
+# factor <- "age"
 # tissue <- "LUAD"
 # ind <- which((signature_caf["Factor",] == factor) & (signature_caf["Tissue",] == tissue))
 # dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
-#   filter(TOTAL_MUTATIONS > 0)
+#   filter(total_mutations > 0)
 # unsupervised_sig = signature_caf[["Unsupervised", ind]]
-# age_ind <- which((signature_caf["Factor",] == "AGE") & (signature_caf["Tissue",] == tissue))
+# age_ind <- which((signature_caf["Factor",] == "age") & (signature_caf["Tissue",] == tissue))
 # age_sig <- signature_caf[["Unsupervised", age_ind]]
 # 
 # source(here("code", "FeatureSelection.R"))

@@ -22,6 +22,8 @@ returned by \code{ContextMatters}}
 returned by \code{ContextMatters}}
 
 \item{new_partition}{a partition of features from \code{GenerateMinSigmaAlgebra}}
+
+\item{factor}{the factor/exposure (e.g. "age", "smoking")}
 }
 \value{
 \code{TransformData} returns a transformed data frame of mutations, with

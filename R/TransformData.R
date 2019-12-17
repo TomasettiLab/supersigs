@@ -17,6 +17,7 @@
 #' @param features_context_1 a vector of candidate features for the exposed group
 #' returned by \code{ContextMatters}
 #' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
+#' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
 #' 
@@ -24,7 +25,7 @@
 #' 
 #' @return \code{TransformData} returns a transformed data frame of mutations, with
 #' columns corresponding to the candidate features with projected counts
-#' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
+#' and other necessary columns (\code{IndVar}, \code{age}, \code{total_mutations},
 #' and \code{DIVISON})
 #' 
 TransformData <- function(dt, 
@@ -41,7 +42,7 @@ TransformData <- function(dt,
   features_selected <- names(new_partition)
   
   # Count features by projections or directly summing
-  if(factor != "AGE"){
+  if(factor != "age"){
     features_context_ls <- list(features_context_0, features_context_1)
     dt_new_ls <- vector("list", 2)
     
@@ -71,8 +72,8 @@ TransformData <- function(dt,
         parent <- which(sapply(features_context_partition, 
                                function(f) length(setdiff(feature_mutations, f)) == 0)) %>% names()
         
-        parent_prop <- sum(sapply(features_context_partition[[parent]], function(x) prop_muts_all[[x]][["TOTAL_MUTATIONS"]]))
-        child_prop <- sum(sapply(feature_mutations, function(x) prop_muts_all[[x]][["TOTAL_MUTATIONS"]]))
+        parent_prop <- sum(sapply(features_context_partition[[parent]], function(x) prop_muts_all[[x]][["total_mutations"]]))
+        child_prop <- sum(sapply(feature_mutations, function(x) prop_muts_all[[x]][["total_mutations"]]))
         prop_of_parent <- child_prop/parent_prop
         dt_new_ls[[j]][feature_name] <- prop_of_parent*(dt_new_ls[[j]] %>% select(features_context_partition[[parent]]) %>% rowSums())
       }
@@ -88,7 +89,7 @@ TransformData <- function(dt,
   
   dt_new <- dt_new %>%
     arrange(tracking_ind) %>%
-    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("DIVISION"))) 
+    select(c(features_selected, "IndVar", "age", "total_mutations", matches("DIVISION"))) 
   
   return(dt_new)
 }

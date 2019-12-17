@@ -31,6 +31,6 @@ exposure factor. Returns the SuperSig and a classification model trained with
 the SuperSig.
 }
 \examples{
-get_signature(mutation_data, "age")
+# get_signature(mutation_data, "age")
 
 }

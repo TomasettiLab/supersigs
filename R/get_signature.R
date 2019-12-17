@@ -34,7 +34,7 @@
 #' }
 #' 
 #' @examples
-#' get_signature(mutation_data, "age")
+#' # get_signature(mutation_data, "age")
 #' 
 get_signature <- function(dt, factor){
   # Get features
