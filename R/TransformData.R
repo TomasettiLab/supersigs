@@ -17,7 +17,6 @@
 #' @param features_context_1 a vector of candidate features for the exposed group
 #' returned by \code{ContextMatters}
 #' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
-#' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
 #' 
@@ -25,7 +24,7 @@
 #' 
 #' @return \code{TransformData} returns a transformed data frame of mutations, with
 #' columns corresponding to the candidate features with projected counts
-#' and other necessary columns (\code{IndVar}, \code{age}, \code{total_mutations},
+#' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
 #' and \code{DIVISON})
 #' 
 TransformData <- function(dt, 
@@ -42,7 +41,7 @@ TransformData <- function(dt,
   features_selected <- names(new_partition)
   
   # Count features by projections or directly summing
-  if(factor != "age"){
+  if(factor != "AGE"){
     features_context_ls <- list(features_context_0, features_context_1)
     dt_new_ls <- vector("list", 2)
     
@@ -89,7 +88,7 @@ TransformData <- function(dt,
   
   dt_new <- dt_new %>%
     arrange(tracking_ind) %>%
-    select(c(features_selected, "IndVar", "age", "total_mutations", matches("DIVISION"))) 
+    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("DIVISION"))) 
   
   return(dt_new)
 }

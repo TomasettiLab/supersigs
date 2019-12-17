@@ -34,10 +34,10 @@ ContextMatters <- function(muts_df,
                            p_thresh = 0.05,
                            tot_pseudo = 1000){
   # Check input
-  assert_that(all(setdiff(names(muts_df), "total_mutations") == names(muts_formula)),
+  assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
   
-  bootstrapped_df <- muts_df %>% select(c("total_mutations", names(muts_formula))) %>%
+  bootstrapped_df <- muts_df %>% select(c("TOTAL_MUTATIONS", names(muts_formula))) %>%
     bootstraps(times = 100)
   
   # Bootstrap
@@ -48,7 +48,7 @@ ContextMatters <- function(muts_df,
   
   # Pseudo-count
   for(feature in names(muts_counts)){
-    all_possible_tri["total_mutations"] = 3
+    all_possible_tri["TOTAL_MUTATIONS"] = 3
     muts_counts[feature] = muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
   }
   muts_counts <- sapply(muts_counts, round)
@@ -85,7 +85,7 @@ ContextMatters <- function(muts_df,
   for(i in c(4, 1)){
     tree_tmp <- tree %>%
       filter(n_children == i) %>%
-      mutate(sig_2 = ifelse(parent_name %in% c(survival_mutations, "total_mutations"), sig, T))
+      mutate(sig_2 = ifelse(parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), sig, T))
     
     survival_mutations_tmp <- tree_tmp %>% 
       filter(n_children == i) %>%
@@ -126,7 +126,7 @@ ContextMatters <- function(muts_df,
       select(feature, n_children, parent_name, prob, q, size) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
       inner_join(. , survival_children_level3, by = c("child_name", "parent_name" = "feature")) %>%
-      filter(parent_name %in% c(survival_mutations, "total_mutations")) %>%
+      filter(parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS")) %>%
       group_by(feature, parent_name, prob, q, size) %>%
       summarize(prob_child = sum(prob_child),
                 q_child = sum(q_child)) %>%
@@ -166,7 +166,7 @@ ContextMatters <- function(muts_df,
   }
   
   if(length(survival_mutations) == 0){
-    return("total_mutations")
+    return("TOTAL_MUTATIONS")
   } else {
     return(survival_mutations)
   }
@@ -184,6 +184,6 @@ ContextMatters <- function(muts_df,
 # test_1 = signature_caf[["Data", "ALCOHOL (ESCA)"]]$DataSetFiltered %>%
 #   filter(IndVar == 0) %>%
 #   transmute_(.dots = muts_formula) %>% # Add counts for every mutation in all_muts
-#   mutate(total_mutations = select(., 1:6) %>% rowSums())
+#   mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
 # 
 # ContextMatters(test_1)

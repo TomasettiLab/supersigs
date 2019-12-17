@@ -59,7 +59,7 @@ FeatureSelection <- function(dt,
   
   # Separate into exposed (train_1) and unexposed (train_0)
   train <- dt[train_ind, ]
-  if(factor != "age"){ 
+  if(factor != "AGE"){ 
     train_0 <- train %>% filter(IndVar == 0)
     train_1 <- train %>% filter(IndVar == 1)
   } else {
@@ -70,11 +70,11 @@ FeatureSelection <- function(dt,
   # Add up counts for every mutation
   train_0 <- train_0 %>%
     transmute_(.dots = muts_formula) %>%
-    mutate(total_mutations = select(., 1:6) %>% rowSums())
+    mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
   
   train_1 <- train_1 %>%
     transmute_(.dots = muts_formula) %>%
-    mutate(total_mutations = select(., 1:6) %>% rowSums())
+    mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
   
   # (Note: Removed Mutrelative2TotalPval section)
   
@@ -102,7 +102,7 @@ FeatureSelection <- function(dt,
   if(keep_nonpredictive){
     dt_new <- dt_new %>%
       mutate(SumPredictive = dt_new %>% select(features_selected) %>% rowSums(),
-             Rest = total_mutations - SumPredictive)
+             Rest = TOTAL_MUTATIONS - SumPredictive)
     if(length(unique(dt_new$Rest)) != 1){ # Add Rest only if Rest is not a constant vector of 0's
       features_selected <- c(features_selected, "Rest")
     }
@@ -129,16 +129,16 @@ FeatureSelection <- function(dt,
 
 # Test function
 # signature_caf <- readRDS(here("super_sigs", "data", "signature_caf.rds"))
-# factor <- "age"
+# factor <- "AGE"
 # tissue <- "UCEC"
 # ind <- which((signature_caf["Factor",] == factor) & (signature_caf["Tissue",] == tissue))
 # dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
-#   filter(total_mutations > 0)
+#   filter(TOTAL_MUTATIONS > 0)
 # 
 # test_ind = NULL
 # middle_dt = NULL
 # 
-# if(factor == "age"){
+# if(factor == "AGE"){
 #   middle_dt <- signature_caf[["Data", ind]]$DataSetFilteredKeepMiddle %>%
 #     filter(!(SAMPLE %in% dt$SAMPLE)) %>%
 #     mutate(IndVar = NA)

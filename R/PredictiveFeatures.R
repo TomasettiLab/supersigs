@@ -95,8 +95,7 @@ PredictiveFeatures <- function(train,
   # Inner loop of CV to find the best select_n for each classifier
   max_n = nrow(mutation_dt)
   auc_by_methods_mean = vector("list", max_n)
-  # methods <- c("LDA", "Logit", "RF")
-  methods = c("Logit")
+  methods <- c("LDA", "Logit", "RF")
   print(paste("Begin cross-validated selection over", max_n, "features..."))
   for(k in 1:max_n){
     print(paste("...testing n_features =", k))
@@ -118,8 +117,7 @@ PredictiveFeatures <- function(train,
                                             keep_classifier = F,
                                             adjusted_formula = F,
                                             features_selected = features_selected,
-                                            # select_n = c("LDA" = k, "RF" = k, "Logit" = k))
-                                            select_n = c("Logit" = k))
+                                            select_n = c("LDA" = k, "RF" = k, "Logit" = k))
     }
     
     inner_aucs_mat <- matrix(inner_aucs, nrow = n_fold)
