@@ -72,8 +72,8 @@ TransformData <- function(dt,
         parent <- which(sapply(features_context_partition, 
                                function(f) length(setdiff(feature_mutations, f)) == 0)) %>% names()
         
-        parent_prop <- sum(sapply(features_context_partition[[parent]], function(x) prop_muts_all[[x]][["total_mutations"]]))
-        child_prop <- sum(sapply(feature_mutations, function(x) prop_muts_all[[x]][["total_mutations"]]))
+        parent_prop <- sum(sapply(features_context_partition[[parent]], function(x) prop_muts_all[[x]][["TOTAL_MUTATIONS"]]))
+        child_prop <- sum(sapply(feature_mutations, function(x) prop_muts_all[[x]][["TOTAL_MUTATIONS"]]))
         prop_of_parent <- child_prop/parent_prop
         dt_new_ls[[j]][feature_name] <- prop_of_parent*(dt_new_ls[[j]] %>% select(features_context_partition[[parent]]) %>% rowSums())
       }
