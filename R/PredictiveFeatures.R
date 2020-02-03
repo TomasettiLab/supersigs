@@ -1,7 +1,7 @@
 # PredictiveFeatures.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Feb 3, 2019
 #
 # Function for testing and choosing predictive features
 
@@ -97,9 +97,9 @@ PredictiveFeatures <- function(train,
   auc_by_methods_mean = vector("list", max_n)
   # methods <- c("LDA", "Logit", "RF")
   methods <- c("Logit")
-  print(paste("Begin cross-validated selection over", max_n, "features..."))
+  message(paste("Begin cross-validated selection over", max_n, "features..."))
   for(k in 1:max_n){
-    print(paste("...testing n_features =", k))
+    message(paste("...testing n_features =", k))
     inner_partitions <- sapply(1:n_iter, FUN = function(x) createFolds(y = train$IndVar, k = n_fold))
     inner_aucs <- vector(length = length(inner_partitions), mode = "list")
     
