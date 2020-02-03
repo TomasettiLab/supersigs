@@ -1,0 +1,79 @@
+---
+title: "Using the supersigs Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{supersigs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(supersigs)
+```
+
+# Preparing your data
+
+You can use the `make_matrix` function below to transform a VCF file into a matrix of trinucleotide mutations, which is the format required by `get_signature`. This function is NOT part of the supersigs R package.
+
+```{r}
+# Function to transform list of mutations into matrix form
+# @dt is a data frame with five columns: sample_id, chromosome, position, from, and to
+# @reference_genome specifies the reference genome you wish to use
+make_matrix <- function(dt, reference_genome = "hg38"){
+  if(reference_genome == "hg19")
+    library(BSgenome.Hsapiens.UCSC.hg19) # Full genome sequence for homo sapiens (Warning: large package = 700 MB)
+  else if(reference_genome == "hg38")
+    library(BSgenome.Hsapiens.UCSC.hg38)
+  
+  dt = dt %>%
+    select(sample_id, chromosome, position, from, to) %>%
+    mutate(start = position - 1,
+           end = position + 1)
+  
+  dt_ranges <- as(dt %>% select(chromosome, start, end), "GRanges")
+  if(reference_genome == "hg19")
+    aligned_dna <- getSeq(BSgenome.Hsapiens.UCSC.hg19, dt_ranges)
+  else if(reference_genome == "hg38")
+    aligned_dna <- getSeq(BSgenome.Hsapiens.UCSC.hg38, dt_ranges)
+  
+  # Create mutations with surrounding base pairs
+  dt <- dt %>%
+    mutate(aligned = as.character(aligned_dna),
+           mutation = paste0(substr(aligned, 1, 1), "[", from, ">", to, "]",
+                             substr(aligned, 3, 3)),
+           mutation_std = unname(sapply(mutation, function(x) transform_muts_vec[[x]])))
+  
+  # Count mutations for each patient
+  dt_counts <- dt %>%
+    group_by(sample_id, mutation_std) %>%
+    summarize(mut_count = n()) %>%
+    ungroup() %>%
+    spread(key = mutation_std, value = mut_count) %>%
+    mutate_all(~replace(., is.na(.), 0))
+  
+  # Add any fundamental mutations that are missing
+  for(mut in transform_muts_vec){
+    if(!(mut %in% names(dt_counts))){
+      dt_counts = dt_counts %>%
+        mutate(!!mut := 0)
+    }
+  }
+  
+  return(dt_counts)
+}
+```
+
+
+# Getting your signature
+
+The `get_signature` function assumes that your input data looks like the following:
+
+To obtain the trinucleotide mutations, see the example in .
+
