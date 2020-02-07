@@ -1,11 +1,13 @@
 # SaveInternalData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Feb 7, 2020
 # Save rds files to internal data for R package
 
 library(here)
 library(devtools)
+
+# Data created by Bahman
 
 all_possible_tri = readRDS(here("data", "all_possible_tri.rds"))
 background_probs = readRDS(here("data", "background_probs.rds"))
