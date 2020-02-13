@@ -109,6 +109,18 @@ The `get_signature` function requires that your input data is a data frame of tr
 print(input_dt)
 ```
 
+In addition, the input data must have a column named `IndVar` indicating the binary factor we are generating a signature for. An example would be smoking versus non-smoking: smoking patients would have `IndVar = 1` and non-smoking patients would have `IndVar = 0`.
+
+Additional requirements that the `age` column is case-sensitive and the inclusion of a `TOTAL_MUTATIONS` column will be changed in the R package functions in the future.
+
+```{r}
+input_dt = input_dt %>%
+  mutate(IndVar = c(1, 0),
+         AGE = age,
+         TOTAL_MUTATIONS = rowSums(input_dt %>% select(all_of(unique(transform_muts_vec)))))
+# get_signature(input_dt, factor = "Test factor") # Doesn't work right now, likely because input_dt has too few samples
+```
+
 ```{r eval = F}
 build_vignettes()
 ```
