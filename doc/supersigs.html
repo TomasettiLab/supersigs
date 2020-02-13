@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Using the supersigs package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using the supersigs package</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(supersigs)</span></code></pre></div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The supersigs package implements the supervised method to find signatures (“SuperSigs”) proposed by <em>Afsari, et al.</em>.</p>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>Data preparation</h1>
+<p>The method uses single-base mutations in exomic data from cancer samples and requires that you know what the mutation is, its position, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the <code>supersigs</code> R package.</p>
+<ul>
+<li><code>sample_id</code> is an ID for each sample</li>
+<li><code>age</code> is the age of the patient</li>
+<li><code>chromosome</code> and <code>position</code> is the position of the mutation</li>
+<li><code>from</code> is the original nucleotide</li>
+<li><code>to</code> is the mutated nucleotide.</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">print</span>(example_dt)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt;    sample_id age chromosome  position from to</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; 1          1  50       chr1  94447621    G  C</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; 2          1  50       chr2 202005395    A  C</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; 3          1  50       chr7  20784978    T  A</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; 4          1  50       chr7  87179255    C  G</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; 5          1  50      chr19   1059712    G  T</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; 6          2  55       chr1  76226977    T  C</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 7          2  55       chr3  38180872    C  G</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 8          2  55       chr9 139905080    G  T</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 9          2  55      chr16   1562631    G  T</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 10         2  55      chr22  42189307    C  A</span></span></code></pre></div>
+<p><strong>Transform data</strong></p>
+<p>Once you’ve read in your data, you will need to transform it into a data frame of features that is readable by the <code>supersigs</code> package. This involves 2 steps:</p>
+<ol style="list-style-type: decimal">
+<li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. This means that C&gt;A mutations are considered the same as G&gt;T mutations, for example. Therefore, we will convert all G&gt;T mutations to be denoted as C&gt;A mutations using the named vector <code>transform_muts_vec</code>, which is stored and accessible from the <code>supersigs</code> R package.</p></li>
+<li><p>Because the features used are built upon trinucleotide features (e.g. A[C&gt;A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the <code>hg19</code> reference genome.</p></li>
+</ol>
+<p>Both of these steps are done by the <code>make_matrix</code> function. Note that this function is not part of the <code>supersigs</code> R package, but is provided below in this vignette.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load packages for make_matrix function</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="kw">library</span>(BSgenome.Hsapiens.UCSC.hg19)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">library</span>(dplyr)</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="kw">library</span>(tidyr)</span>
+<span id="cb3-6"><a href="#cb3-6"></a>})</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; Warning: package &#39;S4Vectors&#39; was built under R version 3.6.2</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; Warning: package &#39;IRanges&#39; was built under R version 3.6.2</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Function to transform list of mutations into matrix form</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># dt is a data frame of six columns: sample_id, age, chromosome, position, from, and to</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>make_matrix &lt;-<span class="st"> </span><span class="cf">function</span>(dt){</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  dt =<span class="st"> </span>dt <span class="op">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">    </span><span class="kw">select</span>(sample_id, age, chromosome, position, from, to) <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">start =</span> position <span class="op">-</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>           <span class="dt">end =</span> position <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)</span>
+<span id="cb4-8"><a href="#cb4-8"></a>  </span>
+<span id="cb4-9"><a href="#cb4-9"></a>  dt_ranges &lt;-<span class="st"> </span><span class="kw">as</span>(dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(chromosome, start, end), <span class="st">&quot;GRanges&quot;</span>)</span>
+<span id="cb4-10"><a href="#cb4-10"></a>  aligned_dna &lt;-<span class="st"> </span><span class="kw">getSeq</span>(BSgenome.Hsapiens.UCSC.hg19, dt_ranges)</span>
+<span id="cb4-11"><a href="#cb4-11"></a>  </span>
+<span id="cb4-12"><a href="#cb4-12"></a>  <span class="co"># Create mutations with surrounding base pairs</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>  dt &lt;-<span class="st"> </span>dt <span class="op">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">aligned =</span> <span class="kw">as.character</span>(aligned_dna),</span>
+<span id="cb4-15"><a href="#cb4-15"></a>           <span class="dt">mutation =</span> <span class="kw">paste0</span>(<span class="kw">substr</span>(aligned, <span class="dv">1</span>, <span class="dv">1</span>), <span class="st">&quot;[&quot;</span>, from, <span class="st">&quot;&gt;&quot;</span>, to, <span class="st">&quot;]&quot;</span>,</span>
+<span id="cb4-16"><a href="#cb4-16"></a>                             <span class="kw">substr</span>(aligned, <span class="dv">3</span>, <span class="dv">3</span>)),</span>
+<span id="cb4-17"><a href="#cb4-17"></a>           <span class="dt">mutation_std =</span> <span class="kw">unname</span>(<span class="kw">sapply</span>(mutation, <span class="cf">function</span>(x) transform_muts_vec[[x]])))</span>
+<span id="cb4-18"><a href="#cb4-18"></a>  </span>
+<span id="cb4-19"><a href="#cb4-19"></a>  <span class="co"># Count mutations for each patient</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>  dt_counts &lt;-<span class="st"> </span>dt <span class="op">%&gt;%</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="st">    </span><span class="kw">group_by</span>(sample_id, age, mutation_std) <span class="op">%&gt;%</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mut_count =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="st">    </span><span class="kw">spread</span>(<span class="dt">key =</span> mutation_std, <span class="dt">value =</span> mut_count) <span class="op">%&gt;%</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a><span class="st">    </span><span class="kw">mutate_all</span>(<span class="op">~</span><span class="kw">replace</span>(., <span class="kw">is.na</span>(.), <span class="dv">0</span>))</span>
+<span id="cb4-26"><a href="#cb4-26"></a>  </span>
+<span id="cb4-27"><a href="#cb4-27"></a>  <span class="co"># Add any fundamental mutations that are missing</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>  <span class="cf">for</span>(mut <span class="cf">in</span> transform_muts_vec){</span>
+<span id="cb4-29"><a href="#cb4-29"></a>    <span class="cf">if</span>(<span class="op">!</span>(mut <span class="op">%in%</span><span class="st"> </span><span class="kw">names</span>(dt_counts))){</span>
+<span id="cb4-30"><a href="#cb4-30"></a>      dt_counts =<span class="st"> </span>dt_counts <span class="op">%&gt;%</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="op">!!</span><span class="dt">mut :=</span> <span class="dv">0</span>)</span>
+<span id="cb4-32"><a href="#cb4-32"></a>    }</span>
+<span id="cb4-33"><a href="#cb4-33"></a>  }</span>
+<span id="cb4-34"><a href="#cb4-34"></a>  </span>
+<span id="cb4-35"><a href="#cb4-35"></a>  <span class="kw">return</span>(dt_counts)</span>
+<span id="cb4-36"><a href="#cb4-36"></a>}</span></code></pre></div>
+<p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each respective trinucleotide mutation.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>input_dt =<span class="st"> </span><span class="kw">make_matrix</span>(example_dt)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">print</span>(input_dt)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 2 x 98</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; # … with 90 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
+</div>
+<div id="getting-your-signature" class="section level1">
+<h1>Getting your signature</h1>
+<p>The <code>get_signature</code> function requires that your input data is a data frame of trinucleotide mutations, along with a <code>sample_id</code> for every patient and their <code>age</code>. The process of converting a VCF file to this format is covered in <a href="#data-preparation">Data preparation</a>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">print</span>(input_dt)</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; # A tibble: 2 x 98</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; # … with 90 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
+<p>In addition, the input data must have a column named <code>IndVar</code> indicating the binary factor we are generating a signature for. An example would be smoking versus non-smoking: smoking patients would have <code>IndVar = 1</code> and non-smoking patients would have <code>IndVar = 0</code>.</p>
+<p>Additional requirements that the <code>age</code> column is case-sensitive and the inclusion of a <code>TOTAL_MUTATIONS</code> column will be changed in the R package functions in the future.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb7-3"><a href="#cb7-3"></a>         <span class="dt">AGE =</span> age,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>         <span class="dt">TOTAL_MUTATIONS =</span> <span class="kw">rowSums</span>(input_dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">all_of</span>(<span class="kw">unique</span>(transform_muts_vec)))))</span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># get_signature(input_dt, factor = &quot;Test factor&quot;) # Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">build_vignettes</span>()</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
