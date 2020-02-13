@@ -6,6 +6,7 @@
 # (Export) Function to calculate signature
 
 # library(dplyr)
+library(arrangements)
 
 #' Function to obtain a SuperSig
 #' 
@@ -37,6 +38,31 @@
 #' get_signature(mutation_data, "age")
 #' 
 get_signature <- function(dt, factor){
+  # Check dt argument
+  if (! ("SAMPLE"  %in% toupper(colnames(dt))) )
+    stop('Data frame missing SAMPLE column.')
+  if (! ("AGE"  %in% toupper(colnames(dt))) )
+    stop('Data frame missing AGE column.')
+  if (! ("INDVAR"  %in% toupper(colnames(dt))) )
+    stop('Data frame missing INDVAR column.')
+  
+  # Check if counts of 96 trinucleotide bases are present, and compute total mutations
+  GetTrinucleotideBases <- function(){
+    Nucleotides <- c("C","T","A","G")
+    Bases <- permutations(x = Nucleotides, k = 2, replace = TRUE)
+    Bases <- apply(Bases,1,paste0,collapse="")
+    SNV <- rep(c("C>T","C>G","C>A","T>C","T>G","T>A"), each=16)
+    trinucleotideBases <- paste0(substr(Bases,1,1),"[",SNV,"]",substr(Bases,2,2),sep="")
+    return(trinucleotideBases)
+  }
+  
+  trinucleotideBases <- GetTrinucleotideBases()
+  if (all(trinucleotideBases %in% toupper(colnames(dt)))) {
+    dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases],2)
+  } else {
+    stop('There needs to be 96 trinucleotide mutation columns.')
+  }
+  
   # Get features
   features_out = suppressWarnings(FeatureSelection(dt, factor))
   
