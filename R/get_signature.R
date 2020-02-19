@@ -34,7 +34,8 @@
 #' }
 #' 
 #' @examples
-#' get_signature(mutation_data, "age")
+#' # mutation_data is a data frame of mutation counts (see vignette for details)
+#' get_signature(dt = mutation_data, factor = "age")
 #' 
 get_signature <- function(dt, factor){
   # Check column names of dt
