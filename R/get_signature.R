@@ -6,7 +6,6 @@
 # (Export) Function to calculate signature
 
 # library(dplyr)
-library(here)
 
 #' Function to obtain a SuperSig
 #' 
