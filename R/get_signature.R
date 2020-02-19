@@ -1,7 +1,7 @@
 # get_signature.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
-# Date last modified: Dec 11, 2019
+# Author:             Albert Kuo, Yifan Zhang
+# Date last modified: Feb 19, 2019
 #
 # (Export) Function to calculate signature
 
@@ -37,27 +37,29 @@
 #' get_signature(mutation_data, "age")
 #' 
 get_signature <- function(dt, factor){
-  
-  # Check dt argument
-  if (is.na(match("SAMPLE_ID",toupper(colnames(dt))))) {
-    stop('Data frame missing sample_id column.') } else {
-      colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))]="sample_id"
-    }
-  if (is.na(match("AGE",toupper(colnames(dt))))) {
-    stop('Data frame missing AGE column.') } else {
-      colnames(dt)[match("AGE",toupper(colnames(dt)))]="AGE"
-    }
-  if (is.na(match("INDVAR",toupper(colnames(dt))))) {
-    stop('Data frame missing IndVar column.') } else {
-      colnames(dt)[match("INDVAR",toupper(colnames(dt)))]="IndVar"
-    }
+  # Check column names of dt
+  if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
+    stop('Input data frame missing sample_id column.')
+  } else {
+    colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] = "sample_id"
+  }
+  if(is.na(match("AGE",toupper(colnames(dt))))){
+    stop('Input data frame missing AGE column.')
+  } else {
+    colnames(dt)[match("AGE",toupper(colnames(dt)))] = "AGE"
+  }
+  if(is.na(match("INDVAR",toupper(colnames(dt))))){
+    stop('Input data frame missing IndVar column.')
+  } else {
+    colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
+  }
   
   # Check if counts of 96 trinucleotide bases are present, and compute total mutations
   trinucleotideBases <- unique(transform_muts_vec)
-  if (all(trinucleotideBases %in% toupper(colnames(dt)))) {
-    dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases],2)
+  if(all(trinucleotideBases %in% toupper(colnames(dt)))){
+    dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases])
   } else {
-    stop('There needs to be 96 trinucleotide mutation columns.')
+    stop('Input data frame missing one or more trinucleotide mutations.')
   }
   
   # Get features
