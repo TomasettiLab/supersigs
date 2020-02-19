@@ -103,7 +103,14 @@ print(input_dt)
 
 # Getting your signature
 
-The `get_signature` function has two parameters: an input data frame `dt` and the `factor` (e.g. `factor = "Smoking"`). `dt` is a data frame with columns of counts for all 96 trinucleotide mutations, a `sample_id` for every patient, their `age`, and an `IndVar` column indicating whether they were exposed to the `factor` or not. The process of converting a VCF file to this format is covered in [Preparing your data]. An example for `dt` is printed below.
+The `get_signature` function has two parameters: an input data frame `dt` and the `factor` (e.g. `factor = "Smoking"`). `dt` is a data frame with the following columns:
+
+* `sample_id` is an ID for each sample
+* `age` is the age of the patient
+* `IndVar` is a logical indicator for whether they were exposed to the `factor` or not
+* columns of counts for all 96 trinucleotide mutations
+
+The process of converting a VCF file to this format is covered in [Preparing your data]. An example for `dt` is printed below.
 
 ```{r}
 # Generate synthetic IndVar column

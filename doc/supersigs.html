@@ -414,7 +414,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="getting-your-signature" class="section level1">
 <h1>Getting your signature</h1>
-<p>The <code>get_signature</code> function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with columns of counts for all 96 trinucleotide mutations, a <code>sample_id</code> for every patient, their <code>age</code>, and an <code>IndVar</code> column indicating whether they were exposed to the <code>factor</code> or not. The process of converting a VCF file to this format is covered in <a href="#preparing-your-data">Preparing your data</a>. An example for <code>dt</code> is printed below.</p>
+<p>The <code>get_signature</code> function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with the following columns:</p>
+<ul>
+<li><code>sample_id</code> is an ID for each sample</li>
+<li><code>age</code> is the age of the patient</li>
+<li><code>IndVar</code> is a logical indicator for whether they were exposed to the <code>factor</code> or not</li>
+<li>columns of counts for all 96 trinucleotide mutations</li>
+</ul>
+<p>The process of converting a VCF file to this format is covered in <a href="#preparing-your-data">Preparing your data</a>. An example for <code>dt</code> is printed below.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
