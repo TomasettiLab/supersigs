@@ -68,12 +68,13 @@ FeatureSelection <- function(dt,
   }
   
   # Add up counts for every mutation
+  muts_formula_exprs <- purrr::map(muts_formula, rlang::parse_expr)
   train_0 <- train_0 %>%
-    transmute_(.dots = muts_formula) %>%
+    transmute(!!!muts_formula_exprs) %>%
     mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
   
   train_1 <- train_1 %>%
-    transmute_(.dots = muts_formula) %>%
+    transmute(!!!muts_formula_exprs) %>%
     mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
   
   # (Note: Removed Mutrelative2TotalPval section)
