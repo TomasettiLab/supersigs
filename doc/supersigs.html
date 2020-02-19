@@ -305,17 +305,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(supersigs)</span></code></pre></div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The supersigs package implements the supervised method to find signatures (“SuperSigs”) proposed by <em>Afsari, et al.</em>.</p>
+<p>The <code>supersigs</code> package implements the supervised method to find signatures (“SuperSigs”) proposed by <em>Afsari, et al.</em>.</p>
 </div>
-<div id="data-preparation" class="section level1">
-<h1>Data preparation</h1>
-<p>The method uses single-base mutations in exomic data from cancer samples and requires that you know what the mutation is, its position, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the <code>supersigs</code> R package.</p>
+<div id="preparing-your-data" class="section level1">
+<h1>Preparing your data</h1>
+<p>The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample’s mutations, the positions of those mutations, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the <code>supersigs</code> R package.</p>
 <ul>
 <li><code>sample_id</code> is an ID for each sample</li>
 <li><code>age</code> is the age of the patient</li>
 <li><code>chromosome</code> and <code>position</code> is the position of the mutation</li>
 <li><code>from</code> is the original nucleotide</li>
-<li><code>to</code> is the mutated nucleotide.</li>
+<li><code>to</code> is the mutated nucleotide</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">print</span>(example_dt)</span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt;    sample_id age chromosome  position from to</span></span>
@@ -414,43 +414,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="getting-your-signature" class="section level1">
 <h1>Getting your signature</h1>
-<p>The <code>get_signature</code> function requires that your input data is a data frame of trinucleotide mutations, along with a <code>sample_id</code> for every patient and their <code>age</code>. The process of converting a VCF file to this format is covered in <a href="#data-preparation">Data preparation</a>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">print</span>(input_dt)</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; # A tibble: 2 x 98</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; # … with 90 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
-<p>In addition, the input data must have a column named <code>IndVar</code> indicating the binary factor we are generating a signature for. An example would be smoking versus non-smoking: smoking patients would have <code>IndVar = 1</code> and non-smoking patients would have <code>IndVar = 0</code>.</p>
-<p>Additional requirements that the <code>age</code> column is case-sensitive and the inclusion of a <code>TOTAL_MUTATIONS</code> column will be changed in the R package functions in the future.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb7-3"><a href="#cb7-3"></a>         <span class="dt">AGE =</span> age,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>         <span class="dt">TOTAL_MUTATIONS =</span> <span class="kw">rowSums</span>(input_dt <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="kw">all_of</span>(<span class="kw">unique</span>(transform_muts_vec)))))</span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># get_signature(input_dt, factor = &quot;Test factor&quot;) # Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
+<p>The <code>get_signature</code> function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with columns of counts for all 96 trinucleotide mutations, a <code>sample_id</code> for every patient, their <code>age</code>, and an <code>IndVar</code> column indicating whether they were exposed to the <code>factor</code> or not. The process of converting a VCF file to this format is covered in <a href="#preparing-your-data">Preparing your data</a>. An example for <code>dt</code> is printed below.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="kw">print</span>(input_dt)</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; # A tibble: 2 x 99</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; # … with 91 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># get_signature(dt = input_dt, factor = &quot;Smoking&quot;) # Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">build_vignettes</span>()</span></code></pre></div>
 </div>
 

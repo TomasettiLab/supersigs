@@ -20,17 +20,17 @@ library(supersigs)
 
 # Introduction
 
-The supersigs package implements the supervised method to find signatures ("SuperSigs") proposed by *Afsari, et al.*. 
+The `supersigs` package implements the supervised method to find signatures ("SuperSigs") proposed by *Afsari, et al.*. 
 
-# Data preparation
+# Preparing your data
 
-The method uses single-base mutations in exomic data from cancer samples and requires that you know what the mutation is, its position, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the `supersigs` R package.
+The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample's mutations, the positions of those mutations, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the `supersigs` R package.
 
 * `sample_id` is an ID for each sample
 * `age` is the age of the patient
 * `chromosome` and `position` is the position of the mutation
 * `from` is the original nucleotide
-* `to` is the mutated nucleotide. 
+* `to` is the mutated nucleotide 
 
 ```{r}
 print(example_dt)
@@ -103,22 +103,17 @@ print(input_dt)
 
 # Getting your signature
 
-The `get_signature` function requires that your input data is a data frame of trinucleotide mutations, along with a `sample_id` for every patient and their `age`. The process of converting a VCF file to this format is covered in [Data preparation].
+The `get_signature` function has two parameters: an input data frame `dt` and the `factor` (e.g. `factor = "Smoking"`). `dt` is a data frame with columns of counts for all 96 trinucleotide mutations, a `sample_id` for every patient, their `age`, and an `IndVar` column indicating whether they were exposed to the `factor` or not. The process of converting a VCF file to this format is covered in [Preparing your data]. An example for `dt` is printed below.
 
 ```{r}
+# Generate synthetic IndVar column
+input_dt = input_dt %>%
+  mutate(IndVar = c(1, 0))
 print(input_dt)
 ```
 
-In addition, the input data must have a column named `IndVar` indicating the binary factor we are generating a signature for. An example would be smoking versus non-smoking: smoking patients would have `IndVar = 1` and non-smoking patients would have `IndVar = 0`.
-
-Additional requirements that the `age` column is case-sensitive and the inclusion of a `TOTAL_MUTATIONS` column will be changed in the R package functions in the future.
-
 ```{r}
-input_dt = input_dt %>%
-  mutate(IndVar = c(1, 0),
-         AGE = age,
-         TOTAL_MUTATIONS = rowSums(input_dt %>% select(all_of(unique(transform_muts_vec)))))
-# get_signature(input_dt, factor = "Test factor") # Doesn't work right now, likely because input_dt has too few samples
+# get_signature(dt = input_dt, factor = "Smoking") # Doesn't work right now, likely because input_dt has too few samples
 ```
 
 ```{r eval = F}
