@@ -6,7 +6,7 @@
 # (Export) Function to calculate signature
 
 # library(dplyr)
-library(arrangements)
+library(here)
 
 #' Function to obtain a SuperSig
 #' 
@@ -38,25 +38,23 @@ library(arrangements)
 #' get_signature(mutation_data, "age")
 #' 
 get_signature <- function(dt, factor){
+  
   # Check dt argument
-  if (! ("SAMPLE"  %in% toupper(colnames(dt))) )
-    stop('Data frame missing SAMPLE column.')
-  if (! ("AGE"  %in% toupper(colnames(dt))) )
-    stop('Data frame missing AGE column.')
-  if (! ("INDVAR"  %in% toupper(colnames(dt))) )
-    stop('Data frame missing INDVAR column.')
+  if (is.na(match("SAMPLE_ID",toupper(colnames(dt))))) {
+    stop('Data frame missing sample_id column.') } else {
+      colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))]="sample_id"
+    }
+  if (is.na(match("AGE",toupper(colnames(dt))))) {
+    stop('Data frame missing AGE column.') } else {
+      colnames(dt)[match("AGE",toupper(colnames(dt)))]="AGE"
+    }
+  if (is.na(match("INDVAR",toupper(colnames(dt))))) {
+    stop('Data frame missing IndVar column.') } else {
+      colnames(dt)[match("INDVAR",toupper(colnames(dt)))]="IndVar"
+    }
   
   # Check if counts of 96 trinucleotide bases are present, and compute total mutations
-  GetTrinucleotideBases <- function(){
-    Nucleotides <- c("C","T","A","G")
-    Bases <- permutations(x = Nucleotides, k = 2, replace = TRUE)
-    Bases <- apply(Bases,1,paste0,collapse="")
-    SNV <- rep(c("C>T","C>G","C>A","T>C","T>G","T>A"), each=16)
-    trinucleotideBases <- paste0(substr(Bases,1,1),"[",SNV,"]",substr(Bases,2,2),sep="")
-    return(trinucleotideBases)
-  }
-  
-  trinucleotideBases <- GetTrinucleotideBases()
+  trinucleotideBases <- unique(transform_muts_vec)
   if (all(trinucleotideBases %in% toupper(colnames(dt)))) {
     dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases],2)
   } else {
