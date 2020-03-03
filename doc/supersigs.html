@@ -305,11 +305,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(supersigs)</span></code></pre></div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The <code>supersigs</code> package implements the supervised method to find signatures (“SuperSigs”) proposed by <em>Afsari, et al.</em>.</p>
+<p>The <code>supersigs</code> package implements the supervised method proposed by <em>Afsari, et al.</em> to find signatures (“SuperSigs”). In this vignette, we cover how to preprocess your data and run the method in <code>supersigs</code>.</p>
 </div>
-<div id="preparing-your-data" class="section level1">
-<h1>Preparing your data</h1>
-<p>The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample’s mutations, the positions of those mutations, and the age of all patients in your study. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset stored and accessible in the <code>supersigs</code> R package.</p>
+<div id="preprocessing-your-data" class="section level1">
+<h1>Preprocessing your data</h1>
+<div id="example-data-structure" class="section level2">
+<h2>Example data structure</h2>
+<p>The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample’s mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset (stored and accessible from the <code>supersigs</code> R package).</p>
 <ul>
 <li><code>sample_id</code> is an ID for each sample</li>
 <li><code>age</code> is the age of the patient</li>
@@ -329,10 +331,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 8          2  55       chr9 139905080    G  T</span></span>
 <span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 9          2  55      chr16   1562631    G  T</span></span>
 <span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 10         2  55      chr22  42189307    C  A</span></span></code></pre></div>
-<p><strong>Transform data</strong></p>
+</div>
+<div id="transform-data-structure" class="section level2">
+<h2>Transform data structure</h2>
 <p>Once you’ve read in your data, you will need to transform it into a data frame of features that is readable by the <code>supersigs</code> package. This involves 2 steps:</p>
 <ol style="list-style-type: decimal">
-<li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. This means that C&gt;A mutations are considered the same as G&gt;T mutations, for example. Therefore, we will convert all G&gt;T mutations to be denoted as C&gt;A mutations using the named vector <code>transform_muts_vec</code>, which is stored and accessible from the <code>supersigs</code> R package.</p></li>
+<li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C&gt;A mutations are considered the same as G&gt;T mutations. We will convert all G&gt;T mutations to be denoted as C&gt;A mutations using the named vector <code>transform_muts_vec</code>, which is stored and accessible from the <code>supersigs</code> R package.</p></li>
 <li><p>Because the features used are built upon trinucleotide features (e.g. A[C&gt;A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the <code>hg19</code> reference genome.</p></li>
 </ol>
 <p>Both of these steps are done by the <code>make_matrix</code> function. Note that this function is not part of the <code>supersigs</code> R package, but is provided below in this vignette.</p>
@@ -341,10 +345,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="kw">library</span>(BSgenome.Hsapiens.UCSC.hg19)</span>
 <span id="cb3-4"><a href="#cb3-4"></a>  <span class="kw">library</span>(dplyr)</span>
 <span id="cb3-5"><a href="#cb3-5"></a>  <span class="kw">library</span>(tidyr)</span>
-<span id="cb3-6"><a href="#cb3-6"></a>})</span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; Warning: package &#39;S4Vectors&#39; was built under R version 3.6.2</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; Warning: package &#39;IRanges&#39; was built under R version 3.6.2</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Function to transform list of mutations into matrix form</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Function to transform list of mutations into the correct format for supersigs</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># dt is a data frame of six columns: sample_id, age, chromosome, position, from, and to</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>make_matrix &lt;-<span class="st"> </span><span class="cf">function</span>(dt){</span>
 <span id="cb4-4"><a href="#cb4-4"></a>  dt =<span class="st"> </span>dt <span class="op">%&gt;%</span></span>
@@ -380,7 +382,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb4-34"><a href="#cb4-34"></a>  </span>
 <span id="cb4-35"><a href="#cb4-35"></a>  <span class="kw">return</span>(dt_counts)</span>
 <span id="cb4-36"><a href="#cb4-36"></a>}</span></code></pre></div>
-<p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each respective trinucleotide mutation.</p>
+<p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>input_dt =<span class="st"> </span><span class="kw">make_matrix</span>(example_dt)</span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="kw">print</span>(input_dt)</span>
 <span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 2 x 98</span></span>
@@ -412,16 +414,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
 <span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
 </div>
+</div>
 <div id="getting-your-signature" class="section level1">
 <h1>Getting your signature</h1>
-<p>The <code>get_signature</code> function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with the following columns:</p>
+<p>To apply the supervised method on your data, run the <code>get_signature</code> function. The function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with the following columns:</p>
 <ul>
 <li><code>sample_id</code> is an ID for each sample</li>
 <li><code>age</code> is the age of the patient</li>
 <li><code>IndVar</code> is a logical indicator for whether they were exposed to the <code>factor</code> or not</li>
 <li>columns of counts for all 96 trinucleotide mutations</li>
 </ul>
-<p>The process of converting a VCF file to this format is covered in <a href="#preparing-your-data">Preparing your data</a>. An example for <code>dt</code> is printed below.</p>
+<p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>dt</code> is printed below.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
@@ -454,8 +457,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
 <span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
 <span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># get_signature(dt = input_dt, factor = &quot;Smoking&quot;) # Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">build_vignettes</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>) <span class="co"># Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
 </div>
 
 
