@@ -66,7 +66,11 @@ PredictiveFeatures <- function(train,
   }
   
   # Compute median AUC
-  auc_medians <- apply(auc_mat, 1, function(x) median(x, na.rm = T))
+  if(length(feature_names) > 1){
+    auc_medians <- apply(auc_mat, 1, function(x) median(x, na.rm = T))
+  } else {
+    auc_medians = median(auc_mat, na.rm = T)
+  }
   auc_medians <- sapply(auc_medians, function(x) ifelse(is.na(x), 0, x)) # Replace missing AUCs with 0
   
   # Create mutation_dt
