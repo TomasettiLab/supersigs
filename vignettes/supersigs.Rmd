@@ -118,15 +118,14 @@ The process of converting a VCF file to this format is covered in [Preprocessing
 ```{r}
 # Generate synthetic IndVar column
 input_dt = input_dt %>%
-  mutate(IndVar = c(1, 0))
+  mutate(IndVar = c(1, 1, 1, 0, 0))
 print(input_dt)
 ```
 
+
 ```{r eval = F}
-get_signature(dt = input_dt, factor = "Smoking") # Doesn't work right now, likely because input_dt has too few samples
+out = get_signature(dt = input_dt, factor = "Smoking")
 ```
-
-
 
 
 ```{r eval = F, include=F}

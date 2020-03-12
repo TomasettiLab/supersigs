@@ -330,7 +330,22 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 7          2  55       chr3  38180872    C  G</span></span>
 <span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 8          2  55       chr9 139905080    G  T</span></span>
 <span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 9          2  55      chr16   1562631    G  T</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 10         2  55      chr22  42189307    C  A</span></span></code></pre></div>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 10         2  55      chr22  42189307    C  A</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; 11         3  72       chr1  94447621    T  C</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 12         3  72       chr2 202005395    A  C</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 13         3  72       chr7  20784978    T  A</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; 14         3  72       chr7  87179255    A  G</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 15         3  72      chr19   1059712    T  A</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 16         4  53       chr1  76226977    G  C</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; 17         4  53       chr3  38180872    C  G</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 18         4  53       chr9 139905080    G  T</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 19         4  53      chr16   1562631    G  T</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="co">#&gt; 20         4  53      chr22  42189307    G  A</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="co">#&gt; 21         5  48       chr1  94447621    A  C</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a><span class="co">#&gt; 22         5  48       chr2 202005395    C  A</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="co">#&gt; 23         5  48       chr7  20784978    T  A</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a><span class="co">#&gt; 24         5  48       chr7  87179255    G  T</span></span>
+<span id="cb2-27"><a href="#cb2-27"></a><span class="co">#&gt; 25         5  48      chr19   1059712    G  T</span></span></code></pre></div>
 </div>
 <div id="transform-data-structure" class="section level2">
 <h2>Transform data structure</h2>
@@ -385,34 +400,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>input_dt =<span class="st"> </span><span class="kw">make_matrix</span>(example_dt)</span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="kw">print</span>(input_dt)</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 2 x 98</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 5 x 98</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;   sample_id   age `A[C&gt;A]T` `A[C&gt;G]T` `A[T&gt;C]C` `A[T&gt;G]T` `C[C&gt;A]C` `C[C&gt;A]T`</span></span>
 <span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; # … with 90 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1         1    50         0         0         0         1         0         0</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2         2    55         0         1         0         0         0         1</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; 3         3    72         0         0         1         1         0         0</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; 4         4    53         0         1         0         0         0         1</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; 5         5    48         1         0         0         0         1         0</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; # … with 90 more variables: `C[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; #   `C[T&gt;C]G` &lt;dbl&gt;, `G[C&gt;A]A` &lt;dbl&gt;, `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;, `T[C&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt; #   `T[T&gt;A]C` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-32"><a href="#cb5-32"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-33"><a href="#cb5-33"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 </div>
 <div id="getting-your-signature" class="section level1">
@@ -427,37 +445,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>dt</code> is printed below.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>input_dt =<span class="st"> </span>input_dt <span class="op">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">IndVar =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
 <span id="cb6-4"><a href="#cb6-4"></a><span class="kw">print</span>(input_dt)</span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; # A tibble: 2 x 99</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;   sample_id   age `A[C&gt;G]T` `A[T&gt;G]T` `C[C&gt;A]T` `C[T&gt;A]A` `C[T&gt;C]G` `G[C&gt;A]A`</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; # A tibble: 5 x 99</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;   sample_id   age `A[C&gt;A]T` `A[C&gt;G]T` `A[T&gt;C]C` `A[T&gt;G]T` `C[C&gt;A]C` `C[C&gt;A]T`</span></span>
 <span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 1         1    50         0         1         0         1         0         1</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 2         2    55         1         0         1         0         1         0</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; # … with 91 more variables: `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `A[C&gt;A]T` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `A[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;,</span></span>
-<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; #   `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>) <span class="co"># Doesn&#39;t work right now, likely because input_dt has too few samples</span></span></code></pre></div>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 1         1    50         0         0         0         1         0         0</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 2         2    55         0         1         0         0         0         1</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 3         3    72         0         0         1         1         0         0</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; 4         4    53         0         1         0         0         0         1</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; 5         5    48         1         0         0         0         1         0</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; # … with 91 more variables: `C[C&gt;G]G` &lt;dbl&gt;, `C[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `C[T&gt;C]G` &lt;dbl&gt;, `G[C&gt;A]A` &lt;dbl&gt;, `G[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[C&gt;T]A` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;, `T[C&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `T[T&gt;A]C` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>out =<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span></code></pre></div>
 </div>
 
 
