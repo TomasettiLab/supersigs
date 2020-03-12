@@ -1,7 +1,7 @@
 # get_signature.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo, Yifan Zhang
-# Date last modified: Feb 19, 2019
+# Date last modified: Mar 12, 2019
 #
 # (Export) Function to calculate signature
 
@@ -53,6 +53,11 @@ get_signature <- function(dt, factor){
     stop('Input data frame missing IndVar column.')
   } else {
     colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
+  }
+  
+  # Check number of samples (> 5 required)
+  if(nrow(dt) < 5) {
+    stop("More than 5 samples are required to run get_signature.")
   }
   
   # Check if counts of 96 trinucleotide bases are present, and compute total mutations
