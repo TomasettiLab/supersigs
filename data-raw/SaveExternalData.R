@@ -1,7 +1,7 @@
 # SaveExternalData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Feb 7, 2020
+# Date last modified: Mar 12, 2020
 # Save rds files to external data for R package
 
 # Generate example VCF data for vignette
