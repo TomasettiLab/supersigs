@@ -19,7 +19,7 @@
 #' @param p_thresh an optional numeric value for the alpha level used in the
 #' binomial test (default is `0.05`)
 #' @param tot_pseudo an optional numeric value for the pseudo-count value
-#' (default is `1000`)
+#' (default is `0`)
 #' 
 #' @import dplyr
 #' @import rsample
@@ -32,7 +32,7 @@
 #' 
 ContextMatters <- function(muts_df, 
                            p_thresh = 0.05,
-                           tot_pseudo = 1000){
+                           tot_pseudo = 0){
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
