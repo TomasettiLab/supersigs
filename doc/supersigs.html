@@ -478,7 +478,49 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-33"><a href="#cb6-33"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
 <span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
 <span id="cb6-35"><a href="#cb6-35"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>out =<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>out =<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; Begin cross-validated selection over 2 features...</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; ...testing n_features = 1</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; ...testing n_features = 2</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>out</span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; $Signature</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt;             F1</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 1 -0.000622667</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; </span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; $Features</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; $Features$F1</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt;  [1] &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;C[C&gt;A]A&quot; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt;  [8] &quot;C[C&gt;A]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; [15] &quot;T[C&gt;A]G&quot; &quot;T[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; &quot;C[C&gt;G]A&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; [22] &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]G&quot; &quot;G[C&gt;G]T&quot;</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; [29] &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; [36] &quot;A[C&gt;T]T&quot; &quot;C[C&gt;T]A&quot; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot;</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; [43] &quot;G[C&gt;T]G&quot; &quot;G[C&gt;T]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; &quot;T[C&gt;T]G&quot; &quot;T[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot;</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; [50] &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;G[T&gt;A]A&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; [57] &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot;</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt; [64] &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; &quot;C[T&gt;C]G&quot;</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt; [71] &quot;C[T&gt;C]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; &quot;G[T&gt;C]G&quot; &quot;G[T&gt;C]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot;</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; [78] &quot;T[T&gt;C]G&quot; &quot;T[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;A[T&gt;G]T&quot; &quot;C[T&gt;G]A&quot;</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt; [85] &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot;</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt; [92] &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot;</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt; </span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt; </span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt; $AUC</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt; Logit </span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt;     1 </span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt; </span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; $Model</span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="co">#&gt; $Model$Logit</span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt; </span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt; </span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; (Intercept)           F1  </span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt;        1399       -15150  </span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; </span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; Residual Deviance: 1.069e-09     AIC: 4</span></span></code></pre></div>
 </div>
 
 

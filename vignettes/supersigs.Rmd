@@ -123,8 +123,9 @@ print(input_dt)
 ```
 
 
-```{r eval = F}
+```{r}
 out = get_signature(dt = input_dt, factor = "Smoking")
+out
 ```
 
 
