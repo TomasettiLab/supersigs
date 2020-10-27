@@ -1,7 +1,7 @@
 # ContextMatters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Oct 27, 2020
 #
 # Function for binomial testing using a hierarchical tree structure
 
@@ -37,14 +37,7 @@ ContextMatters <- function(muts_df,
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
   
-  bootstrapped_df <- muts_df %>% select(c("TOTAL_MUTATIONS", names(muts_formula))) %>%
-    bootstraps(times = 100)
-  
-  # Bootstrap
-  muts_counts <- bootstrapped_df$splits %>%
-    sapply(FUN = function(x){
-      z <- as_tibble(x) %>% colSums()}) %>%
-    apply(MARGIN = 1, FUN = median, na.rm = T)
+  muts_counts <- muts_df %>% colSums() 
   
   # Pseudo-count
   for(feature in names(muts_counts)){
