@@ -42,6 +42,7 @@ PredictiveFeatures <- function(train,
                                factor,
                                n_iter = 5,
                                n_fold = 2){
+  train_old <- train
   # Use rates for non-age factors
   if(factor != "AGE"){
     train <- train %>%
@@ -115,7 +116,7 @@ PredictiveFeatures <- function(train,
         top_n(n = k, wt = auc) %>%
         pull(mutation)
       
-      inner_aucs[[ij]] = SuperSigClassifier(dt = train, 
+      inner_aucs[[ij]] = SuperSigClassifier(dt = train_old, 
                                             test_ind = inner_partitions[[i, j]],
                                             factor,
                                             classifier = methods, 
