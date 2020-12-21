@@ -1,7 +1,7 @@
 # FeatureSelection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 11, 2019
+# Date last modified: Dec 21, 2020
 #
 # Function for selecting features
 
@@ -25,6 +25,8 @@
 #' if the factor is not age)
 #' @param keep_nonpredictive logical value indicating whether to combine 
 #' non-predictive features as one feature (default is \code{FALSE})
+#' #' @param wgs logical value indicating whether sequencing data is 
+#' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
 #' 
 #' @import dplyr
 #' @import assertthat
@@ -49,7 +51,8 @@ FeatureSelection <- function(dt,
                              factor,
                              test_ind = NULL,     # to be deprecated
                              middle_dt = NULL,    # to be deprecated
-                             keep_nonpredictive = F){
+                             keep_nonpredictive = F,
+                             wgs = F){
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)
     test_ind <- train_ind
@@ -80,8 +83,8 @@ FeatureSelection <- function(dt,
   # (Note: Removed Mutrelative2TotalPval section)
   
   # Test for significant features
-  features_context_0 <- ContextMatters(train_0)
-  features_context_1 <- ContextMatters(train_1)
+  features_context_0 <- ContextMatters(train_0, wgs = wgs)
+  features_context_1 <- ContextMatters(train_1, wgs = wgs)
   input_ls <- list(var0 = features_context_0, var1 = features_context_1)
   new_partition <- GenerateMinSigmaAlgebra(input_ls)
   features_selected <- names(new_partition)

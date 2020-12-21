@@ -15,6 +15,8 @@
 #' 
 #' @param dt a data frame of mutations
 #' @param factor the factor/exposure (e.g. "age", "smoking")
+#' @param wgs logical value indicating whether sequencing data is 
+#' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
 #' 
 #' @import dplyr
 #' 
@@ -37,7 +39,7 @@
 #' # mutation_data is a data frame of mutation counts (see vignette for details)
 #' get_signature(dt = mutation_data, factor = "age")
 #' 
-get_signature <- function(dt, factor){
+get_signature <- function(dt, factor, wgs = F){
   # Check column names of dt
   if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
     stop('Input data frame missing sample_id column.')
@@ -69,7 +71,7 @@ get_signature <- function(dt, factor){
   }
   
   # Get features
-  features_out = suppressWarnings(FeatureSelection(dt, factor))
+  features_out = suppressWarnings(FeatureSelection(dt, factor, wgs))
   
   # Get apparent AUC and model
   classification_out = SuperSigClassifier(dt = features_out$dt_new,

@@ -1,7 +1,7 @@
 # ContextMatters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Oct 27, 2020
+# Date last modified: Dec 21, 2020
 #
 # Function for binomial testing using a hierarchical tree structure
 
@@ -20,6 +20,8 @@
 #' binomial test (default is `0.05`)
 #' @param tot_pseudo an optional numeric value for the pseudo-count value
 #' (default is `0`)
+#' @param wgs logical value indicating whether sequencing data is 
+#' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
 #' 
 #' @import dplyr
 #' @import rsample
@@ -32,10 +34,16 @@
 #' 
 ContextMatters <- function(muts_df, 
                            p_thresh = 0.05,
-                           tot_pseudo = 0){
+                           tot_pseudo = 0,
+                           wgs = F){
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
+  
+  # Use WGS as background probabilities
+  if(wgs){
+    background_probs = background_probs_wgs
+  }
   
   muts_counts <- muts_df %>% colSums() 
   

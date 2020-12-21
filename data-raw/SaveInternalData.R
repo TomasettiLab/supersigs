@@ -1,7 +1,7 @@
 # SaveInternalData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Feb 7, 2020
+# Date last modified: Dec 21, 2020
 # Save rds files to internal data for R package
 
 library(here)
@@ -11,6 +11,7 @@ library(devtools)
 
 all_possible_tri = readRDS(here("data", "all_possible_tri.rds"))
 background_probs = readRDS(here("data", "background_probs.rds"))
+background_probs_wgs = readRDS(here("data", "background_probs_wgs.rds"))
 h_muts_index = readRDS(here("data", "h_muts_index.rds"))
 muts_children_level3_df = readRDS(here("data", "muts_children_level3_df.rds"))
 muts_children_level3 = readRDS(here("data", "muts_children_level3.rds"))
