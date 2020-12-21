@@ -11,7 +11,6 @@
 # source(here("code", "ContextMatters.R"))
 # source(here("code", "GenerateMinSigmaAlgebra.R"))
 # source(here("code", "TransformData.R"))
-# source(here("code", "PredictiveFeatures.R"))
 
 #' Function for feature selection
 #' 
@@ -23,8 +22,6 @@
 #' @param test_ind an optional vector of indices for the test data
 #' @param middle_dt a data frame of the middle aged samples (\code{NULL}
 #' if the factor is not age)
-#' @param keep_nonpredictive logical value indicating whether to combine 
-#' non-predictive features as one feature (default is \code{FALSE})
 #' #' @param wgs logical value indicating whether sequencing data is 
 #' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
 #' 
@@ -51,7 +48,6 @@ FeatureSelection <- function(dt,
                              factor,
                              test_ind = NULL,     # to be deprecated
                              middle_dt = NULL,    # to be deprecated
-                             keep_nonpredictive = F,
                              wgs = F){
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)
@@ -62,68 +58,179 @@ FeatureSelection <- function(dt,
   
   # Separate into exposed (train_1) and unexposed (train_0)
   train <- dt[train_ind, ]
-  if(factor != "AGE"){ 
-    train_0 <- train %>% filter(IndVar == 0)
-    train_1 <- train %>% filter(IndVar == 1)
-  } else {
-    train_0 <- rbind(train, middle_dt) 
-    train_1 <- train_0
+  
+  # Feature engineering
+  n_iter = 5
+  n_fold = 3
+  inner_partitions <- sapply(1:n_iter, FUN = function(x) createFolds(y = train$IndVar, k = n_fold))
+  new_partition_ls <- vector(length = length(inner_partitions), mode = "list")
+  for(ij in seq_along(inner_partitions)){
+    i <- (ij-1) %% n_fold + 1
+    j <- floor((ij-1)/n_fold) + 1
+    
+    test_inner_ind = inner_partitions[[i, j]]
+    train_inner_ind = setdiff(1:nrow(train), test_inner_ind)
+    
+    train_inner = train[train_inner_ind, ]
+    
+    # ContextMatters
+    if(factor != "AGE"){ 
+      train_0 <- train_inner %>% filter(IndVar == 0)
+      train_1 <- train_inner %>% filter(IndVar == 1)
+    } else {
+      train_0 <- rbind(train_inner, middle_dt) 
+      train_1 <- train_0
+    }
+    
+    # Add up counts for every mutation
+    train_0 <- train_0 %>%
+      transmute_(.dots = muts_formula) %>% 
+      mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
+    
+    train_1 <- train_1 %>%
+      transmute_(.dots = muts_formula) %>%
+      mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
+    
+    # Test for significant features
+    if(nrow(train_0) == 0 || nrow(train_1) == 0) next
+    features_context_0 <- ContextMatters(train_0, wgs = wgs)
+    assert_that(length(features_context_0) >= 1, 
+                msg = "No significant features found for ind0 by ContextMatters")
+    features_context_1 <- ContextMatters(train_1, wgs = wgs)
+    assert_that(length(features_context_1) >= 1, 
+                msg = "No significant features found for ind1 by ContextMatters")
+    
+    input_ls <- list(var0 = features_context_0, var1 = features_context_1)
+    features_gmsa <- GenerateMinSigmaAlgebra(input_ls)
+    new_partition_ls[[ij]] <- features_gmsa
   }
   
-  # Add up counts for every mutation
-  muts_formula_exprs <- purrr::map(muts_formula, rlang::parse_expr)
-  train_0 <- train_0 %>%
-    transmute(!!!muts_formula_exprs) %>%
-    mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
-  
-  train_1 <- train_1 %>%
-    transmute(!!!muts_formula_exprs) %>%
-    mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
-  
-  # (Note: Removed Mutrelative2TotalPval section)
-  
-  # Test for significant features
-  features_context_0 <- ContextMatters(train_0, wgs = wgs)
-  features_context_1 <- ContextMatters(train_1, wgs = wgs)
-  input_ls <- list(var0 = features_context_0, var1 = features_context_1)
-  new_partition <- GenerateMinSigmaAlgebra(input_ls)
-  features_selected <- names(new_partition)
+  # Repartition features
+  new_partition_combined = Reduce(function(a, b){GenerateMinSigmaAlgebra(list(var0 = a, var1 = b), partitioned_features = T)},
+                                  new_partition_ls)
   
   # Transform data
-  dt_new <- TransformData(dt,
-                          features_context_0, 
-                          features_context_1,
-                          new_partition, 
-                          factor)
+  new_partition = new_partition_combined
+  dt_new = TransformData(train, new_partition)
   
-  # Test for predictive features
-  predictive_out <- PredictiveFeatures(train = dt_new[train_ind, ], 
-                                       new_partition = new_partition,
-                                       factor = factor)
-  features_selected <- predictive_out$features_selected
-  
-  # Add combined non-predictive features (Rest) to features_selected
-  if(keep_nonpredictive){
-    dt_new <- dt_new %>%
-      mutate(SumPredictive = dt_new %>% select(features_selected) %>% rowSums(),
-             Rest = TOTAL_MUTATIONS - SumPredictive)
-    if(length(unique(dt_new$Rest)) != 1){ # Add Rest only if Rest is not a constant vector of 0's
-      features_selected <- c(features_selected, "Rest")
+  # Trinucleotide ranking in inner folds
+  rank_tri_ls <- vector(length = length(inner_partitions), mode = "list")
+  for(ij in seq_along(inner_partitions)){
+    # Rank features by AUC
+    feature_names = names(new_partition)
+    
+    # AUC
+    auc_mat <- AllMyAuc(dt_new %>% select(c(feature_names, "IndVar")), IndVar = "IndVar")
+    if(factor == "AGE"){
+      auc_medians = auc_mat
+    } else {
+      auc_medians = ifelse(auc_mat > 0.5, auc_mat, 1-auc_mat)
     }
+    rank_mutations = tibble(mutation = feature_names,
+                            auc = auc_medians) %>%
+      arrange(desc(auc))
+    
+    # Calculate rank of trinucleotide equivalents
+    feature_to_trinucleotides = tibble(feature = rep(feature_names, sapply(new_partition, length)),
+                                       trinucleotide = unlist(new_partition))
+    rank_trinucleotides = rank_mutations %>%
+      left_join(., feature_to_trinucleotides, by = c("mutation" = "feature")) %>%
+      mutate(rank = 1:n()) %>%
+      group_by(mutation) %>%
+      mutate(mean_rank = mean(rank)) %>%
+      ungroup()
+    
+    # Save trinucleotide rankings
+    rank_tri_ls[[ij]] = rank_trinucleotides %>%
+      select(trinucleotide, mean_rank) %>%
+      arrange(trinucleotide) %>%
+      dplyr::rename(!!paste0("rank_", ij) := mean_rank,
+                    !!paste0("trinucleotide_", ij) := trinucleotide)
   }
+  
+  # Take median of rankings for trinucleotides over inner folds
+  rank_tri = bind_cols(rank_tri_ls)
+  rank_tri = rank_tri %>%
+    mutate(rank = apply(select(., starts_with("rank")), 1, median)) %>%
+    select(trinucleotide_1, rank) %>%
+    dplyr::rename(trinucleotide = trinucleotide_1) %>%
+    arrange(rank)
+  
+  # Create new partition of features, grouping trinucleotides of same rank into one feature
+  unique_ranks = unique(rank_tri$rank)
+  features_new = lapply(unique_ranks, function(r) rank_tri %>% 
+                          filter(rank == r) %>% 
+                          pull(trinucleotide)) 
+  names(features_new) = paste0("F", seq_along(features_new))
+  new_partition = features_new
+  features_gmsa = list(new_partition = features_new)
+  features_selected = names(new_partition)
+  
+  # Transform data 
+  dt_new = TransformData(dt, new_partition)
+  
+  # Find n* over each fold
+  train = dt_new[train_ind,]
+  n_star_ls <- vector(length = length(inner_partitions), mode = "list")
+  
+  n = length(features_new)
+  message(paste("Begin cross-validated selection over", n, "features and", length(inner_partitions), "inner folds..."))
+  
+  for(ij in seq_along(inner_partitions)){
+    message(paste("...testing inner fold", ij))
+    i <- (ij-1) %% n_fold + 1
+    j <- floor((ij-1)/n_fold) + 1
+    
+    test_inner_ind = inner_partitions[[i, j]]
+    train_inner_ind = setdiff(1:nrow(train), test_inner_ind)
+    
+    # Find n*
+    auc_ls = list()
+    methods <- c("Logit")
+    
+    for(k in 1:n){
+      auc_ls[[k]] = SuperSigClassifier(dt = train, 
+                                       test_ind = test_inner_ind,
+                                       factor,
+                                       classifier = methods, 
+                                       keep_classifier = F,
+                                       adjusted_formula = F,
+                                       features_selected = features_selected,
+                                       select_n = c("Logit" = k))$auc
+    }
+    n_star = try(sapply(methods, function(method) which.max(sapply(auc_ls, function(x) x[method])) %>% unname()))
+    n_star = sapply(n_star, function(x) ifelse(identical(x, integer(0)), NA, x))
+    
+    # Save n_star for each method
+    n_star_ls[[ij]] = tibble(!!paste0("methods_", ij) := methods,
+                             !!paste0("n_star_", ij) := n_star)
+  }
+  
+  # Take medians over inner folds
+  n_star = bind_cols(n_star_ls)
+  n_star = n_star %>%
+    mutate(n_star = apply(select(., starts_with("n_star")), 1, median, na.rm = T),
+           n_star = round(n_star)) %>%
+    select(methods_1, n_star) %>%
+    dplyr::rename(methods = methods_1)
+  
+  select_n = n_star$n_star
+  names(select_n) = n_star$methods
+  
+  # Limit select_n to features that are > 0.6 AUC
+  auc_mat <- AllMyAuc(dt_new %>% select(c(features_selected, "IndVar")), IndVar = "IndVar")
+  max_n = sum(auc_mat > 0.6)
+  select_n = sapply(select_n, function(x) min(max_n, x))
   
   # Return output
   assert_that(length(features_selected) >= 1, 
               msg = "No predictive features found")
   
-  out <- list(features_context_0 = features_context_0,
-              features_context_1 = features_context_1,
+  out <- list(features_gmsa = features_gmsa, 
               features_selected = features_selected,
               new_partition = new_partition,
-              select_n = predictive_out$select_n,
-              mutation_dt = predictive_out$mutation_dt,
-              dt_new = dt_new) 
-  
+              dt_new = dt_new,
+              select_n = select_n)
   return(out)
 }
 

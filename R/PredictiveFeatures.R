@@ -1,4 +1,4 @@
-# PredictiveFeatures.R
+# PredictiveFeatures.R (deprecated)
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Feb 3, 2019
