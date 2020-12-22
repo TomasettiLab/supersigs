@@ -16,7 +16,7 @@
 #' @param dt a data frame of mutations
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' @param wgs logical value indicating whether sequencing data is 
-#' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
+#' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}) 
 #' 
 #' @import dplyr
 #' 
@@ -29,6 +29,9 @@
 #' get_signature(dt = mutation_data, factor = "age")
 #' 
 get_signature <- function(dt, factor, wgs = F){
+  # Capitalize factor string
+  factor = toupper(factor)
+  
   # Check column names of dt
   if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
     stop('Input data frame missing sample_id column.')
@@ -69,11 +72,6 @@ get_signature <- function(dt, factor, wgs = F){
                                           keep_classifier = T,
                                           features_selected = features_out$features_selected,
                                           select_n = features_out$select_n)
-  
-  # out = list(Signature = classification_out$signature$mean_diffs,
-  #            Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
-  #            AUC = classification_out$auc,
-  #            Model = classification_out$classifier)
   
   # Create S4 object output
   out = SuperSig(Signature = classification_out$signature$mean_diffs,
