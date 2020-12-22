@@ -60,6 +60,7 @@ FeatureSelection <- function(dt,
   train <- dt[train_ind, ]
   
   # Feature engineering
+  message(paste("Begin feature engineering..."))
   n_iter = 5
   n_fold = 3
   inner_partitions <- sapply(1:n_iter, FUN = function(x) createFolds(y = train$IndVar, k = n_fold))

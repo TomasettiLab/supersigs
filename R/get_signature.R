@@ -22,18 +22,7 @@
 #' 
 #' @export
 #' 
-#' @return \code{get_signature} returns a list of several elements:
-#' \itemize{
-#' \item \code{Signature} is a vector of the signature, i.e. the features that
-#' comprise the signature and their difference in mean rates (or counts if the factor
-#' is "age")
-#' \item \code{Features} is a list of features that comprise the signature and 
-#' their representation in terms of the fundamental (trinucleotide) mutations
-#' \item \code{AUC} is the apparent AUC (i.e. not cross-validated) obtained within 
-#' the provided data using the generated SuperSig
-#' \item \code{Model} is the logistic regression model trained on the data and
-#' the generated SuperSig
-#' }
+#' @return \code{get_signature} returns an object of class "SuperSigs"
 #' 
 #' @examples
 #' # mutation_data is a data frame of mutation counts (see vignette for details)
@@ -81,10 +70,16 @@ get_signature <- function(dt, factor, wgs = F){
                                           features_selected = features_out$features_selected,
                                           select_n = features_out$select_n)
   
-  out = list(Signature = classification_out$signature$mean_diffs,
-             Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
-             AUC = classification_out$auc,
-             Model = classification_out$classifier)
+  # out = list(Signature = classification_out$signature$mean_diffs,
+  #            Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
+  #            AUC = classification_out$auc,
+  #            Model = classification_out$classifier)
+  
+  # Create S4 object output
+  out = SuperSigs(Signature = classification_out$signature$mean_diffs,
+                  Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
+                  AUC = classification_out$auc,
+                  Model = classification_out$classifier)
   
   return(out)
 }
