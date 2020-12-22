@@ -22,7 +22,7 @@
 #' 
 #' @export
 #' 
-#' @return \code{get_signature} returns an object of class "SuperSigs"
+#' @return \code{get_signature} returns an object of class "SuperSig"
 #' 
 #' @examples
 #' # mutation_data is a data frame of mutation counts (see vignette for details)
@@ -76,7 +76,7 @@ get_signature <- function(dt, factor, wgs = F){
   #            Model = classification_out$classifier)
   
   # Create S4 object output
-  out = SuperSigs(Signature = classification_out$signature$mean_diffs,
+  out = SuperSig(Signature = classification_out$signature$mean_diffs,
                   Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
                   AUC = classification_out$auc,
                   Model = classification_out$classifier)

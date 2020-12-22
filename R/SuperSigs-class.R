@@ -1,8 +1,8 @@
-# SuperSigs-class.R
+# SuperSig-class.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
 # Date last modified: Dec 22, 2020
-#' An S4 class for SuperSigs
+#' An S4 class for SuperSig
 #'
 #' @slot Signature data frame of features and their difference in mean rates 
 #' (or counts if the factor is "age")
@@ -11,7 +11,7 @@
 #' @slot AUC length-one numeric vector of the apparent AUC (i.e. not cross-validated)
 #' @slot Model list of a glm class for the trained logistic regression model
 #' 
-SuperSigs <- setClass("SuperSigs",
+SuperSig <- setClass("SuperSig",
                       slots = list(Signature = "data.frame",
                                    Features = "list",
                                    AUC = "numeric",
@@ -22,7 +22,7 @@ SuperSigs <- setClass("SuperSigs",
 # Display ---
 # class method for show() generic
 setMethod("show",
-          "SuperSigs",
+          "SuperSig",
           function(object) {
             cat("Signature:\n")
             print(object@Signature)
@@ -34,7 +34,7 @@ setMethod("show",
 )
 
 # class method for print
-print.SuperSigs = function(object){
+print.SuperSig = function(object){
   object
 }
 
