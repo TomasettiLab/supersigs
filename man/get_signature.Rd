@@ -4,26 +4,18 @@
 \alias{get_signature}
 \title{Function to obtain a SuperSig}
 \usage{
-get_signature(dt, factor)
+get_signature(dt, factor, wgs = F)
 }
 \arguments{
 \item{dt}{a data frame of mutations}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking")}
+
+\item{wgs}{logical value indicating whether sequencing data is 
+whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE})}
 }
 \value{
-\code{get_signature} returns a list of several elements:
-\itemize{
-\item \code{Signature} is a vector of the signature, i.e. the features that
-comprise the signature and their difference in mean rates (or counts if the factor
-is "age")
-\item \code{Features} is a list of features that comprise the signature and 
-their representation in terms of the fundamental (trinucleotide) mutations
-\item \code{AUC} is the apparent AUC (i.e. not cross-validated) obtained within 
-the provided data using the generated SuperSig
-\item \code{Model} is the logistic regression model trained on the data and
-the generated SuperSig
-}
+\code{get_signature} returns an object of class "SuperSig"
 }
 \description{
 Generate a tissue-specific SuperSig for a given dataset of mutations and
@@ -31,6 +23,7 @@ exposure factor. Returns the SuperSig and a classification model trained with
 the SuperSig.
 }
 \examples{
-get_signature(mutation_data, "age")
+# mutation_data is a data frame of mutation counts (see vignette for details)
+get_signature(dt = mutation_data, factor = "age")
 
 }

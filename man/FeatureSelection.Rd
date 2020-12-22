@@ -4,13 +4,7 @@
 \alias{FeatureSelection}
 \title{Function for feature selection}
 \usage{
-FeatureSelection(
-  dt,
-  factor,
-  test_ind = NULL,
-  middle_dt = NULL,
-  keep_nonpredictive = F
-)
+FeatureSelection(dt, factor, test_ind = NULL, middle_dt = NULL, wgs = F)
 }
 \arguments{
 \item{dt}{a data frame of mutations}
@@ -20,10 +14,9 @@ FeatureSelection(
 \item{test_ind}{an optional vector of indices for the test data}
 
 \item{middle_dt}{a data frame of the middle aged samples (\code{NULL}
-if the factor is not age)}
-
-\item{keep_nonpredictive}{logical value indicating whether to combine 
-non-predictive features as one feature (default is \code{FALSE})}
+if the factor is not age)
+#' @param wgs logical value indicating whether sequencing data is 
+whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}).}
 }
 \value{
 \code{FeatureSelection} returns a list of several elements:

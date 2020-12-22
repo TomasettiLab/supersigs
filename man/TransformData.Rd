@@ -4,22 +4,10 @@
 \alias{TransformData}
 \title{Transform data frame of mutations}
 \usage{
-TransformData(
-  dt,
-  features_context_0,
-  features_context_1,
-  new_partition,
-  factor
-)
+TransformData(dt, new_partition)
 }
 \arguments{
 \item{dt}{a data frame of mutations}
-
-\item{features_context_0}{a vector of candidate features for the unexposed group
-returned by \code{ContextMatters}}
-
-\item{features_context_1}{a vector of candidate features for the exposed group
-returned by \code{ContextMatters}}
 
 \item{new_partition}{a partition of features from \code{GenerateMinSigmaAlgebra}}
 }

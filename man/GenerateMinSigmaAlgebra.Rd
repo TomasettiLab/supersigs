@@ -4,7 +4,7 @@
 \alias{GenerateMinSigmaAlgebra}
 \title{Generate partition of features}
 \usage{
-GenerateMinSigmaAlgebra(input_ls, condense = F)
+GenerateMinSigmaAlgebra(input_ls, condense = F, partitioned_features = F)
 }
 \arguments{
 \item{input_ls}{a named list of length 2, where each element is a
@@ -12,6 +12,9 @@ vector of mutation features}
 
 \item{condense}{an optional logical value indicating whether the output value
 `new_partition` should return mutations in condensed form (default is \code{FALSE})}
+
+\item{partitioned_features}{indicates whether the mutation features have been prepartitioned
+(i.e. input is coming from output of GenerateMinSigmaAlgebra)}
 }
 \value{
 \code{GenerateMinSigmaAlgebra} returns a list of partitioned features,

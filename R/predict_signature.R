@@ -15,7 +15,6 @@
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
-#' @import glm
 #' 
 #' @export
 #' 
@@ -25,7 +24,7 @@
 #' @examples
 #' 
 #' 
-predict_signature = function(object, newdata, factor){
+predict_signature <- function(object, newdata, factor){
   # Extract slots from object
   model = object@Model$Logit
   features = object@Features
@@ -47,9 +46,9 @@ predict_signature = function(object, newdata, factor){
   }
   
   # Predict using logistic regression
-  scores = predict.glm(model, 
-                       newdata = newdata, 
-                       type = "response")
+  scores = predict(model, 
+                   newdata = newdata, 
+                   type = "response")
   
   newdata = newdata %>%
     mutate(score = scores)

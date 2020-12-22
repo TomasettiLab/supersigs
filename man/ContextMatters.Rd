@@ -4,7 +4,7 @@
 \alias{ContextMatters}
 \title{Function for binomial testing using a hierarchical tree structure}
 \usage{
-ContextMatters(muts_df, p_thresh = 0.05, tot_pseudo = 1000)
+ContextMatters(muts_df, p_thresh = 0.05, tot_pseudo = 0, wgs = F)
 }
 \arguments{
 \item{muts_df}{a data frame of mutations}
@@ -13,7 +13,10 @@ ContextMatters(muts_df, p_thresh = 0.05, tot_pseudo = 1000)
 binomial test (default is `0.05`)}
 
 \item{tot_pseudo}{an optional numeric value for the pseudo-count value
-(default is `1000`)}
+(default is `0`)}
+
+\item{wgs}{logical value indicating whether sequencing data is 
+whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}).}
 }
 \value{
 \code{ContextMatters} returns a vector of survival mutations that pass

@@ -14,7 +14,7 @@
 #' Select predictive features
 #' 
 #' Rank candidate features by their median bootstrap AUC and find the top n features
-#' for each classifier method, where n is chosen by cross-validation
+#' for each classifier method, where n is chosen by cross-validation (deprecated)
 #' 
 #' @param train a transformed data of mutations from \code{TransformData}
 #' @param new_partition a partition of features from \code{GenerateMinSigmaAlgebra}
