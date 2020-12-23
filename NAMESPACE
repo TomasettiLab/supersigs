@@ -2,9 +2,6 @@
 
 export(ContextMatters)
 export(FeatureSelection)
-export(GenerateMinSigmaAlgebra)
-export(PredictiveFeatures)
-export(SuperSigClassifier)
 export(TransformData)
 export(get_signature)
 export(make_matrix)

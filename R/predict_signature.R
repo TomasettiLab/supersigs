@@ -1,7 +1,7 @@
 # predict_signature.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Dec 22, 2020
+# Date last modified: Dec 23, 2020
 #
 # (Export) Function to apply SuperSigs model on new dataset
 
@@ -29,8 +29,8 @@
 #' 
 predict_signature <- function(object, newdata, factor){
   # Extract slots from object
-  model = object@Model$Logit
-  features = object@Features
+  model = Model(object)$Logit
+  features = Features(object)
   
   # Add counts for features that are used in the model
   for(j in seq_along(features)){

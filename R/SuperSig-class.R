@@ -38,5 +38,15 @@ print.SuperSig = function(object){
   object
 }
 
+# Accessors ---
+setGeneric("Signature", function(x) standardGeneric("Signature"))
+setMethod("Signature", "SuperSig", function(x) x@Signature)
 
+setGeneric("Features", function(x) standardGeneric("Features"))
+setMethod("Features", "SuperSig", function(x) x@Features)
 
+setGeneric("AUC", function(x) standardGeneric("AUC"))
+setMethod("AUC", "SuperSig", function(x) x@AUC)
+
+setGeneric("Model", function(x) standardGeneric("Model"))
+setMethod("Model", "SuperSig", function(x) x@Model)
