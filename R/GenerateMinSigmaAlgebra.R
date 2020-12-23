@@ -28,8 +28,6 @@
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @export
-#' 
 #' @return \code{GenerateMinSigmaAlgebra} returns a list of partitioned features,
 #' where each feature is represented by a vector of the fundamental (level 3)
 #' mutations

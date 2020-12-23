@@ -28,8 +28,6 @@
 #' @import caret
 #' @import rsample
 #' 
-#' @export
-#' 
 #' @return `PredictiveFeatures` returns a list of two elements:
 #' \itemize{
 #' \item \code{features_selected} is a vector of candidate features ranked by AUC

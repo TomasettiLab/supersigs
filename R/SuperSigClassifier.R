@@ -34,8 +34,6 @@
 #' @importFrom randomForest randomForest
 #' @importFrom MASS lda
 #'
-#' @export
-#' 
 #' @return \code{SuperSigClassifier} returns a list of several elements:
 #' \itemize{
 #' \item \code{auc} is a vector of AUCs for each classifier
