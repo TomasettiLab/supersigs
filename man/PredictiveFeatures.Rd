@@ -29,5 +29,5 @@ chosen by cross-validation
 }
 \description{
 Rank candidate features by their median bootstrap AUC and find the top n features
-for each classifier method, where n is chosen by cross-validation
+for each classifier method, where n is chosen by cross-validation (deprecated)
 }

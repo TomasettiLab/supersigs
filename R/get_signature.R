@@ -13,7 +13,7 @@
 #' exposure factor. Returns the SuperSig and a classification model trained with
 #' the SuperSig.
 #' 
-#' @param dt a data frame of mutations
+#' @param dt a data frame of mutations (see vignette for details)
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' @param wgs logical value indicating whether sequencing data is 
 #' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}) 
@@ -25,8 +25,10 @@
 #' @return \code{get_signature} returns an object of class "SuperSig"
 #' 
 #' @examples
-#' # mutation_data is a data frame of mutation counts (see vignette for details)
-#' get_signature(dt = mutation_data, factor = "age")
+#' 
+#' print(example_dt) # use example data 
+#' input_dt = make_matrix(example_dt) # convert to correct format
+#' get_signature(dt = input_dt, factor = "age") # get SuperSig
 #' 
 get_signature <- function(dt, factor, wgs = F){
   # Capitalize factor string

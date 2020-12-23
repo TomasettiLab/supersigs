@@ -7,7 +7,7 @@
 get_signature(dt, factor, wgs = F)
 }
 \arguments{
-\item{dt}{a data frame of mutations}
+\item{dt}{a data frame of mutations (see vignette for details)}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking")}
 
@@ -23,7 +23,9 @@ exposure factor. Returns the SuperSig and a classification model trained with
 the SuperSig.
 }
 \examples{
-# mutation_data is a data frame of mutation counts (see vignette for details)
-get_signature(dt = mutation_data, factor = "age")
+
+print(example_dt) # use example data 
+input_dt = make_matrix(example_dt) # convert to correct format
+get_signature(dt = input_dt, factor = "age") # get SuperSig
 
 }
