@@ -6,7 +6,13 @@ Authors@R: c(person(given = "Albert",
                     family = "Kuo",
                     role = c("aut", "cre"),
                     email = "albertkuo@jhu.edu", 
-                    comment = c("ORCID" = "0000-0001-5155-0748"))) 
+                    comment = c("ORCID" = "0000-0001-5155-0748")),
+             person(given = "Yifan", 
+                    family = "Zhang",
+                    role = c("aut")),
+             person(given = "Bahman", 
+                    family = "Afsari",
+                    role = c("aut"))) 
 Depends: R (>= 3.6.1)
 Imports: 
 	assertthat, 
