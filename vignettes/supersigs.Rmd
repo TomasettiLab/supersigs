@@ -1,8 +1,8 @@
 ---
-title: "Using the supersigs package"
+title: "Using supersigs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{supersigs}
+  %\VignetteIndexEntry{Using supersigs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -47,15 +47,18 @@ Once you've read in your data, you will need to transform it into a data frame o
 
 2. Because the features used are built upon trinucleotide features (e.g. A[C>A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the `hg19` reference genome.
 
-Both of these steps are done by the `make_matrix` function from the `supersigs` package. Note that to use the function, you need to load the appropriate genome package first (hg19 and hg38 are supported).
-
-Below, we apply `make_matrix` to transform our example dataset (`example_dt`) into a data frame of trinucleotide mutations (`input_dt`). Each row in `input_dt` corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.
+Both of these steps are done by the `make_matrix` function. Note that using the `make_matrix` function requires installing and loading a reference genome (`BSgenome.Hsapiens.UCSC.hg19` and `BSgenome.Hsapiens.UCSC.hg38` are supported).
 
 ```{r}
 # Load packages for make_matrix function
 suppressPackageStartupMessages({
   library(BSgenome.Hsapiens.UCSC.hg19)
 })
+```
+
+We apply `make_matrix` to transform our example dataset (`example_dt`) into a data frame of trinucleotide mutations (`input_dt`), which is the format required by the `supersigs` R package. Each row in `input_dt` corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.
+
+```{r}
 input_dt = make_matrix(example_dt)
 print(input_dt)
 ```
@@ -72,25 +75,35 @@ To apply the supervised method on your data, run the `get_signature` function. T
 The process of converting a VCF file to this format is covered in [Preprocessing your data]. An example for `dt` is printed below.
 
 ```{r}
-library(dplyr)
-
 # Generate synthetic IndVar column
-input_dt = input_dt %>%
-  mutate(IndVar = c(1, 1, 1, 0, 0))
+input_dt$IndVar = c(1, 1, 1, 0, 0)
 print(input_dt)
 ```
 
+Once you have the correct data format, apply `get_signature` to the dataset to get your `SuperSig`. This is an S4 object containing four slots:
+
+* `Signature` is the signature, represented as their differences in mean rates (or counts if the factor is "age") between the two groups (exposed versus unexposed)
+* `Features` is the list of features that comprise the signature and their representation in terms of the fundamental (trinucleotide) mutations
+* `AUC` is the apparent AUC of the model (i.e. not cross-validated)
+* `Model` is the list of a glm class for the trained logistic regression model
 
 ```{r}
 out = get_signature(dt = input_dt, factor = "Smoking")
 out
 ```
 
-Once you have obtained the signature on your dataset, you can use the trained classifier (logistic regression) on a new dataset. The `predict_signature` function returns your data frame with additional columns for the feature counts in the signature and the classification score. For the purpose of illustration, we re-use the same dataset `input_dt` as our "new data" below. 
+# Using your signature
+
+To apply the `SuperSig` to a new dataset, you can use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
 
 ```{r}
 newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")
-newdata %>% select(IndVar, F1, score)
+
+suppressPackageStartupMessages({
+  library(dplyr)
+})
+newdata %>%
+  select(IndVar, F1, score)
 ```
 
 ```{r eval = F, include=F}
