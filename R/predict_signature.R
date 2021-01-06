@@ -23,9 +23,12 @@
 #' 
 #' @examples
 #' 
-#' out = get_signature(dt = input_dt, factor = "age") # get SuperSig
-#' newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")
-#' newdata %>% select(IndVar, F1, score)
+#' # print(example_dt) # use example data from package
+#' # input_dt = make_matrix(example_dt) # convert to correct format
+#' # out = get_signature(dt = input_dt, factor = "age") # get SuperSig
+#' 
+#' # newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")
+#' # newdata %>% select(IndVar, F1, score)
 #' 
 predict_signature <- function(object, newdata, factor){
   # Extract slots from object
