@@ -6,7 +6,7 @@
 # (Export) Function to transform data frame of mutations into correct format
 
 # library(dplyr)
-# 
+# library(tidyr)
 
 #' Function to transform mutations into "matrix" format
 #' 
@@ -18,6 +18,7 @@
 #' @param genome the reference genome used ("hg19" or "hg38")
 #' 
 #' @import dplyr
+#' @import tidyr
 #' 
 #' @export
 #' 
@@ -65,7 +66,7 @@ make_matrix <- function(dt, genome = "hg19"){
     group_by(sample_id, age, mutation_std) %>%
     summarize(mut_count = n()) %>%
     ungroup() %>%
-    spread(key = mutation_std, value = mut_count) %>%
+    pivot_wider(names_from = mutation_std, values_from = mut_count) %>%
     mutate_all(~replace(., is.na(.), 0))
   
   # Add any fundamental mutations that are missing
