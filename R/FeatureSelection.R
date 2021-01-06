@@ -44,6 +44,8 @@
 #' \item \code{dt_new} is the transformed data from \code{TransformData}
 #' }
 #' 
+#' @noRd
+#' 
 FeatureSelection <- function(dt,
                              factor,
                              test_ind = NULL,     # to be deprecated

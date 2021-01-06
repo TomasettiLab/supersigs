@@ -16,6 +16,8 @@
 #' 
 #' @return \code{MyAuc} returns a numeric AUC value
 #' 
+#' @noRd
+#' 
 MyAuc <- function(y, x){
   # Handle missing observations
   missing_x = is.na(x)

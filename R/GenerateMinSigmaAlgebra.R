@@ -32,6 +32,8 @@
 #' where each feature is represented by a vector of the fundamental (level 3)
 #' mutations
 #' 
+#' @noRd
+#' 
 GenerateMinSigmaAlgebra <- function(input_ls, 
                                     condense = F,
                                     partitioned_features = F){

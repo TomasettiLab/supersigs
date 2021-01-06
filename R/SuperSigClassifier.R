@@ -43,6 +43,8 @@
 #' (created only when \code{keep_classifier} is \code{TRUE})
 #' }
 #' 
+#' @noRd
+#' 
 SuperSigClassifier <- function(dt, test_ind = NULL,
                                factor,
                                classifier, # Options are "LDA", "Logit", "RF"

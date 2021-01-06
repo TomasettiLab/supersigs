@@ -11,6 +11,8 @@
 #'
 #' @return \code{CondenseMutations} returns a vector of condensed features
 #' 
+#' @noRd
+#' 
 CondenseMutations = function(features){
   out = vector('character')
   for(i in seq_along(muts_children_level3)){

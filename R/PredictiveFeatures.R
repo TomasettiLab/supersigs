@@ -35,6 +35,8 @@
 #' chosen by cross-validation
 #' }
 #' 
+#' @noRd
+#' 
 PredictiveFeatures <- function(train, 
                                new_partition,
                                factor,

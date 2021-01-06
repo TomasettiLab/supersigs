@@ -32,6 +32,8 @@
 #' @return \code{ContextMatters} returns a vector of survival mutations that pass
 #' the binomial tree testing
 #' 
+#' @noRd
+#' 
 ContextMatters <- function(muts_df, 
                            p_thresh = 0.05,
                            tot_pseudo = 0,

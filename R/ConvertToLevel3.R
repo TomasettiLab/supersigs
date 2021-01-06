@@ -12,6 +12,8 @@
 #' 
 #' @return \code{ConvertToLevel3} returns a vector of fundamental (level 3) features
 #' 
+#' @noRd
+#' 
 ConvertToLevel3 = function(features){
   if(length(features) > 1){
     out = sapply(features, function(x) muts_children_level3[[x]])

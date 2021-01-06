@@ -23,6 +23,8 @@
 #' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
 #' and \code{DIVISON})
 #' 
+#' @noRd
+#' 
 TransformData <- function(dt, 
                           new_partition){
   # Add columns for every type of mutation

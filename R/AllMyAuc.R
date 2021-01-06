@@ -12,6 +12,8 @@
 #'
 #' @return \code{AllMyAuc} returns a list of AUCs, one for every column (feature)
 #' 
+#' @noRd
+#' 
 AllMyAuc <- function(z, IndVar){
   cols = setdiff(colnames(z), IndVar)
   apply(z[, cols], MARGIN = 2, FUN = MyAuc, y = z %>% pull(!!IndVar))
