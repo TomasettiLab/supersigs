@@ -15,6 +15,6 @@
 #' @noRd
 #' 
 all_my_auc <- function(z, IndVar){
-  cols = setdiff(colnames(z), IndVar)
+  cols <- setdiff(colnames(z), IndVar)
   apply(z[, cols], MARGIN = 2, FUN = my_auc, y = z %>% pull(!!IndVar))
 }

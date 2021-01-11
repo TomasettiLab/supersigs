@@ -34,31 +34,31 @@
 #' 
 predict_signature <- function(object, newdata, factor){
   # Extract slots from object
-  model = Model(object)$Logit
-  features = Features(object)
+  model <- Model(object)$Logit
+  features <- Features(object)
   
   # Add counts for features that are used in the model
   for(j in seq_along(features)){
-    feature = names(features)[j]
-    feature_count = newdata %>%
+    feature <- names(features)[j]
+    feature_count <- newdata %>%
       select(features[[feature]]) %>%
       rowSums()
-    newdata = newdata %>%
+    newdata <- newdata %>%
       mutate(!!feature := feature_count)
   }
   
   # Use rates for non-age factors
   if(factor != "AGE"){
-    newdata = newdata %>%
+    newdata <- newdata %>%
       mutate_at(names(features), ~(./age))
   }
   
   # Predict using logistic regression
-  scores = predict(model, 
-                   newdata = newdata, 
-                   type = "response")
+  scores <- predict(model, 
+                    newdata = newdata, 
+                    type = "response")
   
-  newdata = newdata %>%
+  newdata <- newdata %>%
     mutate(score = scores)
   
   return(newdata)

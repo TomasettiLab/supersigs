@@ -42,7 +42,7 @@ generate_min_sigma_algebra <- function(input_ls,
   assert_that(!is.null(names(input_ls)), msg = "input_ls is not named")
   
   if(partitioned_features){
-    feat_ls = unlist(input_ls, recursive = F)
+    feat_ls <- unlist(input_ls, recursive = F)
   } else {
     # Convert to fundamental (i.e. level 3) mutations
     feat_ls <- unique(unlist(input_ls))

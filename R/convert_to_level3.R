@@ -16,10 +16,10 @@
 #' 
 convert_to_level3 = function(features){
   if(length(features) > 1){
-    out = sapply(features, function(x) muts_children_level3[[x]])
-    out = unname(unlist(out))
+    out <- sapply(features, function(x) muts_children_level3[[x]])
+    out <- unname(unlist(out))
   } else {
-    out = unname(muts_children_level3[[features]])
+    out <- unname(muts_children_level3[[features]])
   }
   return(out)
 }

@@ -23,7 +23,8 @@ Imports:
 	rsample,
         methods,
         rlang,
-        stats
+	utils,
+	Biostrings
 Suggests: 
 	BSgenome.Hsapiens.UCSC.hg19, 
 	BSgenome.Hsapiens.UCSC.hg38, 

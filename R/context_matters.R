@@ -1,7 +1,7 @@
 # context_matters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 21, 2020
+# Date last modified: Jan 11, 2021
 #
 # Function for binomial testing using a hierarchical tree structure
 
@@ -24,7 +24,6 @@
 #' whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE}). 
 #' 
 #' @import dplyr
-#' @import rsample
 #' @import assertthat
 #' @importFrom rlang .data
 #' 
@@ -37,22 +36,21 @@ context_matters <- function(muts_df,
                            p_thresh = 0.05,
                            tot_pseudo = 0,
                            wgs = F){
-  
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
-              msg = "Column names of input data are not correct")
+              msg = "Column names of input data are not correct in context_matters")
   
   # Use WGS as background probabilities
   if(wgs){
-    background_probs = background_probs_wgs
+    background_probs <- background_probs_wgs
   }
   
   muts_counts <- muts_df %>% colSums() 
   
   # Pseudo-count
   for(feature in names(muts_counts)){
-    all_possible_tri["TOTAL_MUTATIONS"] = 3
-    muts_counts[feature] = muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
+    all_possible_tri["TOTAL_MUTATIONS"] <- 3
+    muts_counts[feature] <- muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
   }
   muts_counts <- sapply(muts_counts, round)
   test_all_96 <- T
@@ -88,7 +86,7 @@ context_matters <- function(muts_df,
   for(i in c(4, 1)){
     tree_tmp <- tree %>%
       filter(.data$n_children == i) %>%
-      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), sig, T))
+      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), .data$sig, T))
     
     survival_mutations_tmp <- tree_tmp %>% 
       filter(.data$n_children == i) %>%
@@ -107,7 +105,7 @@ context_matters <- function(muts_df,
   # when all significant children contributions are removed
   for(level in 2:1){
     # Take union of children and grandchildren
-    union_children_vec = survival_mutations_cache %>%
+    union_children_vec <- survival_mutations_cache %>%
       filter(.data$n_children %in% if(level == 1) c(4, 1) else c(1)) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
       pull(.data$child_name) %>%

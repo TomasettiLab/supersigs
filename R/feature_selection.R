@@ -1,7 +1,7 @@
 # feature_selection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 21, 2020
+# Date last modified: Jan 11, 2021
 #
 # Function for selecting features
 
@@ -28,6 +28,7 @@
 #' @import dplyr
 #' @import assertthat
 #' @import caret
+#' @importFrom rlang .data
 #' 
 #' @return \code{feature_selection} returns a list of several elements:
 #' \itemize{
@@ -46,10 +47,10 @@
 #' @noRd
 #' 
 feature_selection <- function(dt,
-                             factor,
-                             test_ind = NULL,     # to be deprecated
-                             middle_dt = NULL,    # to be deprecated
-                             wgs = F){
+                              factor,
+                              test_ind = NULL,     # to be deprecated
+                              middle_dt = NULL,    # to be deprecated
+                              wgs = F){
   if(is.null(test_ind)){
     train_ind <- 1:nrow(dt)
     test_ind <- train_ind
@@ -70,15 +71,15 @@ feature_selection <- function(dt,
     i <- (ij-1) %% n_fold + 1
     j <- floor((ij-1)/n_fold) + 1
     
-    test_inner_ind = inner_partitions[[i, j]]
-    train_inner_ind = setdiff(1:nrow(train), test_inner_ind)
+    test_inner_ind <- inner_partitions[[i, j]]
+    train_inner_ind <- setdiff(1:nrow(train), test_inner_ind)
     
-    train_inner = train[train_inner_ind, ]
+    train_inner <- train[train_inner_ind, ]
     
     # context_matters
     if(factor != "AGE"){ 
-      train_0 <- train_inner %>% filter(IndVar == 0)
-      train_1 <- train_inner %>% filter(IndVar == 1)
+      train_0 <- train_inner %>% filter(.data$IndVar == 0)
+      train_1 <- train_inner %>% filter(.data$IndVar == 1)
     } else {
       train_0 <- rbind(train_inner, middle_dt) 
       train_1 <- train_0
@@ -108,74 +109,74 @@ feature_selection <- function(dt,
   }
   
   # Repartition features
-  new_partition_combined = Reduce(function(a, b){generate_min_sigma_algebra(list(var0 = a, var1 = b), partitioned_features = T)},
-                                  new_partition_ls)
+  new_partition_combined <- Reduce(function(a, b){generate_min_sigma_algebra(list(var0 = a, var1 = b), partitioned_features = T)},
+                                   new_partition_ls)
   
   # Transform data
-  new_partition = new_partition_combined
-  dt_new = transform_data(train, new_partition)
+  new_partition <- new_partition_combined
+  dt_new <- transform_data(train, new_partition)
   
   # Trinucleotide ranking in inner folds
   rank_tri_ls <- vector(length = length(inner_partitions), mode = "list")
   for(ij in seq_along(inner_partitions)){
     # Rank features by AUC
-    feature_names = names(new_partition)
+    feature_names <- names(new_partition)
     
     # AUC
     auc_mat <- all_my_auc(dt_new %>% select(c(feature_names, "IndVar")), IndVar = "IndVar")
     if(factor == "AGE"){
-      auc_medians = auc_mat
+      auc_medians <- auc_mat
     } else {
-      auc_medians = ifelse(auc_mat > 0.5, auc_mat, 1-auc_mat)
+      auc_medians <- ifelse(auc_mat > 0.5, auc_mat, 1-auc_mat)
     }
-    rank_mutations = tibble(mutation = feature_names,
-                            auc = auc_medians) %>%
-      arrange(desc(auc))
+    rank_mutations <- tibble(mutation = feature_names,
+                             auc = auc_medians) %>%
+      arrange(desc(.data$auc))
     
     # Calculate rank of trinucleotide equivalents
-    feature_to_trinucleotides = tibble(feature = rep(feature_names, sapply(new_partition, length)),
-                                       trinucleotide = unlist(new_partition))
-    rank_trinucleotides = rank_mutations %>%
+    feature_to_trinucleotides <- tibble(feature = rep(feature_names, sapply(new_partition, length)),
+                                        trinucleotide = unlist(new_partition))
+    rank_trinucleotides <- rank_mutations %>%
       left_join(., feature_to_trinucleotides, by = c("mutation" = "feature")) %>%
       mutate(rank = 1:n()) %>%
-      group_by(mutation) %>%
-      mutate(mean_rank = mean(rank)) %>%
+      group_by(.data$mutation) %>%
+      mutate(mean_rank = mean(.data$rank)) %>%
       ungroup()
     
     # Save trinucleotide rankings
-    rank_tri_ls[[ij]] = rank_trinucleotides %>%
-      select(trinucleotide, mean_rank) %>%
-      arrange(trinucleotide) %>%
-      dplyr::rename(!!paste0("rank_", ij) := mean_rank,
-                    !!paste0("trinucleotide_", ij) := trinucleotide)
+    rank_tri_ls[[ij]] <- rank_trinucleotides %>%
+      select(.data$trinucleotide, .data$mean_rank) %>%
+      arrange(.data$trinucleotide) %>%
+      dplyr::rename(!!paste0("rank_", ij) := .data$mean_rank,
+                    !!paste0("trinucleotide_", ij) := .data$trinucleotide)
   }
   
   # Take median of rankings for trinucleotides over inner folds
-  rank_tri = bind_cols(rank_tri_ls)
-  rank_tri = rank_tri %>%
+  rank_tri <- bind_cols(rank_tri_ls)
+  rank_tri <- rank_tri %>%
     mutate(rank = apply(select(., starts_with("rank")), 1, median)) %>%
-    select(trinucleotide_1, rank) %>%
-    dplyr::rename(trinucleotide = trinucleotide_1) %>%
-    arrange(rank)
+    select(.data$trinucleotide_1, .data$rank) %>%
+    dplyr::rename(trinucleotide = .data$trinucleotide_1) %>%
+    arrange(.data$rank)
   
   # Create new partition of features, grouping trinucleotides of same rank into one feature
-  unique_ranks = unique(rank_tri$rank)
-  features_new = lapply(unique_ranks, function(r) rank_tri %>% 
-                          filter(rank == r) %>% 
-                          pull(trinucleotide)) 
-  names(features_new) = paste0("F", seq_along(features_new))
-  new_partition = features_new
-  features_gmsa = list(new_partition = features_new)
-  features_selected = names(new_partition)
+  unique_ranks <- unique(rank_tri$rank)
+  features_new <- lapply(unique_ranks, function(r) rank_tri %>% 
+                           filter(.data$rank == r) %>% 
+                           pull(.data$trinucleotide)) 
+  names(features_new) <- paste0("F", seq_along(features_new))
+  new_partition <- features_new
+  features_gmsa <- list(new_partition = features_new)
+  features_selected <- names(new_partition)
   
   # Transform data 
-  dt_new = transform_data(dt, new_partition)
+  dt_new <- transform_data(dt, new_partition)
   
   # Find n* over each fold
-  train = dt_new[train_ind,]
+  train <- dt_new[train_ind,]
   n_star_ls <- vector(length = length(inner_partitions), mode = "list")
   
-  n = length(features_new)
+  n <- length(features_new)
   message(paste("Begin cross-validated selection over", n, "features and", length(inner_partitions), "inner folds..."))
   
   for(ij in seq_along(inner_partitions)){
@@ -183,46 +184,45 @@ feature_selection <- function(dt,
     i <- (ij-1) %% n_fold + 1
     j <- floor((ij-1)/n_fold) + 1
     
-    test_inner_ind = inner_partitions[[i, j]]
-    train_inner_ind = setdiff(1:nrow(train), test_inner_ind)
+    test_inner_ind <- inner_partitions[[i, j]]
+    train_inner_ind <- setdiff(1:nrow(train), test_inner_ind)
     
     # Find n*
-    auc_ls = list()
+    auc_ls <- list()
     methods <- c("Logit")
     
     for(k in 1:n){
-      auc_ls[[k]] = supersig_classifier(dt = train, 
-                                       test_ind = test_inner_ind,
-                                       factor,
-                                       classifier = methods, 
-                                       keep_classifier = F,
-                                       adjusted_formula = F,
-                                       features_selected = features_selected,
-                                       select_n = c("Logit" = k))$auc
+      auc_ls[[k]] <- supersig_classifier(dt = train, 
+                                         test_ind = test_inner_ind,
+                                         factor,
+                                         keep_classifier = F,
+                                         adjusted_formula = F,
+                                         features_selected = features_selected,
+                                         select_n = c("Logit" = k))$auc
     }
-    n_star = try(sapply(methods, function(method) which.max(sapply(auc_ls, function(x) x[method])) %>% unname()))
-    n_star = sapply(n_star, function(x) ifelse(identical(x, integer(0)), NA, x))
+    n_star <- try(sapply(methods, function(method) which.max(sapply(auc_ls, function(x) x[method])) %>% unname()))
+    n_star <- sapply(n_star, function(x) ifelse(identical(x, integer(0)), NA, x))
     
     # Save n_star for each method
-    n_star_ls[[ij]] = tibble(!!paste0("methods_", ij) := methods,
-                             !!paste0("n_star_", ij) := n_star)
+    n_star_ls[[ij]] <- tibble(!!paste0("methods_", ij) := methods,
+                              !!paste0("n_star_", ij) := n_star)
   }
   
   # Take medians over inner folds
-  n_star = bind_cols(n_star_ls)
-  n_star = n_star %>%
+  n_star <- bind_cols(n_star_ls)
+  n_star <- n_star %>%
     mutate(n_star = apply(select(., starts_with("n_star")), 1, median, na.rm = T),
-           n_star = round(n_star)) %>%
-    select(methods_1, n_star) %>%
-    dplyr::rename(methods = methods_1)
+           n_star = round(.data$n_star)) %>%
+    select(.data$methods_1, .data$n_star) %>%
+    dplyr::rename(methods = .data$methods_1)
   
-  select_n = n_star$n_star
-  names(select_n) = n_star$methods
+  select_n <- n_star$n_star
+  names(select_n) <- n_star$methods
   
   # Limit select_n to features that are > 0.6 AUC
   auc_mat <- all_my_auc(dt_new %>% select(c(features_selected, "IndVar")), IndVar = "IndVar")
-  max_n = sum(auc_mat > 0.6)
-  select_n = sapply(select_n, function(x) min(max_n, x))
+  max_n <- sum(auc_mat > 0.6)
+  select_n <- sapply(select_n, function(x) min(max_n, x))
   
   # Return output
   assert_that(length(features_selected) >= 1, 

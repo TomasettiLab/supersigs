@@ -1,9 +1,9 @@
 # supersig_classifier.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 10, 2019
+# Date last modified: Jan 11, 2021
 #
-# Function for classification and correlation using LDA, logistic, or random forest
+# Function for classification logistic regression
 
 # library(randomForest)
 # library(MASS)
@@ -14,14 +14,11 @@
 
 #' Classification of exposure using signatures
 #' 
-#' Calculate the AUC using signatures with the option of three 
-#' different classifiers
+#' Calculate the AUC using signatures and logistic regression
 #' 
 #' @param dt a transformed data frame from FeatureSelection
 #' @param test_ind an optional vector of indices for the test data
 #' @param factor the factor/exposure (e.g. "age", "smoking")
-#' @param classifier a vector of the classifier method(s) to use for prediction
-#' (options are "LDA", "Logit", and "RF")
 #' @param keep_classifier an optional logical value indicating whether to save
 #' the classifier model (default is \code{FALSE})
 #' @param adjusted_formula an optional logical value indicating whether to
@@ -31,7 +28,7 @@
 #' 
 #' @import dplyr
 #' @import rsample
-#' @importFrom MASS lda
+#' @importFrom rlang .data
 #'
 #' @return \code{supersig_classifier} returns a list of several elements:
 #' \itemize{
@@ -46,7 +43,6 @@
 #' 
 supersig_classifier <- function(dt, test_ind = NULL,
                                factor,
-                               classifier, # Options are "LDA", "Logit", "RF"
                                keep_classifier = F,
                                adjusted_formula = F,
                                features_selected,
@@ -61,11 +57,6 @@ supersig_classifier <- function(dt, test_ind = NULL,
   
   train <- dt[train_ind, ]
   
-  # Do not perform LDA if select_n["LDA"] is missing
-  if(is.na(select_n["LDA"])){
-    classifier = setdiff(classifier, "LDA")
-  }
-  
   # Initialize output
   test_indvar <- dt[test_ind, "IndVar"]
   out <- list(auc = c(),
@@ -77,12 +68,12 @@ supersig_classifier <- function(dt, test_ind = NULL,
     if(adjusted_formula){
       # Calculate grouped median rates
       grouped_rates <- train %>%
-        group_by(IndVar) %>%
+        group_by(.data$IndVar) %>%
         summarize_at(.vars = features_selected,
-                     .funs = funs(median(., na.rm=T)/median(AGE, na.rm=T)))
+                     .funs = funs(median(., na.rm=T)/median(.data$AGE, na.rm=T)))
       
-      unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
-      exposed_rates <- grouped_rates %>% filter(IndVar == T) %>% select(-IndVar)
+      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == F) %>% select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% filter(.data$IndVar == T) %>% select(-.data$IndVar)
       
       # Remove unexposed median rate (i.e. aging rate) from training and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
@@ -91,11 +82,11 @@ supersig_classifier <- function(dt, test_ind = NULL,
       dt <- dt %>%
         mutate_(.dots = remove_age_formula) %>%
         mutate_at(.vars = features_selected,
-                  .funs = funs(./TOTAL_MUTATIONS))
+                  .funs = funs(./.data$TOTAL_MUTATIONS))
     } else {
       dt <- dt %>%
         mutate_at(.vars = features_selected,
-                  .funs = funs(./AGE))
+                  .funs = funs(./.data$AGE))
     }
     
     # Remove observations missing age
@@ -112,126 +103,61 @@ supersig_classifier <- function(dt, test_ind = NULL,
     warning("No test data")
     
     # Return NA to AUC
-    auc <- sapply(classifier, function(x) NA)
-    out$auc <- c(out$auc, auc)
-    
-    # Return NA to corr
-    if(factor %in% c("AGE", "SMOKING")){
-      corr <- sapply(classifier, function(x) NA)
-      out$corr <- c(out$corr, corr)
-    }
+    out$auc <- c(NA)
   } else {
-    # Linear Discriminant Analysis
-    if("LDA" %in% classifier){
+    # Logistic Regression
+    z <- dt %>%
+      select(c(features_selected[1:select_n["Logit"]], "IndVar")) # %>%
+    # rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
+    
+    x <- z[train_ind, ]
+    newdata <- z[test_ind, ]
+    out$auc <- c(out$auc, Logit = NA)
+    logit_prediction <- NA
+    try({
+      logit_classifier <- glm(formula = IndVar ~ ., data = x, family = binomial())
+      logit_prediction <- predict(logit_classifier, newdata = newdata, type = "response")
+      logit_betas <- coef(logit_classifier) # beta vector
+      logit_betas <- coef(logit_classifier)[-1] # beta vector except beta_0
+      
+      # Calculate empirical mean differences
       if(factor == "AGE"){
-        # Take log2 for counts for age for better normal distribution
-        # dt <- dt %>%
-        #   mutate_at(.vars = features_selected[1:select_n["LDA"]],
-        #             .funs = funs(log2(. + 1)))
-        
-        train <- dt[train_ind, ]
+        grouped_rates <- dt %>%
+          slice(train_ind) %>%
+          group_by(.data$IndVar) %>%
+          summarize_at(.vars = features_selected[1:select_n["Logit"]],
+                       .funs = funs(mean(., na.rm = T)))
+      } else {
+        grouped_rates <- dt %>%
+          slice(train_ind) %>%
+          group_by(.data$IndVar) %>%
+          summarize_at(.vars = features_selected[1:select_n["Logit"]],
+                       .funs = funs(mean(./.data$AGE, na.rm = T)))
       }
       
-      x <- train[, features_selected[1:select_n["LDA"]], drop = F] %>% as.matrix()
-      grouping <- train$IndVar
-      out$auc <- c(out$auc, LDA = NA)
-      lda_prediction <- NA
-      lda_rates <- NA
-      try({
-        lda_classifier <- lda(x, grouping, prior = c(0.5, 0.5))
-        newdata <- dt[test_ind, features_selected[1:select_n["LDA"]], drop = F] %>% as.matrix()
-        lda_prediction <- predict(lda_classifier, newdata = newdata)$x
-        
-        out$auc["LDA"] = my_auc(test_indvar, lda_prediction)
-        if(keep_classifier) 
-          out$classifier$LDA <- lda_classifier
-        
-        # Calculate mean difference in rates or counts
-        lda_rates <- lda_classifier$means %>% as.data.frame()
-        lda_rates <- lda_rates %>% mutate(IndVar = as.logical(rownames(lda_rates)))
-        unexposed_lda_rates <- lda_rates %>% filter(IndVar == F) %>% select(-IndVar)
-        exposed_lda_rates <- lda_rates %>% filter(IndVar == T) %>% select(-IndVar)
-        lda_rates <- exposed_lda_rates - unexposed_lda_rates
-      })
-    }
-    
-    # Random Forest
-    if("RF" %in% classifier){
-      x <- train[, features_selected[1:select_n["RF"]], drop = F] %>% as.matrix()
-      y_factor <- as.factor(train$IndVar)
-      out$auc <- c(out$auc, RF = NA)
-      rf_prediction <- NA
-      try({
-        rf_classifier <- randomForest(x, y = y_factor,
-                                      mtry = min(ncol(x), round(log2(ncol(dt)))),
-                                      maxnodes = 2, classwt = c(0.5, 0.5))
-        
-        newdata <- dt[test_ind, features_selected[1:select_n["RF"]], drop = F] %>% as.matrix()
-        rf_prediction <- predict(rf_classifier, newdata = newdata,
-                                 type = "prob")[, levels(y_factor)[2]]
-        
-        out$auc["RF"] <- my_auc(test_indvar, rf_prediction)
-        if(keep_classifier) 
-          out$classifier$RF <- rf_classifier
-      })
-    }
-    
-    # Logistic Regression
-    if("Logit" %in% classifier){
-      z <- dt %>%
-        select(c(features_selected[1:select_n["Logit"]], "IndVar")) # %>%
-        # rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
+      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == F) %>% select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% filter(.data$IndVar == T) %>% select(-.data$IndVar)
       
-      x <- z[train_ind, ]
-      newdata <- z[test_ind, ]
-      out$auc <- c(out$auc, Logit = NA)
-      logit_prediction <- NA
-      try({
-        logit_classifier <- glm(formula = IndVar ~ ., data = x, family = binomial())
-        logit_prediction <- predict(logit_classifier, newdata = newdata, type = "response")
-        logit_betas <- coef(logit_classifier) # beta vector
-        logit_betas <- coef(logit_classifier)[-1] # beta vector except beta_0
+      # Calculate mean_diff = difference in counts or rates between exposed and unexposed -> signature representation
+      mean_diffs <- exposed_rates - unexposed_rates
+      
+      # Save signature (empirical mean rates and beta coefficients) and select_n for apparent
+      if(identical(test_ind, train_ind)){
+        # Logit beta coefficients
+        names(logit_betas) <- features_selected[1:select_n["Logit"]]
+        names(mean_diffs) <- features_selected[1:select_n["Logit"]]
         
-        # Calculate empirical mean differences
-        if(factor == "AGE"){
-          grouped_rates <- dt %>%
-            slice(train_ind) %>%
-            group_by(IndVar) %>%
-            summarize_at(.vars = features_selected[1:select_n["Logit"]],
-                         .funs = funs(mean(., na.rm = T)))
-        } else {
-          grouped_rates <- dt %>%
-            slice(train_ind) %>%
-            group_by(IndVar) %>%
-            summarize_at(.vars = features_selected[1:select_n["Logit"]],
-                         .funs = funs(mean(./AGE, na.rm = T)))
-        }
-        
-        unexposed_rates <- grouped_rates %>% filter(IndVar == F) %>% select(-IndVar)
-        exposed_rates <- grouped_rates %>% filter(IndVar == T) %>% select(-IndVar)
-        
-        # Calculate mean_diff = difference in counts or rates between exposed and unexposed -> signature representation
-        mean_diffs <- exposed_rates - unexposed_rates
-        
-        # Save signature (empirical mean rates and beta coefficients) and select_n for apparent
-        if(identical(test_ind, train_ind)){
-          # Logit beta coefficients
-          names(logit_betas) <- features_selected[1:select_n["Logit"]]
-          names(mean_diffs) <- features_selected[1:select_n["Logit"]]
-          
-          out$signature <- list(mean_diffs = mean_diffs, logit_betas = logit_betas, select_n = select_n)
-        }
-        
-        out$auc["Logit"] = my_auc(test_indvar, logit_prediction)
-        if(keep_classifier) 
-          out$classifier$Logit <- logit_classifier
-      })
-    }
+        out$signature <- list(mean_diffs = mean_diffs, logit_betas = logit_betas, select_n = select_n)
+      }
+      
+      out$auc["Logit"] <-my_auc(test_indvar, logit_prediction)
+      if(keep_classifier) 
+        out$classifier$Logit <- logit_classifier
+    })
   }
   
   return(out)
 }
-
 
 # No data dependencies
 

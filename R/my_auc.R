@@ -18,12 +18,12 @@
 #' 
 my_auc <- function(y, x){
   # Handle missing observations
-  missing_x = is.na(x)
+  missing_x <- is.na(x)
   if(all(missing_x)){
     return(NA)
   } else if(any(missing_x)){
-    x = x[!missing_x]
-    y = y[!missing_x]
+    x <- x[!missing_x]
+    y <- y[!missing_x]
   }
   ind <- which(y == 1)
   n1 <- sum(y == 1)

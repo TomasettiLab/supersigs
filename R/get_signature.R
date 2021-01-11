@@ -70,7 +70,6 @@ get_signature <- function(dt, factor, wgs = F){
   # Get apparent AUC and model
   classification_out = supersig_classifier(dt = features_out$dt_new,
                                           factor = factor,
-                                          classifier = c("Logit"),
                                           keep_classifier = T,
                                           features_selected = features_out$features_selected,
                                           select_n = features_out$select_n)

@@ -14,6 +14,7 @@
 #' @param new_partition a partition of features from \code{generate_min_sigma_algebra}
 #' 
 #' @import dplyr
+#' @importFrom rlang .data
 #' 
 #' @return \code{transform_data} returns a transformed data frame of mutations, with
 #' columns corresponding to the candidate features with projected counts
@@ -40,7 +41,7 @@ transform_data <- function(dt,
     mutate_(.dots = new_partition_formula)
   
   dt_new <- dt_new %>%
-    arrange(tracking_ind) %>%
+    arrange(.data$tracking_ind) %>%
     select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("DIVISION"))) 
   
   return(dt_new)
