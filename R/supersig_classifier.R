@@ -1,4 +1,4 @@
-# SuperSigClassifier.R
+# supersig_classifier.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 10, 2019
@@ -33,7 +33,7 @@
 #' @import rsample
 #' @importFrom MASS lda
 #'
-#' @return \code{SuperSigClassifier} returns a list of several elements:
+#' @return \code{supersig_classifier} returns a list of several elements:
 #' \itemize{
 #' \item \code{auc} is a vector of AUCs for each classifier
 #' \item \code{signature} is a vector of mean differences or rates
@@ -44,7 +44,7 @@
 #' 
 #' @noRd
 #' 
-SuperSigClassifier <- function(dt, test_ind = NULL,
+supersig_classifier <- function(dt, test_ind = NULL,
                                factor,
                                classifier, # Options are "LDA", "Logit", "RF"
                                keep_classifier = F,
@@ -142,7 +142,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
         newdata <- dt[test_ind, features_selected[1:select_n["LDA"]], drop = F] %>% as.matrix()
         lda_prediction <- predict(lda_classifier, newdata = newdata)$x
         
-        out$auc["LDA"] = MyAuc(test_indvar, lda_prediction)
+        out$auc["LDA"] = my_auc(test_indvar, lda_prediction)
         if(keep_classifier) 
           out$classifier$LDA <- lda_classifier
         
@@ -170,7 +170,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
         rf_prediction <- predict(rf_classifier, newdata = newdata,
                                  type = "prob")[, levels(y_factor)[2]]
         
-        out$auc["RF"] <- MyAuc(test_indvar, rf_prediction)
+        out$auc["RF"] <- my_auc(test_indvar, rf_prediction)
         if(keep_classifier) 
           out$classifier$RF <- rf_classifier
       })
@@ -222,7 +222,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
           out$signature <- list(mean_diffs = mean_diffs, logit_betas = logit_betas, select_n = select_n)
         }
         
-        out$auc["Logit"] = MyAuc(test_indvar, logit_prediction)
+        out$auc["Logit"] = my_auc(test_indvar, logit_prediction)
         if(keep_classifier) 
           out$classifier$Logit <- logit_classifier
       })
@@ -256,7 +256,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
 # select_n = features_out$select_n
 # test_ind = NULL
 # 
-# test_out = SuperSigClassifier(dt = dt, test_ind = NULL,
+# test_out = supersig_classifier(dt = dt, test_ind = NULL,
 #                               factor = factor,
 #                               classifier = c("LDA", "Logit", "RF", "NNLS"),
 #                               keep_classifier = F,
@@ -264,7 +264,7 @@ SuperSigClassifier <- function(dt, test_ind = NULL,
 #                               select_n = select_n)
 
 # Create test objects for Shiny app
-# test_model = SuperSigClassifier(dt = dt, test_ind = NULL,
+# test_model = supersig_classifier(dt = dt, test_ind = NULL,
 #                                 factor = factor,
 #                                 classifier = c("LDA"),
 #                                 keep_classifier = T,

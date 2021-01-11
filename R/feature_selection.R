@@ -1,4 +1,4 @@
-# FeatureSelection.R
+# feature_selection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 21, 2020
@@ -8,9 +8,9 @@
 # library(dplyr)
 # library(assertthat)
 # library(here)
-# source(here("code", "ContextMatters.R"))
-# source(here("code", "GenerateMinSigmaAlgebra.R"))
-# source(here("code", "TransformData.R"))
+# source(here("code", "context_matters.R"))
+# source(here("code", "generate_min_sigma_algebra.R"))
+# source(here("code", "transform_data.R"))
 
 #' Function for feature selection
 #' 
@@ -27,8 +27,9 @@
 #' 
 #' @import dplyr
 #' @import assertthat
+#' @import caret
 #' 
-#' @return \code{FeatureSelection} returns a list of several elements:
+#' @return \code{feature_selection} returns a list of several elements:
 #' \itemize{
 #' \item \code{features_context_0} is a vector of survival mutations
 #' for the unexposed group
@@ -39,12 +40,12 @@
 #' where each feature is represented by a vector of fundamental mutations
 #' \item \code{select_n} is the number of top features to retain for each method
 #' \item \code{mutation_dt} is a sorted data frame of candidate features and their AUC
-#' \item \code{dt_new} is the transformed data from \code{TransformData}
+#' \item \code{dt_new} is the transformed data from \code{transform_data}
 #' }
 #' 
 #' @noRd
 #' 
-FeatureSelection <- function(dt,
+feature_selection <- function(dt,
                              factor,
                              test_ind = NULL,     # to be deprecated
                              middle_dt = NULL,    # to be deprecated
@@ -74,7 +75,7 @@ FeatureSelection <- function(dt,
     
     train_inner = train[train_inner_ind, ]
     
-    # ContextMatters
+    # context_matters
     if(factor != "AGE"){ 
       train_0 <- train_inner %>% filter(IndVar == 0)
       train_1 <- train_inner %>% filter(IndVar == 1)
@@ -94,25 +95,25 @@ FeatureSelection <- function(dt,
     
     # Test for significant features
     if(nrow(train_0) == 0 || nrow(train_1) == 0) next
-    features_context_0 <- ContextMatters(train_0, wgs = wgs)
+    features_context_0 <- context_matters(train_0, wgs = wgs)
     assert_that(length(features_context_0) >= 1, 
-                msg = "No significant features found for ind0 by ContextMatters")
-    features_context_1 <- ContextMatters(train_1, wgs = wgs)
+                msg = "No significant features found for ind0 by context_matters")
+    features_context_1 <- context_matters(train_1, wgs = wgs)
     assert_that(length(features_context_1) >= 1, 
-                msg = "No significant features found for ind1 by ContextMatters")
+                msg = "No significant features found for ind1 by context_matters")
     
     input_ls <- list(var0 = features_context_0, var1 = features_context_1)
-    features_gmsa <- GenerateMinSigmaAlgebra(input_ls)
+    features_gmsa <- generate_min_sigma_algebra(input_ls)
     new_partition_ls[[ij]] <- features_gmsa
   }
   
   # Repartition features
-  new_partition_combined = Reduce(function(a, b){GenerateMinSigmaAlgebra(list(var0 = a, var1 = b), partitioned_features = T)},
+  new_partition_combined = Reduce(function(a, b){generate_min_sigma_algebra(list(var0 = a, var1 = b), partitioned_features = T)},
                                   new_partition_ls)
   
   # Transform data
   new_partition = new_partition_combined
-  dt_new = TransformData(train, new_partition)
+  dt_new = transform_data(train, new_partition)
   
   # Trinucleotide ranking in inner folds
   rank_tri_ls <- vector(length = length(inner_partitions), mode = "list")
@@ -121,7 +122,7 @@ FeatureSelection <- function(dt,
     feature_names = names(new_partition)
     
     # AUC
-    auc_mat <- AllMyAuc(dt_new %>% select(c(feature_names, "IndVar")), IndVar = "IndVar")
+    auc_mat <- all_my_auc(dt_new %>% select(c(feature_names, "IndVar")), IndVar = "IndVar")
     if(factor == "AGE"){
       auc_medians = auc_mat
     } else {
@@ -168,7 +169,7 @@ FeatureSelection <- function(dt,
   features_selected = names(new_partition)
   
   # Transform data 
-  dt_new = TransformData(dt, new_partition)
+  dt_new = transform_data(dt, new_partition)
   
   # Find n* over each fold
   train = dt_new[train_ind,]
@@ -190,7 +191,7 @@ FeatureSelection <- function(dt,
     methods <- c("Logit")
     
     for(k in 1:n){
-      auc_ls[[k]] = SuperSigClassifier(dt = train, 
+      auc_ls[[k]] = supersig_classifier(dt = train, 
                                        test_ind = test_inner_ind,
                                        factor,
                                        classifier = methods, 
@@ -219,7 +220,7 @@ FeatureSelection <- function(dt,
   names(select_n) = n_star$methods
   
   # Limit select_n to features that are > 0.6 AUC
-  auc_mat <- AllMyAuc(dt_new %>% select(c(features_selected, "IndVar")), IndVar = "IndVar")
+  auc_mat <- all_my_auc(dt_new %>% select(c(features_selected, "IndVar")), IndVar = "IndVar")
   max_n = sum(auc_mat > 0.6)
   select_n = sapply(select_n, function(x) min(max_n, x))
   
@@ -256,4 +257,4 @@ FeatureSelection <- function(dt,
 #     mutate(IndVar = NA)
 # }
 # 
-# test_out = FeatureSelection(dt = dt, middle_dt = middle_dt, factor = factor)
+# test_out = feature_selection(dt = dt, middle_dt = middle_dt, factor = factor)

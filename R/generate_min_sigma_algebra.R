@@ -1,4 +1,4 @@
-# GenerateMinSigmaAlgebra.R
+# generate_min_sigma_algebra.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 21, 2020
@@ -10,8 +10,8 @@
 # library(assertthat)
 # library(here)
 
-# source(here("code", "CondenseMutations.R"))
-# source(here("code", "ConvertToLevel3.R"))
+# source(here("code", "condense_mutations.R"))
+# source(here("code", "convert_to_level3.R"))
 
 #' Generate partition of features
 #' 
@@ -23,18 +23,18 @@
 #' @param condense an optional logical value indicating whether the output value
 #' `new_partition` should return mutations in condensed form (default is \code{FALSE})
 #' @param partitioned_features indicates whether the mutation features have been prepartitioned
-#' (i.e. input is coming from output of GenerateMinSigmaAlgebra)
+#' (i.e. input is coming from output of generate_min_sigma_algebra)
 #' 
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @return \code{GenerateMinSigmaAlgebra} returns a list of partitioned features,
+#' @return \code{generate_min_sigma_algebra} returns a list of partitioned features,
 #' where each feature is represented by a vector of the fundamental (level 3)
 #' mutations
 #' 
 #' @noRd
 #' 
-GenerateMinSigmaAlgebra <- function(input_ls, 
+generate_min_sigma_algebra <- function(input_ls, 
                                     condense = F,
                                     partitioned_features = F){
   # Check input
@@ -46,7 +46,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
   } else {
     # Convert to fundamental (i.e. level 3) mutations
     feat_ls <- unique(unlist(input_ls))
-    feat_ls <- lapply(feat_ls, ConvertToLevel3)
+    feat_ls <- lapply(feat_ls, convert_to_level3)
   }
   
   # Create matrix of indicator values
@@ -77,7 +77,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
   
   # Condense mutations
   if(condense)
-    new_partition <- lapply(new_partition, CondenseMutations) 
+    new_partition <- lapply(new_partition, condense_mutations) 
   
   # Return output
   return(new_partition)
@@ -90,7 +90,7 @@ GenerateMinSigmaAlgebra <- function(input_ls,
 # Test function
 # h_mix = readRDS(here("data", "h_mix.rds"))
 # test_1 <- h_mix[c("A[T>G]G","C[T>G]G")]
-# GenerateMinSigmaAlgebra(test_1)
+# generate_min_sigma_algebra(test_1)
 # 
 # test_2 <- h_mix[c("(TG)[T>C](CTG)","(AG)[T>C](CTG)")]
-# GenerateMinSigmaAlgebra(test_2)
+# generate_min_sigma_algebra(test_2)

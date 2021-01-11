@@ -1,11 +1,9 @@
-# MyAuc.R
+# my_auc.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Jul 15, 2019
 #
 # Functions for calculating AUC using the Mann-Whitney U Statistic
-
-# source(here("code", "AllMyAuc.R"))
 
 #' Calculate AUC for a column
 #' 
@@ -14,11 +12,11 @@
 #' @param y an indicator variable column, i.e. the "true value" column
 #' @param x a column of numeric values, e.g. the projected counts of a feature
 #' 
-#' @return \code{MyAuc} returns a numeric AUC value
+#' @return \code{my_auc} returns a numeric AUC value
 #' 
 #' @noRd
 #' 
-MyAuc <- function(y, x){
+my_auc <- function(y, x){
   # Handle missing observations
   missing_x = is.na(x)
   if(all(missing_x)){

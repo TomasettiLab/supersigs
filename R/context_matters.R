@@ -1,4 +1,4 @@
-# ContextMatters.R
+# context_matters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
 # Date last modified: Dec 21, 2020
@@ -28,12 +28,12 @@
 #' @import assertthat
 #' @importFrom rlang .data
 #' 
-#' @return \code{ContextMatters} returns a vector of survival mutations that pass
+#' @return \code{context_matters} returns a vector of survival mutations that pass
 #' the binomial tree testing
 #' 
 #' @noRd
 #' 
-ContextMatters <- function(muts_df, 
+context_matters <- function(muts_df, 
                            p_thresh = 0.05,
                            tot_pseudo = 0,
                            wgs = F){
@@ -190,4 +190,4 @@ ContextMatters <- function(muts_df,
 #   transmute_(.dots = muts_formula) %>% # Add counts for every mutation in all_muts
 #   mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
 # 
-# ContextMatters(test_1)
+# context_matters(test_1)

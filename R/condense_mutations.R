@@ -1,4 +1,4 @@
-# CondenseMutations.R
+# condense_mutations.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
 # Date last modified: Dec 10, 2019
@@ -9,11 +9,11 @@
 #' 
 #' @param features a vector of level 3 features
 #'
-#' @return \code{CondenseMutations} returns a vector of condensed features
+#' @return \code{condense_mutations} returns a vector of condensed features
 #' 
 #' @noRd
 #' 
-CondenseMutations = function(features){
+condense_mutations = function(features){
   out = vector('character')
   for(i in seq_along(muts_children_level3)){
     v = muts_children_level3[[i]]
