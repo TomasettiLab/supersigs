@@ -377,7 +377,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Transform data</h2>
 <p>Once you’ve read in your data, you will need to transform it into a data frame of features that is readable by the <code>supersigs</code> package. This involves 2 steps:</p>
 <ol style="list-style-type: decimal">
-<li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C&gt;A mutations are considered the same as G&gt;T mutations. We will convert all G&gt;T mutations to be denoted as C&gt;A mutations using the named vector <code>transform_muts_vec</code>, which is stored and accessible from the <code>supersigs</code> R package.</p></li>
+<li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C&gt;A mutations are considered the same as G&gt;T mutations and we will convert all G&gt;T mutations to be denoted as C&gt;A mutations.</p></li>
 <li><p>Because the features used are built upon trinucleotide features (e.g. A[C&gt;A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the <code>hg19</code> reference genome.</p></li>
 </ol>
 <p>Both of these steps are done by the <code>make_matrix</code> function. Note that using the <code>make_matrix</code> function requires installing and loading a reference genome (<code>BSgenome.Hsapiens.UCSC.hg19</code> and <code>BSgenome.Hsapiens.UCSC.hg38</code> are supported).</p>

@@ -18,13 +18,30 @@ cancer genome using supervised learning.
 
 ## Installation
 
-You can install the development version of supersigs from github with:
+You can install the development version of supersigs from github using
+the `install_github()` function from the `devtools` package.
 
 ``` r
 # Install development version from GitHub
 devtools::install_github("albertkuo/supersigs")
 ```
 
-## Usage
+## Core functions
 
-Learn more in `vignette("supersigs")`
+The `supersigs` package contains two core functions: `get_signature` and
+`predict_signature`.
+
+`get_signature` trains a supervised signature for a given factor.
+
+``` r
+sig <- get_signature(dt = data, factor = "smoking", wgs = F)
+```
+
+`predict_signature` uses the trained supervised signature to obtain
+predicted probabilities (e.g. probability of smoker) on a new dataset.
+
+``` r
+pred <- predict_signature(object = sig, newdata = data, factor = "smoking")
+```
+
+For more details, see `vignette("supersigs")`.

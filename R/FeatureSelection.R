@@ -28,8 +28,6 @@
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @export
-#' 
 #' @return \code{FeatureSelection} returns a list of several elements:
 #' \itemize{
 #' \item \code{features_context_0} is a vector of survival mutations

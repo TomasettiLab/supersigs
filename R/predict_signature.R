@@ -15,6 +15,8 @@
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr
+#' @importFrom methods as new
+#' @importFrom stats binomial coef end glm median pbinom predict setNames start
 #' 
 #' @export
 #' 

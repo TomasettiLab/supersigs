@@ -16,8 +16,6 @@
 #' 
 #' @import dplyr
 #' 
-#' @export
-#' 
 #' @return \code{TransformData} returns a transformed data frame of mutations, with
 #' columns corresponding to the candidate features with projected counts
 #' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},

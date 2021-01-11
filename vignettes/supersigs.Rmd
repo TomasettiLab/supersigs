@@ -43,7 +43,7 @@ print(example_dt)
 
 Once you've read in your data, you will need to transform it into a data frame of features that is readable by the `supersigs` package. This involves 2 steps:
 
-1. First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C>A mutations are considered the same as G>T mutations. We will convert all G>T mutations to be denoted as C>A mutations using the named vector `transform_muts_vec`, which is stored and accessible from the `supersigs` R package.
+1. First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C>A mutations are considered the same as G>T mutations and we will convert all G>T mutations to be denoted as C>A mutations.
 
 2. Because the features used are built upon trinucleotide features (e.g. A[C>A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the `hg19` reference genome.
 

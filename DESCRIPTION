@@ -13,19 +13,21 @@ Authors@R: c(person(given = "Albert",
              person(given = "Bahman", 
                     family = "Afsari",
                     role = c("aut"))) 
-Depends: R (>= 3.6.1)
+Depends: R (>= 3.6.0)
 Imports: 
 	assertthat, 
 	caret, 
 	dplyr, 
         tidyr,
 	MASS, 
-	rsample
+	rsample,
+        methods,
+        rlang,
+        stats
 Suggests: 
 	BSgenome.Hsapiens.UCSC.hg19, 
 	BSgenome.Hsapiens.UCSC.hg38, 
 	knitr, 
-	randomForest, 
 	rmarkdown
 Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations. The methodology is based on the paper "Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer."
 License: GPL-3

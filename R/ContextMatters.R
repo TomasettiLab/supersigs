@@ -26,8 +26,7 @@
 #' @import dplyr
 #' @import rsample
 #' @import assertthat
-#' 
-#' @export
+#' @importFrom rlang .data
 #' 
 #' @return \code{ContextMatters} returns a vector of survival mutations that pass
 #' the binomial tree testing
@@ -38,6 +37,7 @@ ContextMatters <- function(muts_df,
                            p_thresh = 0.05,
                            tot_pseudo = 0,
                            wgs = F){
+  
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct")
@@ -63,20 +63,20 @@ ContextMatters <- function(muts_df,
                  n_children = h_muts_index) %>%
     right_join(. , background_probs, by = "feature") %>%
     mutate(q = muts_counts[feature],
-           size = muts_counts[parent_name],
-           prop = q/size)
+           size = muts_counts[.data$parent_name],
+           prop = .data$q/.data$size)
   
   # Binomial test for all features
   tree <- tree %>%
-    mutate(p_value = pbinom(q, size, prob, lower.tail = F), 
+    mutate(p_value = pbinom(.data$q, .data$size, .data$prob, lower.tail = F), 
            #p_value_bonf = p.adjust(p_value, method = "bonferroni", n = nrow(tree)),  # Supplement says 151 features, but there are 486 = nrow(tree) tests
-           p_value_bonf = p_value*bonf_correction,
-           sig = p_value_bonf < p_thresh) 
+           p_value_bonf = .data$p_value*bonf_correction,
+           sig = .data$p_value_bonf < p_thresh) 
   
   # First level of significant features
   survival_mutations <- tree %>%
-    filter(n_children == 16) %>%
-    filter(sig) %>% 
+    filter(.data$n_children == 16) %>%
+    filter(.data$sig) %>% 
     pull(feature)
   
   # Return here if only testing for 6 central mutations
@@ -87,15 +87,15 @@ ContextMatters <- function(muts_df,
   # Keep tests only for significant parents
   for(i in c(4, 1)){
     tree_tmp <- tree %>%
-      filter(n_children == i) %>%
-      mutate(sig_2 = ifelse(parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), sig, T))
+      filter(.data$n_children == i) %>%
+      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), sig, T))
     
     survival_mutations_tmp <- tree_tmp %>% 
-      filter(n_children == i) %>%
-      group_by(feature) %>%
-      summarize(sig_2 = all(sig_2)) %>%
-      filter(sig_2) %>%
-      pull(feature)
+      filter(.data$n_children == i) %>%
+      group_by(.data$feature) %>%
+      summarize(sig_2 = all(.data$sig_2)) %>%
+      filter(.data$sig_2) %>%
+      pull(.data$feature)
     
     survival_mutations <- c(survival_mutations, unique(survival_mutations_tmp))
   }
@@ -108,62 +108,62 @@ ContextMatters <- function(muts_df,
   for(level in 2:1){
     # Take union of children and grandchildren
     union_children_vec = survival_mutations_cache %>%
-      filter(n_children %in% if(level == 1) c(4, 1) else c(1)) %>%
+      filter(.data$n_children %in% if(level == 1) c(4, 1) else c(1)) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
-      pull(child_name) %>%
+      pull(.data$child_name) %>%
       unique()
     
     # All survival children and grandchildren as level 3 mutations
     survival_children_level3 <- tree %>%
-      filter(feature %in% union_children_vec) %>%
-      select(feature, parent_name, prob, q) %>%
-      rename(child_name = feature,
-             feature = parent_name,
-             prob_child = prob,
-             q_child = q)
+      filter(.data$feature %in% union_children_vec) %>%
+      select(.data$feature, .data$parent_name, .data$prob, .data$q) %>%
+      rename(child_name = .data$feature,
+             feature = .data$parent_name,
+             prob_child = .data$prob,
+             q_child = .data$q)
     
     # Compute children of feature
     tree_pruned <- tree %>%
-      filter(feature %in% survival_mutations &
-               n_children == ifelse(level == 1, 16, 4)) %>%
-      select(feature, n_children, parent_name, prob, q, size) %>%
+      filter(.data$feature %in% survival_mutations &
+               .data$n_children == ifelse(level == 1, 16, 4)) %>%
+      select(.data$feature, .data$n_children, .data$parent_name, .data$prob, .data$q, .data$size) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
       inner_join(. , survival_children_level3, by = c("child_name", "parent_name" = "feature")) %>%
-      filter(parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS")) %>%
-      group_by(feature, parent_name, prob, q, size) %>%
-      summarize(prob_child = sum(prob_child),
-                q_child = sum(q_child)) %>%
+      filter(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS")) %>%
+      group_by(.data$feature, .data$parent_name, .data$prob, .data$q, .data$size) %>%
+      summarize(prob_child = sum(.data$prob_child),
+                q_child = sum(.data$q_child)) %>%
       ungroup()
     
     # Compute children of parent
     tree_pruned_parent <- tree_pruned %>%
-      distinct(parent_name) %>%
-      rename(feature = parent_name) %>%
+      distinct(.data$parent_name) %>%
+      rename(feature = .data$parent_name) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
       inner_join(. , survival_children_level3, by = c("child_name", "feature")) %>%
-      group_by(feature) %>%
-      summarize(prob_parent_child = sum(prob_child),
-                q_parent_child = sum(q_child)) %>%
+      group_by(.data$feature) %>%
+      summarize(prob_parent_child = sum(.data$prob_child),
+                q_parent_child = sum(.data$q_child)) %>%
       ungroup()
     
     # Join and test
     tree_pruned <- tree_pruned %>%
       full_join(. , tree_pruned_parent, by = c("parent_name" = "feature")) %>%
-      mutate(prob_pruned = (prob - prob_child)/(1 - prob_parent_child),
-             q_pruned = q - q_child,
-             size_pruned = size - q_parent_child) %>%
-      mutate(p_value = pbinom(q_pruned, size_pruned, prob_pruned, lower.tail = F), 
-             p_value_bonf = p_value*bonf_correction,
-             sig = p_value_bonf < p_thresh)
+      mutate(prob_pruned = (.data$prob - .data$prob_child)/(1 - .data$prob_parent_child),
+             q_pruned = .data$q - .data$q_child,
+             size_pruned = .data$size - .data$q_parent_child) %>%
+      mutate(p_value = pbinom(.data$q_pruned, .data$size_pruned, .data$prob_pruned, lower.tail = F), 
+             p_value_bonf = .data$p_value*bonf_correction,
+             sig = .data$p_value_bonf < p_thresh)
     
     pruned_mutations <- tree_pruned %>%
-      group_by(feature) %>%
-      summarize(sig = all(sig)) %>%
-      filter(!sig) %>%
-      pull(feature)
+      group_by(.data$feature) %>%
+      summarize(sig = all(.data$sig)) %>%
+      filter(!.data$sig) %>%
+      pull(.data$feature)
     
     survival_mutations_cache <- survival_mutations_cache %>%
-      filter(!(feature %in% pruned_mutations))
+      filter(!(.data$feature %in% pruned_mutations))
     
     survival_mutations <- unique(survival_mutations_cache$feature)
   }

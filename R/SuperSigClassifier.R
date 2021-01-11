@@ -31,7 +31,6 @@
 #' 
 #' @import dplyr
 #' @import rsample
-#' @importFrom randomForest randomForest
 #' @importFrom MASS lda
 #'
 #' @return \code{SuperSigClassifier} returns a list of several elements:
