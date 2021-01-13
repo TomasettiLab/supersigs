@@ -35,14 +35,14 @@
 #' @noRd
 #' 
 generate_min_sigma_algebra <- function(input_ls, 
-                                    condense = F,
-                                    partitioned_features = F){
+                                    condense = FALSE,
+                                    partitioned_features = FALSE){
   # Check input
   assert_that(length(input_ls) == 2, msg = "input_ls has length not equal to 2")
   assert_that(!is.null(names(input_ls)), msg = "input_ls is not named")
   
   if(partitioned_features){
-    feat_ls <- unlist(input_ls, recursive = F)
+    feat_ls <- unlist(input_ls, recursive = FALSE)
   } else {
     # Convert to fundamental (i.e. level 3) mutations
     feat_ls <- unique(unlist(input_ls))
@@ -50,8 +50,8 @@ generate_min_sigma_algebra <- function(input_ls,
   }
   
   # Create matrix of indicator values
-  temp <- setNames(rep(F, length(muts_level3)), muts_level3)
-  M <- sapply(feat_ls, FUN = function(mutation) {out <- temp; out[mutation] <- T; out})
+  temp <- setNames(rep(FALSE, length(muts_level3)), muts_level3)
+  M <- vapply(feat_ls, FUN = function(mutation) {out <- temp; out[mutation] <- T; out})
   
   # Separate mutations that do not appear in any of feat_ls
   any_ind <- apply(M, MARGIN = 1, FUN = any)
@@ -63,8 +63,8 @@ generate_min_sigma_algebra <- function(input_ls,
     new_partition <- list(names(M))
   } else {
     new_partition <- lapply(rownames(M), FUN = function(mutation){
-      apply(cbind(M[, which(M[mutation, ] == T)],
-                  !M[, which(M[mutation, ] == F)]),
+      apply(cbind(M[, which(M[mutation, ] == TRUE)],
+                  !M[, which(M[mutation, ] == FALSE)]),
             MARGIN = 1, FUN = all)} %>% 
         which() %>% names())
     new_partition <- new_partition[!duplicated(new_partition)]

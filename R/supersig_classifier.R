@@ -43,8 +43,8 @@
 #' 
 supersig_classifier <- function(dt, test_ind = NULL,
                                factor,
-                               keep_classifier = F,
-                               adjusted_formula = F,
+                               keep_classifier = FALSE,
+                               adjusted_formula = FALSE,
                                features_selected,
                                select_n){
   # Split training and test set
@@ -70,14 +70,14 @@ supersig_classifier <- function(dt, test_ind = NULL,
       grouped_rates <- train %>%
         group_by(.data$IndVar) %>%
         summarize_at(.vars = features_selected,
-                     .funs = funs(median(., na.rm=T)/median(.data$AGE, na.rm=T)))
+                     .funs = funs(median(., na.rm=TRUE)/median(.data$AGE, na.rm=TRUE)))
       
-      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == F) %>% select(-.data$IndVar)
-      exposed_rates <- grouped_rates %>% filter(.data$IndVar == T) %>% select(-.data$IndVar)
+      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% select(-.data$IndVar)
       
       # Remove unexposed median rate (i.e. aging rate) from training and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
-        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
+        vapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
       
       dt <- dt %>%
         mutate_(.dots = remove_age_formula) %>%
@@ -132,11 +132,11 @@ supersig_classifier <- function(dt, test_ind = NULL,
           slice(train_ind) %>%
           group_by(.data$IndVar) %>%
           summarize_at(.vars = features_selected[1:select_n["Logit"]],
-                       .funs = funs(mean(./.data$AGE, na.rm = T)))
+                       .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
       }
       
-      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == F) %>% select(-.data$IndVar)
-      exposed_rates <- grouped_rates %>% filter(.data$IndVar == T) %>% select(-.data$IndVar)
+      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% select(-.data$IndVar)
       
       # Calculate mean_diff = difference in counts or rates between exposed and unexposed -> signature representation
       mean_diffs <- exposed_rates - unexposed_rates

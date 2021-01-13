@@ -30,7 +30,7 @@
 #' # input_dt = make_matrix(example_dt) # convert to correct format
 #' # get_signature(dt = input_dt, factor = "age") # get SuperSig
 #' 
-get_signature <- function(dt, factor, wgs = F){
+get_signature <- function(dt, factor, wgs = FALSE){
   # Capitalize factor string
   factor = toupper(factor)
   
@@ -70,7 +70,7 @@ get_signature <- function(dt, factor, wgs = F){
   # Get apparent AUC and model
   classification_out = supersig_classifier(dt = features_out$dt_new,
                                           factor = factor,
-                                          keep_classifier = T,
+                                          keep_classifier = TRUE,
                                           features_selected = features_out$features_selected,
                                           select_n = features_out$select_n)
   

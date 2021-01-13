@@ -62,7 +62,7 @@ make_matrix <- function(dt, genome = "hg19"){
     mutate(aligned = as.character(aligned_dna),
            mutation = paste0(substr(.data$aligned, 1, 1), "[", .data$from, ">", .data$to, "]",
                              substr(.data$aligned, 3, 3)),
-           mutation_std = unname(sapply(.data$mutation, function(x) transform_muts_vec[[x]])))
+           mutation_std = unname(vapply(.data$mutation, function(x) transform_muts_vec[[x]])))
   
   # Count mutations for each patient
   dt_counts <- dt %>%

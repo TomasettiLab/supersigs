@@ -52,7 +52,7 @@ context_matters <- function(muts_df,
     all_possible_tri["TOTAL_MUTATIONS"] <- 3
     muts_counts[feature] <- muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
   }
-  muts_counts <- sapply(muts_counts, round)
+  muts_counts <- vapply(muts_counts, round)
   test_all_96 <- T
   bonf_correction <- 150
   
