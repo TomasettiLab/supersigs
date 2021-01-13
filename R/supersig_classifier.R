@@ -77,7 +77,7 @@ supersig_classifier <- function(dt, test_ind = NULL,
       
       # Remove unexposed median rate (i.e. aging rate) from training and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
-        vapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
+        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
       
       dt <- dt %>%
         mutate_(.dots = remove_age_formula) %>%

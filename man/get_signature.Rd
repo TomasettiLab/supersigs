@@ -4,7 +4,7 @@
 \alias{get_signature}
 \title{Function to obtain a SuperSig}
 \usage{
-get_signature(dt, factor, wgs = F)
+get_signature(dt, factor, wgs = FALSE)
 }
 \arguments{
 \item{dt}{a data frame of mutations (see vignette for details)}
