@@ -13,7 +13,7 @@ Authors@R: c(person(given = "Albert",
              person(given = "Bahman", 
                     family = "Afsari",
                     role = c("aut"))) 
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.0)
 Imports: 
 	assertthat, 
 	caret, 
@@ -24,7 +24,8 @@ Imports:
         methods,
         rlang,
 	utils,
-	Biostrings
+	Biostrings,
+	stats
 Suggests: 
 	BSgenome.Hsapiens.UCSC.hg19, 
 	BSgenome.Hsapiens.UCSC.hg38, 
