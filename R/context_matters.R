@@ -35,7 +35,7 @@
 context_matters <- function(muts_df, 
                            p_thresh = 0.05,
                            tot_pseudo = 0,
-                           wgs = F){
+                           wgs = FALSE){
   # Check input
   assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
               msg = "Column names of input data are not correct in context_matters")
@@ -53,7 +53,7 @@ context_matters <- function(muts_df,
     muts_counts[feature] <- muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
   }
   muts_counts <- sapply(muts_counts, round)
-  test_all_96 <- T
+  test_all_96 <- TRUE
   bonf_correction <- 150
   
   # Create "tree"
@@ -66,7 +66,7 @@ context_matters <- function(muts_df,
   
   # Binomial test for all features
   tree <- tree %>%
-    mutate(p_value = pbinom(.data$q, .data$size, .data$prob, lower.tail = F), 
+    mutate(p_value = pbinom(.data$q, .data$size, .data$prob, lower.tail = FALSE), 
            #p_value_bonf = p.adjust(p_value, method = "bonferroni", n = nrow(tree)),  # Supplement says 151 features, but there are 486 = nrow(tree) tests
            p_value_bonf = .data$p_value*bonf_correction,
            sig = .data$p_value_bonf < p_thresh) 
@@ -86,7 +86,7 @@ context_matters <- function(muts_df,
   for(i in c(4, 1)){
     tree_tmp <- tree %>%
       filter(.data$n_children == i) %>%
-      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), .data$sig, T))
+      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), .data$sig, TRUE))
     
     survival_mutations_tmp <- tree_tmp %>% 
       filter(.data$n_children == i) %>%
@@ -150,7 +150,7 @@ context_matters <- function(muts_df,
       mutate(prob_pruned = (.data$prob - .data$prob_child)/(1 - .data$prob_parent_child),
              q_pruned = .data$q - .data$q_child,
              size_pruned = .data$size - .data$q_parent_child) %>%
-      mutate(p_value = pbinom(.data$q_pruned, .data$size_pruned, .data$prob_pruned, lower.tail = F), 
+      mutate(p_value = pbinom(.data$q_pruned, .data$size_pruned, .data$prob_pruned, lower.tail = FALSE), 
              p_value_bonf = .data$p_value*bonf_correction,
              sig = .data$p_value_bonf < p_thresh)
     

@@ -126,7 +126,7 @@ supersig_classifier <- function(dt, test_ind = NULL,
           slice(train_ind) %>%
           group_by(.data$IndVar) %>%
           summarize_at(.vars = features_selected[1:select_n["Logit"]],
-                       .funs = funs(mean(., na.rm = T)))
+                       .funs = funs(mean(., na.rm = TRUE)))
       } else {
         grouped_rates <- dt %>%
           slice(train_ind) %>%

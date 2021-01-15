@@ -51,7 +51,7 @@ generate_min_sigma_algebra <- function(input_ls,
   
   # Create matrix of indicator values
   temp <- setNames(rep(FALSE, length(muts_level3)), muts_level3)
-  M <- sapply(feat_ls, FUN = function(mutation) {out <- temp; out[mutation] <- T; out})
+  M <- sapply(feat_ls, FUN = function(mutation) {out <- temp; out[mutation] <- TRUE; out})
   
   # Separate mutations that do not appear in any of feat_ls
   any_ind <- apply(M, MARGIN = 1, FUN = any)

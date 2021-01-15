@@ -109,7 +109,7 @@ feature_selection <- function(dt,
   }
   
   # Repartition features
-  new_partition_combined <- Reduce(function(a, b){generate_min_sigma_algebra(list(var0 = a, var1 = b), partitioned_features = T)},
+  new_partition_combined <- Reduce(function(a, b){generate_min_sigma_algebra(list(var0 = a, var1 = b), partitioned_features = TRUE)},
                                    new_partition_ls)
   
   # Transform data
@@ -211,7 +211,7 @@ feature_selection <- function(dt,
   # Take medians over inner folds
   n_star <- bind_cols(n_star_ls)
   n_star <- n_star %>%
-    mutate(n_star = apply(select(., starts_with("n_star")), 1, median, na.rm = T),
+    mutate(n_star = apply(select(., starts_with("n_star")), 1, median, na.rm = TRUE),
            n_star = round(.data$n_star)) %>%
     select(.data$methods_1, .data$n_star) %>%
     dplyr::rename(methods = .data$methods_1)
