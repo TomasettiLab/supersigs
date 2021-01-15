@@ -52,10 +52,10 @@ feature_selection <- function(dt,
                               middle_dt = NULL,    # to be deprecated
                               wgs = FALSE){
   if(is.null(test_ind)){
-    train_ind <- 1:nrow(dt)
+    train_ind <- seq_len(nrow(dt))
     test_ind <- train_ind
   } else {
-    train_ind <- setdiff(1:nrow(dt), test_ind)
+    train_ind <- setdiff(seq_len(nrow(dt)), test_ind)
   }
   
   # Separate into exposed (train_1) and unexposed (train_0)
@@ -65,14 +65,14 @@ feature_selection <- function(dt,
   message(paste("Begin feature engineering..."))
   n_iter = 5
   n_fold = 3
-  inner_partitions <- sapply(1:n_iter, FUN = function(x) createFolds(y = train$IndVar, k = n_fold))
+  inner_partitions <- sapply(seq_len(n_iter), FUN = function(x) createFolds(y = train$IndVar, k = n_fold))
   new_partition_ls <- vector(length = length(inner_partitions), mode = "list")
   for(ij in seq_along(inner_partitions)){
     i <- (ij-1) %% n_fold + 1
     j <- floor((ij-1)/n_fold) + 1
     
     test_inner_ind <- inner_partitions[[i, j]]
-    train_inner_ind <- setdiff(1:nrow(train), test_inner_ind)
+    train_inner_ind <- setdiff(seq_len(nrow(train)), test_inner_ind)
     
     train_inner <- train[train_inner_ind, ]
     
@@ -88,11 +88,13 @@ feature_selection <- function(dt,
     # Add up counts for every mutation
     train_0 <- train_0 %>%
       transmute_(.dots = muts_formula) %>% 
-      mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
+      mutate(TOTAL_MUTATIONS = select(., c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")) %>% 
+               rowSums())
     
     train_1 <- train_1 %>%
       transmute_(.dots = muts_formula) %>%
-      mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
+      mutate(TOTAL_MUTATIONS = select(., c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")) %>% 
+               rowSums())
     
     # Test for significant features
     if(nrow(train_0) == 0 || nrow(train_1) == 0) next
@@ -138,7 +140,7 @@ feature_selection <- function(dt,
                                         trinucleotide = unlist(new_partition))
     rank_trinucleotides <- rank_mutations %>%
       left_join(., feature_to_trinucleotides, by = c("mutation" = "feature")) %>%
-      mutate(rank = 1:n()) %>%
+      mutate(rank = seq_len(n())) %>%
       group_by(.data$mutation) %>%
       mutate(mean_rank = mean(.data$rank)) %>%
       ungroup()
@@ -185,13 +187,13 @@ feature_selection <- function(dt,
     j <- floor((ij-1)/n_fold) + 1
     
     test_inner_ind <- inner_partitions[[i, j]]
-    train_inner_ind <- setdiff(1:nrow(train), test_inner_ind)
+    train_inner_ind <- setdiff(seq_len(nrow(train)), test_inner_ind)
     
     # Find n*
     auc_ls <- list()
     methods <- c("Logit")
     
-    for(k in 1:n){
+    for(k in seq_len(n)){
       auc_ls[[k]] <- supersig_classifier(dt = train, 
                                          test_ind = test_inner_ind,
                                          factor,

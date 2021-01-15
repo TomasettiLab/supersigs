@@ -49,10 +49,10 @@ supersig_classifier <- function(dt, test_ind = NULL,
                                select_n){
   # Split training and test set
   if(is.null(test_ind)){
-    train_ind <- 1:nrow(dt)
+    train_ind <- seq_len(nrow(dt))
     test_ind <- train_ind
   } else {
-    train_ind <- setdiff(1:nrow(dt), test_ind)
+    train_ind <- setdiff(seq_len(nrow(dt)), test_ind)
   }
   
   train <- dt[train_ind, ]
@@ -107,7 +107,7 @@ supersig_classifier <- function(dt, test_ind = NULL,
   } else {
     # Logistic Regression
     z <- dt %>%
-      select(c(features_selected[1:select_n["Logit"]], "IndVar")) # %>%
+      select(c(features_selected[seq_len(select_n["Logit"])], "IndVar")) # %>%
     # rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
     
     x <- z[train_ind, ]
@@ -125,13 +125,13 @@ supersig_classifier <- function(dt, test_ind = NULL,
         grouped_rates <- dt %>%
           slice(train_ind) %>%
           group_by(.data$IndVar) %>%
-          summarize_at(.vars = features_selected[1:select_n["Logit"]],
+          summarize_at(.vars = features_selected[seq_len(select_n["Logit"])],
                        .funs = funs(mean(., na.rm = TRUE)))
       } else {
         grouped_rates <- dt %>%
           slice(train_ind) %>%
           group_by(.data$IndVar) %>%
-          summarize_at(.vars = features_selected[1:select_n["Logit"]],
+          summarize_at(.vars = features_selected[seq_len(select_n["Logit"])],
                        .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
       }
       
@@ -144,8 +144,8 @@ supersig_classifier <- function(dt, test_ind = NULL,
       # Save signature (empirical mean rates and beta coefficients) and select_n for apparent
       if(identical(test_ind, train_ind)){
         # Logit beta coefficients
-        names(logit_betas) <- features_selected[1:select_n["Logit"]]
-        names(mean_diffs) <- features_selected[1:select_n["Logit"]]
+        names(logit_betas) <- features_selected[seq_len(select_n["Logit"])]
+        names(mean_diffs) <- features_selected[seq_len(select_n["Logit"])]
         
         out$signature <- list(mean_diffs = mean_diffs, logit_betas = logit_betas, select_n = select_n)
       }

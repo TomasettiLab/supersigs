@@ -28,7 +28,7 @@ transform_data <- function(dt,
   # Add columns for every type of mutation
   dt <- dt %>% 
     mutate_(.dots = muts_formula) %>%
-    mutate(tracking_ind = 1:nrow(dt))
+    mutate(tracking_ind = seq_len(nrow(dt)))
   
   # Store variables
   features_selected <- names(new_partition)
