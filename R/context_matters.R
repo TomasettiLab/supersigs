@@ -12,8 +12,8 @@
 
 #' Function for binomial testing using a hierarchical tree structure
 #' 
-#' Obtain a list of survival mutations by performing a series of nested binomial 
-#' tests for selecting and pruning significant mutations
+#' Obtain a list of survival mutations by performing a series of nested 
+#' binomial tests for selecting and pruning significant mutations
 #' 
 #' @param muts_df a data frame of mutations
 #' @param p_thresh an optional numeric value for the alpha level used in the
@@ -27,18 +27,20 @@
 #' @import assertthat
 #' @importFrom rlang .data
 #' 
-#' @return \code{context_matters} returns a vector of survival mutations that pass
-#' the binomial tree testing
+#' @return \code{context_matters} returns a vector of survival mutations that
+#' pass the binomial tree testing
 #' 
 #' @noRd
 #' 
 context_matters <- function(muts_df, 
-                           p_thresh = 0.05,
-                           tot_pseudo = 0,
-                           wgs = FALSE){
+                            p_thresh = 0.05,
+                            tot_pseudo = 0,
+                            wgs = FALSE){
   # Check input
-  assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == names(muts_formula)),
-              msg = "Column names of input data are not correct in context_matters")
+  assert_that(all(setdiff(names(muts_df), "TOTAL_MUTATIONS") == 
+                    names(muts_formula)),
+              msg = "Column names of input data are not correct 
+              in context_matters")
   
   # Use WGS as background probabilities
   if(wgs){
@@ -50,7 +52,8 @@ context_matters <- function(muts_df,
   # Pseudo-count
   for(feature in names(muts_counts)){
     all_possible_tri["TOTAL_MUTATIONS"] <- 3
-    muts_counts[feature] <- muts_counts[feature] + all_possible_tri[feature]*tot_pseudo/3
+    muts_counts[feature] <- muts_counts[feature] + 
+      all_possible_tri[feature]*tot_pseudo/3
   }
   muts_counts <- sapply(muts_counts, round)
   test_all_96 <- TRUE
@@ -66,8 +69,8 @@ context_matters <- function(muts_df,
   
   # Binomial test for all features
   tree <- tree %>%
-    mutate(p_value = pbinom(.data$q, .data$size, .data$prob, lower.tail = FALSE), 
-           #p_value_bonf = p.adjust(p_value, method = "bonferroni", n = nrow(tree)),  # Supplement says 151 features, but there are 486 = nrow(tree) tests
+    mutate(p_value = pbinom(.data$q, .data$size, .data$prob, 
+                            lower.tail = FALSE), 
            p_value_bonf = .data$p_value*bonf_correction,
            sig = .data$p_value_bonf < p_thresh) 
   
@@ -86,7 +89,9 @@ context_matters <- function(muts_df,
   for(i in c(4, 1)){
     tree_tmp <- tree %>%
       filter(.data$n_children == i) %>%
-      mutate(sig_2 = ifelse(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS"), .data$sig, TRUE))
+      mutate(sig_2 = ifelse(.data$parent_name %in% 
+                              c(survival_mutations, "TOTAL_MUTATIONS"), 
+                            .data$sig, TRUE))
     
     survival_mutations_tmp <- tree_tmp %>% 
       filter(.data$n_children == i) %>%
@@ -124,11 +129,15 @@ context_matters <- function(muts_df,
     tree_pruned <- tree %>%
       filter(.data$feature %in% survival_mutations &
                .data$n_children == ifelse(level == 1, 16, 4)) %>%
-      select(.data$feature, .data$n_children, .data$parent_name, .data$prob, .data$q, .data$size) %>%
+      select(.data$feature, .data$n_children, .data$parent_name, 
+             .data$prob, .data$q, .data$size) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
-      inner_join(. , survival_children_level3, by = c("child_name", "parent_name" = "feature")) %>%
-      filter(.data$parent_name %in% c(survival_mutations, "TOTAL_MUTATIONS")) %>%
-      group_by(.data$feature, .data$parent_name, .data$prob, .data$q, .data$size) %>%
+      inner_join(. , survival_children_level3, 
+                 by = c("child_name", "parent_name" = "feature")) %>%
+      filter(.data$parent_name %in% 
+               c(survival_mutations, "TOTAL_MUTATIONS")) %>%
+      group_by(.data$feature, .data$parent_name, .data$prob, 
+               .data$q, .data$size) %>%
       summarize(prob_child = sum(.data$prob_child),
                 q_child = sum(.data$q_child)) %>%
       ungroup()
@@ -138,7 +147,8 @@ context_matters <- function(muts_df,
       distinct(.data$parent_name) %>%
       rename(feature = .data$parent_name) %>%
       left_join(. , muts_children_level3_df, by = "feature") %>%
-      inner_join(. , survival_children_level3, by = c("child_name", "feature")) %>%
+      inner_join(. , survival_children_level3, 
+                 by = c("child_name", "feature")) %>%
       group_by(.data$feature) %>%
       summarize(prob_parent_child = sum(.data$prob_child),
                 q_parent_child = sum(.data$q_child)) %>%
@@ -147,10 +157,12 @@ context_matters <- function(muts_df,
     # Join and test
     tree_pruned <- tree_pruned %>%
       full_join(. , tree_pruned_parent, by = c("parent_name" = "feature")) %>%
-      mutate(prob_pruned = (.data$prob - .data$prob_child)/(1 - .data$prob_parent_child),
+      mutate(prob_pruned = (.data$prob - .data$prob_child)/
+               (1 - .data$prob_parent_child),
              q_pruned = .data$q - .data$q_child,
              size_pruned = .data$size - .data$q_parent_child) %>%
-      mutate(p_value = pbinom(.data$q_pruned, .data$size_pruned, .data$prob_pruned, lower.tail = FALSE), 
+      mutate(p_value = pbinom(.data$q_pruned, .data$size_pruned, 
+                              .data$prob_pruned, lower.tail = FALSE), 
              p_value_bonf = .data$p_value*bonf_correction,
              sig = .data$p_value_bonf < p_thresh)
     
@@ -176,7 +188,8 @@ context_matters <- function(muts_df,
 # Load data dependencies
 # background_probs <- readRDS(here("data", "background_probs.rds"))
 # background_probs_wgs <- readRDS(here("data", "background_probs_wgs.rds"))
-# muts_children_level3_df <- readRDS(here("data", "muts_children_level3_df.rds"))
+# muts_children_level3_df <- 
+# readRDS(here("data", "muts_children_level3_df.rds"))
 # muts_formula <- readRDS(here("data", "muts_formula.rds"))
 # h_muts_index <- readRDS(here("data", "h_muts_index.rds"))
 # all_possible_tri <- readRDS(here("data", "all_possible_tri.rds"))
@@ -185,7 +198,7 @@ context_matters <- function(muts_df,
 # signature_caf <- readRDS(here("data", "signature_caf.rds"))
 # test_1 = signature_caf[["Data", "ALCOHOL (ESCA)"]]$DataSetFiltered %>%
 #   filter(IndVar == 0) %>%
-#   transmute_(.dots = muts_formula) %>% # Add counts for every mutation in all_muts
+#   transmute_(.dots = muts_formula) %>% 
 #   mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
 # 
 # context_matters(test_1)

@@ -28,6 +28,6 @@ my_auc <- function(y, x){
   ind <- which(y == 1)
   n1 <- sum(y == 1)
   n0 <- sum(y == 0)
-  diff_rank <- sum(rank(x)[ind]) - n1*(n1+1)/2 # diff_rank = 0 if all the largest values in x were y == 1
-  return(diff_rank/(n1*n0))                    # n1*n0 = max difference possible
+  diff_rank <- sum(rank(x)[ind]) - n1*(n1+1)/2 
+  return(diff_rank/(n1*n0))                    
 }

@@ -4,11 +4,12 @@
 # Date last modified: Dec 22, 2020
 #' An S4 class for SuperSig
 #'
-#' @slot Signature data frame of features and their difference in mean rates 
-#' (or counts if the factor is "age")
+#' @slot Signature data frame of features and their 
+#' difference in mean rates (or counts if the factor is "age")
 #' @slot Features list of features that comprise the signature and 
 #' their representation in terms of the fundamental (trinucleotide) mutations
-#' @slot AUC length-one numeric vector of the apparent AUC (i.e. not cross-validated)
+#' @slot AUC length-one numeric vector of the apparent AUC 
+#' (i.e. not cross-validated)
 #' @slot Model list of a glm class for the trained logistic regression model
 #' 
 SuperSig <- setClass("SuperSig",

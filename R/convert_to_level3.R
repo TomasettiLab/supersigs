@@ -5,12 +5,13 @@
 #
 # Helper function for GenerateMinSigmaAlgebra.R
 
-#' Given a set of features, convert them to a union set of fundamental (level 3) 
-#' mutation features
+#' Given a set of features, convert them to a union set of 
+#' fundamental (level 3) mutation features
 #' 
 #' @param features a vector of features
 #' 
-#' @return \code{convert_to_level3} returns a vector of fundamental (level 3) features
+#' @return \code{convert_to_level3} returns a vector of 
+#' fundamental (level 3) features
 #' 
 #' @noRd
 #' 

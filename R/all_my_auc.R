@@ -5,12 +5,14 @@
 
 #' Calculate AUC for every column
 #' 
-#' all_my_auc calls my_auc to calculate the AUC for every column other than the indicator variable
+#' all_my_auc calls my_auc to calculate the AUC for every column other than the 
+#' indicator variable
 #' 
 #' @param z a matrix
 #' @param IndVar indicator variable for the exposure
 #'
-#' @return \code{all_my_auc} returns a list of AUCs, one for every column (feature)
+#' @return \code{all_my_auc} returns a list of AUCs, 
+#' one for every column (feature)
 #' 
 #' @noRd
 #' 

@@ -56,7 +56,8 @@ get_signature <- function(dt, factor, wgs = FALSE){
     stop("More than 5 samples are required to run get_signature.")
   }
   
-  # Check if counts of 96 trinucleotide bases are present, and compute total mutations
+  # Check if counts of 96 trinucleotide bases are present, 
+  # and compute total mutations
   trinucleotideBases <- unique(transform_muts_vec)
   if(all(trinucleotideBases %in% toupper(colnames(dt)))){
     dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases])
@@ -71,12 +72,14 @@ get_signature <- function(dt, factor, wgs = FALSE){
   classification_out = supersig_classifier(dt = features_out$dt_new,
                                           factor = factor,
                                           keep_classifier = TRUE,
-                                          features_selected = features_out$features_selected,
+                                          features_selected = 
+                                            features_out$features_selected,
                                           select_n = features_out$select_n)
   
   # Create S4 object output
+  feature_names = names(classification_out$signature$mean_diffs)
   out = SuperSig(Signature = classification_out$signature$mean_diffs,
-                  Features = features_out$new_partition[names(classification_out$signature$mean_diffs)],
+                  Features = features_out$new_partition[feature_names],
                   AUC = classification_out$auc,
                   Model = classification_out$classifier)
   

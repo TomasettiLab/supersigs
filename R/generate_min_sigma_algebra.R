@@ -21,16 +21,18 @@
 #' @param input_ls a named list of length 2, where each element is a
 #' vector of mutation features
 #' @param condense an optional logical value indicating whether the output value
-#' `new_partition` should return mutations in condensed form (default is \code{FALSE})
-#' @param partitioned_features indicates whether the mutation features have been prepartitioned
+#' `new_partition` should return mutations in condensed form (default is 
+#' \code{FALSE})
+#' @param partitioned_features indicates whether the mutation features have 
+#' been prepartitioned
 #' (i.e. input is coming from output of generate_min_sigma_algebra)
 #' 
 #' @import dplyr
 #' @import assertthat
 #' 
-#' @return \code{generate_min_sigma_algebra} returns a list of partitioned features,
-#' where each feature is represented by a vector of the fundamental (level 3)
-#' mutations
+#' @return \code{generate_min_sigma_algebra} returns a list of partitioned 
+#' features, where each feature is represented by a vector of the fundamental 
+#' (level 3) mutations
 #' 
 #' @noRd
 #' 
@@ -51,7 +53,8 @@ generate_min_sigma_algebra <- function(input_ls,
   
   # Create matrix of indicator values
   temp <- setNames(rep(FALSE, length(muts_level3)), muts_level3)
-  M <- sapply(feat_ls, FUN = function(mutation) {out <- temp; out[mutation] <- TRUE; out})
+  M <- sapply(feat_ls, FUN = function(mutation)
+    {out <- temp; out[mutation] <- TRUE; out})
   
   # Separate mutations that do not appear in any of feat_ls
   any_ind <- apply(M, MARGIN = 1, FUN = any)

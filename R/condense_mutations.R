@@ -5,7 +5,8 @@
 #
 # Helper function for GenerateMinSigmaAlgebra.R
 
-#' Given a set of level 3 features, simplify and condense into level 1 and level 2 mutations
+#' Given a set of level 3 features, simplify and condense into level 1 and 
+#' level 2 mutations
 #' 
 #' @param features a vector of level 3 features
 #'

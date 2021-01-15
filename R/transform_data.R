@@ -11,15 +11,16 @@
 #' Transform data frame of mutations by projecting counts for candidate features
 #' 
 #' @param dt a data frame of mutations
-#' @param new_partition a partition of features from \code{generate_min_sigma_algebra}
+#' @param new_partition a partition of features from 
+#' \code{generate_min_sigma_algebra}
 #' 
 #' @import dplyr
 #' @importFrom rlang .data
 #' 
-#' @return \code{transform_data} returns a transformed data frame of mutations, with
-#' columns corresponding to the candidate features with projected counts
-#' and other necessary columns (\code{IndVar}, \code{AGE}, \code{TOTAL_MUTATIONS},
-#' and \code{DIVISON})
+#' @return \code{transform_data} returns a transformed data frame of mutations, 
+#' with columns corresponding to the candidate features with projected counts
+#' and other necessary columns (\code{IndVar}, \code{AGE}, 
+#' \code{TOTAL_MUTATIONS}, and \code{DIVISON})
 #' 
 #' @noRd
 #' 
@@ -42,7 +43,8 @@ transform_data <- function(dt,
   
   dt_new <- dt_new %>%
     arrange(.data$tracking_ind) %>%
-    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", matches("DIVISION"))) 
+    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", 
+             matches("DIVISION"))) 
   
   return(dt_new)
 }

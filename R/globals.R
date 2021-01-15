@@ -6,4 +6,6 @@
 # Fix visible binding note
 
 #' @import utils
-if(getRversion() >= "2.15.1")  utils::globalVariables(c(".", ":=", "background_probs_wgs"))
+if(getRversion() >= "2.15.1"){  
+  utils::globalVariables(c(".", ":=", "background_probs_wgs"))
+}

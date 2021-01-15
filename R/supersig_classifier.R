@@ -7,7 +7,7 @@
 
 # library(randomForest)
 # library(MASS)
-# library(dplyr) # Note that you must load dplyr after MASS to preserve select function
+# library(dplyr) 
 # library(rsample)
 # library(here)
 # source(here("code", "MyCor.R"))
@@ -70,14 +70,18 @@ supersig_classifier <- function(dt, test_ind = NULL,
       grouped_rates <- train %>%
         group_by(.data$IndVar) %>%
         summarize_at(.vars = features_selected,
-                     .funs = funs(median(., na.rm=TRUE)/median(.data$AGE, na.rm=TRUE)))
+                     .funs = funs(median(., na.rm=TRUE)/
+                                    median(.data$AGE, na.rm=TRUE)))
       
-      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% select(-.data$IndVar)
-      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% select(-.data$IndVar)
+      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% 
+        select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% 
+        select(-.data$IndVar)
       
-      # Remove unexposed median rate (i.e. aging rate) from training and test data
+      # Remove unexposed median rate (i.e. aging rate) from train and test data
       remove_age_formula <- colnames(unexposed_rates) %>%
-        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", unexposed_rates[x]))
+        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", 
+                                        unexposed_rates[x]))
       
       dt <- dt %>%
         mutate_(.dots = remove_age_formula) %>%
@@ -107,16 +111,17 @@ supersig_classifier <- function(dt, test_ind = NULL,
   } else {
     # Logistic Regression
     z <- dt %>%
-      select(c(features_selected[seq_len(select_n["Logit"])], "IndVar")) # %>%
-    # rename_at(vars(features_selected[1:select_n["Logit"]]), function(x) paste0("X", 1:length(features_selected[1:select_n["Logit"]])))
+      select(c(features_selected[seq_len(select_n["Logit"])], "IndVar")) 
     
     x <- z[train_ind, ]
     newdata <- z[test_ind, ]
     out$auc <- c(out$auc, Logit = NA)
     logit_prediction <- NA
     try({
-      logit_classifier <- glm(formula = IndVar ~ ., data = x, family = binomial())
-      logit_prediction <- predict(logit_classifier, newdata = newdata, type = "response")
+      logit_classifier <- glm(formula = IndVar ~ ., data = x, 
+                              family = binomial())
+      logit_prediction <- predict(logit_classifier, newdata = newdata, 
+                                  type = "response")
       logit_betas <- coef(logit_classifier) # beta vector
       logit_betas <- coef(logit_classifier)[-1] # beta vector except beta_0
       
@@ -135,19 +140,27 @@ supersig_classifier <- function(dt, test_ind = NULL,
                        .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
       }
       
-      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% select(-.data$IndVar)
-      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% select(-.data$IndVar)
+      unexposed_rates <- grouped_rates %>% 
+        filter(.data$IndVar == FALSE) %>% 
+        select(-.data$IndVar)
+      exposed_rates <- grouped_rates %>% 
+        filter(.data$IndVar == TRUE) %>% 
+        select(-.data$IndVar)
       
-      # Calculate mean_diff = difference in counts or rates between exposed and unexposed -> signature representation
+      # Calculate mean_diff = difference in counts or rates between 
+      # exposed and unexposed -> signature representation
       mean_diffs <- exposed_rates - unexposed_rates
       
-      # Save signature (empirical mean rates and beta coefficients) and select_n for apparent
+      # Save signature (empirical mean rates and beta coefficients) 
+      # and select_n for apparent
       if(identical(test_ind, train_ind)){
         # Logit beta coefficients
         names(logit_betas) <- features_selected[seq_len(select_n["Logit"])]
         names(mean_diffs) <- features_selected[seq_len(select_n["Logit"])]
         
-        out$signature <- list(mean_diffs = mean_diffs, logit_betas = logit_betas, select_n = select_n)
+        out$signature <- list(mean_diffs = mean_diffs, 
+                              logit_betas = logit_betas, 
+                              select_n = select_n)
       }
       
       out$auc["Logit"] <-my_auc(test_indvar, logit_prediction)
@@ -165,11 +178,13 @@ supersig_classifier <- function(dt, test_ind = NULL,
 # signature_caf <- readRDS(here("data", "signature_caf.rds"))
 # factor <- "AGE"
 # tissue <- "LUAD"
-# ind <- which((signature_caf["Factor",] == factor) & (signature_caf["Tissue",] == tissue))
+# ind <- which((signature_caf["Factor",] == factor) & 
+# (signature_caf["Tissue",] == tissue))
 # dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
 #   filter(TOTAL_MUTATIONS > 0)
 # unsupervised_sig = signature_caf[["Unsupervised", ind]]
-# age_ind <- which((signature_caf["Factor",] == "AGE") & (signature_caf["Tissue",] == tissue))
+# age_ind <- which((signature_caf["Factor",] == "AGE") & 
+# (signature_caf["Tissue",] == tissue))
 # age_sig <- signature_caf[["Unsupervised", age_ind]]
 # 
 # source(here("code", "FeatureSelection.R"))
@@ -194,7 +209,10 @@ supersig_classifier <- function(dt, test_ind = NULL,
 #                                 factor = factor,
 #                                 classifier = c("LDA"),
 #                                 keep_classifier = T,
-#                                 features_selected = features_selected)$classifier
-# test_formula = features_out$features_gmsa$new_partition_formula[features_selected]
-# saveRDS(list(model = test_model, formula = test_formula), "app/data/test_shiny.rds")
-# write.csv(signature_caf[["Data", ind]]$DataSetFiltered[1, ], "app/data/dt.csv", row.names = F)
+#                   features_selected = features_selected)$classifier
+# test_formula = 
+# features_out$features_gmsa$new_partition_formula[features_selected]
+# saveRDS(list(model = test_model, formula = test_formula), 
+# "app/data/test_shiny.rds")
+# write.csv(signature_caf[["Data", ind]]$DataSetFiltered[1, ], 
+# "app/data/dt.csv", row.names = F)
