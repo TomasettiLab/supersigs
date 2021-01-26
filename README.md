@@ -13,8 +13,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-blue.svg)](htt
 <!-- badges: end -->
 
 supersigs is a companion R package to a method proposed by *Afsari, et
-al.*, which generates tissue-specific mutational signatures for the
-cancer genome using supervised learning.
+al.* (<https://doi.org/10.7554/eLife.61082>), which generates
+tissue-specific mutational signatures for the cancer genome.
 
 ## Installation
 

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 <!-- [![Codecov test coverage](https://codecov.io/gh/r-lib/pkgdown/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/supersigs?branch=master) -->
 <!-- badges: end -->
 
-supersigs is a companion R package to a method proposed by *Afsari, et al.*, which generates tissue-specific mutational signatures for the cancer genome using supervised learning.
+supersigs is a companion R package to a method proposed by *Afsari, et al.* (https://doi.org/10.7554/eLife.61082), which generates tissue-specific mutational signatures for the cancer genome.
 
 ## Installation
 
@@ -52,6 +52,6 @@ pred <- predict_signature(object = sig, newdata = data, factor = "smoking")
 For more details, see `vignette("supersigs")`.
 
 ```{r include = F, eval = F}
-# devtools::build_readme()
+devtools::build_readme()
 ```
 
