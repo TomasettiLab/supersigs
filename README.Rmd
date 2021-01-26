@@ -22,7 +22,11 @@ knitr::opts_chunk$set(
 <!-- [![Codecov test coverage](https://codecov.io/gh/r-lib/pkgdown/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/supersigs?branch=master) -->
 <!-- badges: end -->
 
-supersigs is a companion R package to a method proposed by *Afsari, et al.* (https://doi.org/10.7554/eLife.61082), which generates tissue-specific mutational signatures for the cancer genome.
+`supersigs` is a companion R package to a method proposed by *Afsari, et al.*, which generates tissue-specific mutational signatures for the cancer genome.
+
+More details on the statistical methods can be found in this paper:
+
+> Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
 
 ## Installation
 
