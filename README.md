@@ -18,12 +18,12 @@ cancer genome.
 
 More details on the statistical methods can be found in this paper:
 
-> Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L.,
-> Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope,
-> L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational
-> signatures for obesity and other tissue-specific etiological factors
-> in cancer. ELife, 10.
-> [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
+  - Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L.,
+    Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W.,
+    Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised
+    mutational signatures for obesity and other tissue-specific
+    etiological factors in cancer. ELife, 10.
+    [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
 
 ## Installation
 
@@ -35,12 +35,18 @@ the `install_github()` function from the `devtools` package.
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
+## Tutorial
+
+To follow a tutorial on how to use the package, click
+`vignette("supersigs")` (or type `vignette("supersigs")` in R).
+
 ## Core functions
 
-The `supersigs` package contains two core functions: `get_signature` and
-`predict_signature`.
+In brief, the `supersigs` package contains two core functions:
+`get_signature` and `predict_signature`.
 
-`get_signature` trains a supervised signature for a given factor.
+`get_signature` trains a supervised signature for a given factor
+(e.g. smoking).
 
 ``` r
 sig <- get_signature(dt = data, factor = "smoking", wgs = F)
@@ -52,5 +58,3 @@ predicted probabilities (e.g. probability of smoker) on a new dataset.
 ``` r
 pred <- predict_signature(object = sig, newdata = data, factor = "smoking")
 ```
-
-For more details, see `vignette("supersigs")`.

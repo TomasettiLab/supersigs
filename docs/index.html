@@ -72,9 +72,10 @@
 
 <p><code>supersigs</code> is a companion R package to a method proposed by <em>Afsari, et al.</em>, which generates tissue-specific mutational signatures for the cancer genome.</p>
 <p>More details on the statistical methods can be found in this paper:</p>
-<blockquote>
-<p>Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., &amp; Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. <a href="https://doi.org/10.7554/eLife.61082">https://doi.org/10.7554/elife.61082</a></p>
-</blockquote>
+<ul>
+<li>Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., &amp; Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. <a href="https://doi.org/10.7554/eLife.61082">https://doi.org/10.7554/elife.61082</a>
+</li>
+</ul>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -83,17 +84,21 @@
 <code class="sourceCode R"><span class="co"># Install development version from GitHub</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"TomasettiLab/supersigs"</span><span class="op">)</span></code></pre></div>
 </div>
+<div id="tutorial" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tutorial" class="anchor"></a>Tutorial</h2>
+<p>To follow a tutorial on how to use the package, click <code><a href="articles/supersigs.html">vignette("supersigs")</a></code> (or type <code><a href="articles/supersigs.html">vignette("supersigs")</a></code> in R).</p>
+</div>
 <div id="core-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#core-functions" class="anchor"></a>Core functions</h2>
-<p>The <code>supersigs</code> package contains two core functions: <code>get_signature</code> and <code>predict_signature</code>.</p>
-<p><code>get_signature</code> trains a supervised signature for a given factor.</p>
+<p>In brief, the <code>supersigs</code> package contains two core functions: <code>get_signature</code> and <code>predict_signature</code>.</p>
+<p><code>get_signature</code> trains a supervised signature for a given factor (e.g. smoking).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_signature.html">get_signature</a></span><span class="op">(</span>dt <span class="op">=</span> <span class="va">data</span>, factor <span class="op">=</span> <span class="st">"smoking"</span>, wgs <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><code>predict_signature</code> uses the trained supervised signature to obtain predicted probabilities (e.g. probability of smoker) on a new dataset.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predict_signature.html">predict_signature</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">sig</span>, newdata <span class="op">=</span> <span class="va">data</span>, factor <span class="op">=</span> <span class="st">"smoking"</span><span class="op">)</span></code></pre></div>
-<p>For more details, see <code><a href="articles/supersigs.html">vignette("supersigs")</a></code>.</p>
 </div>
 </div>
   </div>

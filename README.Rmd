@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 More details on the statistical methods can be found in this paper:
 
-> Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
+* Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
 
 ## Installation
 
@@ -37,11 +37,15 @@ You can install the development version of supersigs from github using the `inst
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
+## Tutorial
+
+To follow a tutorial on how to use the package, click `vignette("supersigs")` (or type `vignette("supersigs")` in R).
+
 ## Core functions
 
-The `supersigs` package contains two core functions: `get_signature` and `predict_signature`. 
+In brief, the `supersigs` package contains two core functions: `get_signature` and `predict_signature`. 
 
-`get_signature` trains a supervised signature for a given factor.
+`get_signature` trains a supervised signature for a given factor (e.g. smoking).
 
 ```{r eval = F}
 sig <- get_signature(dt = data, factor = "smoking", wgs = F)
@@ -52,8 +56,6 @@ sig <- get_signature(dt = data, factor = "smoking", wgs = F)
 ```{r eval = F}
 pred <- predict_signature(object = sig, newdata = data, factor = "smoking")
 ```
-
-For more details, see `vignette("supersigs")`.
 
 ```{r include = F, eval = F}
 devtools::build_readme()
