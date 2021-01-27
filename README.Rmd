@@ -34,7 +34,7 @@ You can install the development version of supersigs from github using the `inst
 
 ```{r eval = F}
 # Install development version from GitHub
-devtools::install_github("albertkuo/supersigs")
+devtools::install_github("TomasettiLab/supersigs")
 ```
 
 ## Core functions

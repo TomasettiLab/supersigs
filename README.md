@@ -32,7 +32,7 @@ the `install_github()` function from the `devtools` package.
 
 ``` r
 # Install development version from GitHub
-devtools::install_github("albertkuo/supersigs")
+devtools::install_github("TomasettiLab/supersigs")
 ```
 
 ## Core functions
