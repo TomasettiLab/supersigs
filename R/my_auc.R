@@ -1,7 +1,7 @@
 # my_auc.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jul 15, 2019
+# Date last modified: Feb 1, 2021
 #
 # Functions for calculating AUC using the Mann-Whitney U Statistic
 
@@ -28,6 +28,6 @@ my_auc <- function(y, x){
   ind <- which(y == 1)
   n1 <- sum(y == 1)
   n0 <- sum(y == 0)
-  diff_rank <- sum(rank(x)[ind]) - n1*(n1+1)/2 
+  diff_rank <- sum(rank(x, ties.method = "first")[ind]) - n1*(n1+1)/2 
   return(diff_rank/(n1*n0))                    
 }
