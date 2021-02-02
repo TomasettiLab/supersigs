@@ -56,7 +56,6 @@ context_matters <- function(muts_df,
       all_possible_tri[feature]*tot_pseudo/3
   }
   muts_counts <- sapply(muts_counts, round)
-  test_all_96 <- TRUE
   bonf_correction <- 150
   
   # Create "tree"
@@ -79,11 +78,6 @@ context_matters <- function(muts_df,
     filter(.data$n_children == 16) %>%
     filter(.data$sig) %>% 
     pull(feature)
-  
-  # Return here if only testing for 6 central mutations
-  if(!test_all_96){
-    return(survival_mutations)
-  }
   
   # Keep tests only for significant parents
   for(i in c(4, 1)){
