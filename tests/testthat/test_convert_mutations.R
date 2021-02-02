@@ -1,5 +1,3 @@
-context("convert mutations")
-
 x <- "[C>A]T"
 x_div <- c("A[C>A]T", "C[C>A]T", "G[C>A]T", "T[C>A]T")
 y <- "A[C>A]T"

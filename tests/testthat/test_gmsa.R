@@ -1,5 +1,3 @@
-context("generate_min_sima_algebra")
-
 x1 <- list(A = c("A[C>A]T"))
 x2 <- list(c("A[C>A]T"), c("A[C>A]T"))
 x3 <- list(A = c("A[C>A]T"), B = c("A[C>A]T"))
@@ -20,6 +18,6 @@ ref <- list(F1 = c("[C>A]A", "[C>A]G", "[C>A]T"),
                           "[T>G]C", "[T>G]G", "A[T>G]T", "C[T>G]T",
                           "G[T>G]T"))
 test_that("gmsa works", {
-  out <- generate_min_sigma_algebra(input_ls, condense = T)
+  out <- generate_min_sigma_algebra(input_ls, condense = TRUE)
   expect_equal(out, ref)
 })
