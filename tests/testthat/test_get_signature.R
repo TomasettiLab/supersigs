@@ -1,12 +1,12 @@
 x1 <- tibble(x = 1,
              age = 2,
-             indvar = F)
+             indvar = FALSE)
 x2 <- tibble(sample_id = 1,
              x = 2,
-             indvar = F)
+             indvar = FALSE)
 x3 <- tibble(sample_id = 1,
              age = 2,
-             x = F)
+             x = FALSE)
 
 test_that("get_signature valid input", {
   expect_error(get_signature(x1, factor = "f"),
