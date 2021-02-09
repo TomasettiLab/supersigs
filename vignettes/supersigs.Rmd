@@ -27,13 +27,13 @@ The `supersigs` package implements the supervised method proposed by *Afsari, et
 
 ## Example data
 
-The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample's mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset (stored and accessible from the `supersigs` R package).
+The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample's mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations. Below is an example dataset (stored and accessible from the `supersigs` R package). If you have a VCF file, you can skip to the [VCF file] section.
 
 * `sample_id` is an ID for each sample
 * `age` is the age of the patient
 * `chromosome` and `position` is the position of the mutation
-* `from` is the original nucleotide
-* `to` is the mutated nucleotide 
+* `ref` is the original nucleotide
+* `alt` is the mutated nucleotide 
 
 ```{r}
 print(example_dt)
@@ -62,6 +62,19 @@ We apply `make_matrix` to transform our example dataset (`example_dt`) into a da
 input_dt = make_matrix(example_dt)
 print(input_dt)
 ```
+
+## VCF file
+
+Alternatively, you can use `readVcf` from the `VariantAnnotation` package to read in a VCF file as a VCF object. Then use `process_vcf` to transform the VCF object into the format required by the `supersigs` R package. Each row in `input_dt` corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.
+
+```{r}
+library(VariantAnnotation)
+
+fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
+vcf <- readVcf(fl, "hg19") # VCF object
+process_vcf(vcf)
+```
+
 
 # Getting your signature
 

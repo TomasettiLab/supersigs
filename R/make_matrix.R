@@ -1,7 +1,7 @@
 # make_matrix.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Jan 11, 2021
+# Date last modified: Feb 9, 2021
 #
 # (Export) Function to transform data frame of mutations into correct format
 
@@ -35,7 +35,7 @@
 make_matrix <- function(dt, genome = "hg19"){
   dt <- dt %>%
     select(.data$sample_id, .data$age, .data$chromosome, .data$position, 
-           .data$from, .data$to) %>%
+           .data$ref, .data$alt) %>%
     mutate(start = .data$position - 1,
            end = .data$position + 1)
   
@@ -69,7 +69,7 @@ make_matrix <- function(dt, genome = "hg19"){
   dt <- dt %>%
     mutate(aligned = as.character(aligned_dna),
            mutation = paste0(substr(.data$aligned, 1, 1), "[", 
-                             .data$from, ">", .data$to, "]",
+                             .data$ref, ">", .data$alt, "]",
                              substr(.data$aligned, 3, 3)),
            mutation_std = unname(sapply(.data$mutation, 
                                         function(x) transform_muts_vec[[x]])))

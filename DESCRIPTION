@@ -28,6 +28,7 @@ Imports:
 Suggests: 
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38,
+    VariantAnnotation,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

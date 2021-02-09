@@ -8,7 +8,7 @@
 #'   \item{age}{age of the patient}
 #'   \item{chromosome}{chromosomal position of the mutation}
 #'   \item{position}{position of the mutation}
-#'   \item{from}{original nucleotide}
-#'   \item{to}{mutated nucleotide}
+#'   \item{ref}{original nucleotide}
+#'   \item{alt}{mutated nucleotide}
 #' }
 "example_dt"
