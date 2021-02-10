@@ -335,43 +335,46 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="preprocessing-your-data" class="section level1">
 <h1>Preprocessing your data</h1>
+<div id="vcf-file" class="section level2">
+<h2>VCF file</h2>
+<p>If you have a VCF file, you can use <code>readVcf</code> from the <code>VariantAnnotation</code> package to read in your VCF file as a VCF object. The age of each patient should be stored as <code>age</code> in the <code>colData</code> of your <code>VCF</code> object. Then use <code>process_vcf</code> to transform the VCF object into a simplified data frame format, which will be explained further in <a href="#example-data">Example data</a>.</p>
+<p>If you do not have a VCF file, skip to <a href="#example-data">Example data</a>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Load packages for make_matrix function</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="kw">library</span>(VariantAnnotation)</span>
+<span id="cb2-4"><a href="#cb2-4"></a>})</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a>fl &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;chr22.vcf.gz&quot;</span>, <span class="dt">package=</span><span class="st">&quot;VariantAnnotation&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>vcf &lt;-<span class="st"> </span>VariantAnnotation<span class="op">::</span><span class="kw">readVcf</span>(fl, <span class="st">&quot;hg19&quot;</span>) <span class="co"># VCF object</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">colData</span>(vcf)<span class="op">$</span>age &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)<span class="op">*</span><span class="dv">20</span>    <span class="co"># Add patient age to colData</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>dt &lt;-<span class="st"> </span><span class="kw">process_vcf</span>(vcf)</span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="kw">head</span>(dt)</span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt;   sample_id age chromosome position ref alt</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 1   HG00101 100      chr22 50330345   G   A</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; 2   HG00101 100      chr22 50332324   T   C</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 3   HG00101 100      chr22 50344912   C   G</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 4   HG00101 100      chr22 50345729   T   C</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; 5   HG00101 100      chr22 50345868   G   C</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 6   HG00101 100      chr22 50347045   G   A</span></span></code></pre></div>
+</div>
 <div id="example-data" class="section level2">
 <h2>Example data</h2>
-<p>The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample’s mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations (e.g. in a VCF file). Below is an example dataset (stored and accessible from the <code>supersigs</code> R package).</p>
+<p>The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample’s mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations. Below is an example dataset (stored and accessible from the <code>supersigs</code> R package). If you have a VCF file, read the <a href="#vcf-file">VCF file</a> section to see how to process your data into the following format.</p>
 <ul>
 <li><code>sample_id</code> is an ID for each sample</li>
 <li><code>age</code> is the age of the patient</li>
 <li><code>chromosome</code> and <code>position</code> is the position of the mutation</li>
-<li><code>from</code> is the original nucleotide</li>
-<li><code>to</code> is the mutated nucleotide</li>
+<li><code>ref</code> is the original nucleotide</li>
+<li><code>alt</code> is the mutated nucleotide</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">print</span>(example_dt)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt;    sample_id age chromosome  position from to</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; 1          1  50       chr1  94447621    G  C</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; 2          1  50       chr2 202005395    A  C</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; 3          1  50       chr7  20784978    T  A</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; 4          1  50       chr7  87179255    C  G</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; 5          1  50      chr19   1059712    G  T</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; 6          2  55       chr1  76226977    T  C</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; 7          2  55       chr3  38180872    C  G</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; 8          2  55       chr9 139905080    G  T</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; 9          2  55      chr16   1562631    G  T</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; 10         2  55      chr22  42189307    C  A</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; 11         3  72       chr1  94447621    T  C</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; 12         3  72       chr2 202005395    A  C</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; 13         3  72       chr7  20784978    T  A</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; 14         3  72       chr7  87179255    A  G</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; 15         3  72      chr19   1059712    T  A</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; 16         4  53       chr1  76226977    G  C</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; 17         4  53       chr3  38180872    C  G</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; 18         4  53       chr9 139905080    G  T</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; 19         4  53      chr16   1562631    G  T</span></span>
-<span id="cb2-22"><a href="#cb2-22"></a><span class="co">#&gt; 20         4  53      chr22  42189307    G  A</span></span>
-<span id="cb2-23"><a href="#cb2-23"></a><span class="co">#&gt; 21         5  48       chr1  94447621    A  C</span></span>
-<span id="cb2-24"><a href="#cb2-24"></a><span class="co">#&gt; 22         5  48       chr2 202005395    C  A</span></span>
-<span id="cb2-25"><a href="#cb2-25"></a><span class="co">#&gt; 23         5  48       chr7  20784978    T  A</span></span>
-<span id="cb2-26"><a href="#cb2-26"></a><span class="co">#&gt; 24         5  48       chr7  87179255    G  T</span></span>
-<span id="cb2-27"><a href="#cb2-27"></a><span class="co">#&gt; 25         5  48      chr19   1059712    G  T</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">head</span>(example_dt)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt;   sample_id age chromosome  position ref alt</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt; 1         1  50       chr1  94447621   G   C</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; 2         1  50       chr2 202005395   A   C</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; 3         1  50       chr7  20784978   T   A</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; 4         1  50       chr7  87179255   C   G</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; 5         1  50      chr19   1059712   G   T</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 6         2  55       chr1  76226977   T   C</span></span></code></pre></div>
 </div>
 <div id="transform-data" class="section level2">
 <h2>Transform data</h2>
@@ -381,44 +384,44 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><p>Because the features used are built upon trinucleotide features (e.g. A[C&gt;A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the <code>hg19</code> reference genome.</p></li>
 </ol>
 <p>Both of these steps are done by the <code>make_matrix</code> function. Note that using the <code>make_matrix</code> function requires installing and loading a reference genome (<code>BSgenome.Hsapiens.UCSC.hg19</code> and <code>BSgenome.Hsapiens.UCSC.hg38</code> are supported).</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Load packages for make_matrix function</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="kw">library</span>(BSgenome.Hsapiens.UCSC.hg19)</span>
-<span id="cb3-4"><a href="#cb3-4"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Load packages for make_matrix function</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="kw">library</span>(BSgenome.Hsapiens.UCSC.hg19)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>})</span></code></pre></div>
 <p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>input_dt =<span class="st"> </span><span class="kw">make_matrix</span>(example_dt)</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">print</span>(input_dt)</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; # A tibble: 5 x 98</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; 1         1    50         1         1         1         1         1         0</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; 2         2    55         0         0         0         0         0         1</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; 3         3    72         1         1         0         0         0         0</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt; 4         4    53         0         0         0         0         0         1</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; 5         5    48         0         1         1         0         0         0</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; # … with 90 more variables: `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; #   `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; #   `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>input_dt =<span class="st"> </span><span class="kw">make_matrix</span>(example_dt)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="kw">head</span>(input_dt)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; # A tibble: 5 x 98</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; 1         1    50         1         1         1         1         1         0</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 2         2    55         0         0         0         0         0         1</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; 3         3    72         1         1         0         0         0         0</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; 4         4    53         0         0         0         0         0         1</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; 5         5    48         0         1         1         0         0         0</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; # … with 90 more variables: `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; #   `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt; #   `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb5-31"><a href="#cb5-31"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb5-32"><a href="#cb5-32"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb5-33"><a href="#cb5-33"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 </div>
 <div id="getting-your-signature" class="section level1">
@@ -431,40 +434,40 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>columns of counts for all 96 trinucleotide mutations</li>
 </ul>
 <p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>dt</code> is printed below.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>input_dt<span class="op">$</span>IndVar =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">print</span>(input_dt)</span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; # A tibble: 5 x 99</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; 1         1    50         1         1         1         1         1         0</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; 2         2    55         0         0         0         0         0         1</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; 3         3    72         1         1         0         0         0         0</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; 4         4    53         0         0         0         0         0         1</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; 5         5    48         0         1         1         0         0         0</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co">#&gt; # … with 91 more variables: `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#&gt; #   `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#&gt; #   `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-23"><a href="#cb5-23"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-24"><a href="#cb5-24"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
-<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-30"><a href="#cb5-30"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-31"><a href="#cb5-31"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
-<span id="cb5-32"><a href="#cb5-32"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
-<span id="cb5-33"><a href="#cb5-33"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
-<span id="cb5-34"><a href="#cb5-34"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Generate synthetic IndVar column</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>input_dt<span class="op">$</span>IndVar &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">head</span>(input_dt)</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; # A tibble: 5 x 99</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; 1         1    50         1         1         1         1         1         0</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; 2         2    55         0         0         0         0         0         1</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; 3         3    72         1         1         0         0         0         0</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; 4         4    53         0         0         0         0         0         1</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; 5         5    48         0         1         1         0         0         0</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; # … with 91 more variables: `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; #   `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; #   `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span></span>
+<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span></span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></span></code></pre></div>
 <p>Once you have the correct data format, apply <code>get_signature</code> to the dataset to get your <code>SuperSig</code>. This is an S4 object containing four slots:</p>
 <ul>
 <li><code>Signature</code> is the signature, represented as their differences in mean rates (or counts if the factor is “age”) between the two groups (exposed versus unexposed)</li>
@@ -472,64 +475,86 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>AUC</code> is the apparent AUC of the model (i.e. not cross-validated)</li>
 <li><code>Model</code> is the list of a glm class for the trained logistic regression model</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>out =<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; Begin feature engineering...</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#&gt; Begin cross-validated selection over 4 features and 15 inner folds...</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#&gt; ...testing inner fold 1</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#&gt; ...testing inner fold 2</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; ...testing inner fold 3</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; ...testing inner fold 4</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; ...testing inner fold 5</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; ...testing inner fold 6</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; ...testing inner fold 7</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; ...testing inner fold 8</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">#&gt; ...testing inner fold 9</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="co">#&gt; ...testing inner fold 10</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">#&gt; ...testing inner fold 11</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a><span class="co">#&gt; ...testing inner fold 12</span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="co">#&gt; ...testing inner fold 13</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="co">#&gt; ...testing inner fold 14</span></span>
-<span id="cb6-18"><a href="#cb6-18"></a><span class="co">#&gt; ...testing inner fold 15</span></span>
-<span id="cb6-19"><a href="#cb6-19"></a>out</span>
-<span id="cb6-20"><a href="#cb6-20"></a><span class="co">#&gt; Signature:</span></span>
-<span id="cb6-21"><a href="#cb6-21"></a><span class="co">#&gt;             F1</span></span>
-<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#&gt; 1 0.0001976337</span></span>
-<span id="cb6-23"><a href="#cb6-23"></a><span class="co">#&gt; Features:</span></span>
-<span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; $F1</span></span>
-<span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt;        F4 </span></span>
-<span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; &quot;A[T&gt;G]T&quot; </span></span>
-<span id="cb6-27"><a href="#cb6-27"></a><span class="co">#&gt; </span></span>
-<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#&gt; Model:</span></span>
-<span id="cb6-29"><a href="#cb6-29"></a><span class="co">#&gt; $Logit</span></span>
-<span id="cb6-30"><a href="#cb6-30"></a><span class="co">#&gt; </span></span>
-<span id="cb6-31"><a href="#cb6-31"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
-<span id="cb6-32"><a href="#cb6-32"></a><span class="co">#&gt; </span></span>
-<span id="cb6-33"><a href="#cb6-33"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; (Intercept)           F1  </span></span>
-<span id="cb6-35"><a href="#cb6-35"></a><span class="co">#&gt;     -0.6931    1382.0538  </span></span>
-<span id="cb6-36"><a href="#cb6-36"></a><span class="co">#&gt; </span></span>
-<span id="cb6-37"><a href="#cb6-37"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
-<span id="cb6-38"><a href="#cb6-38"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
-<span id="cb6-39"><a href="#cb6-39"></a><span class="co">#&gt; Residual Deviance: 3.819     AIC: 7.819</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>out =<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">dt =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; Begin feature engineering...</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; Begin cross-validated selection over 3 features and 15 inner folds...</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; ...testing inner fold 1</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; ...testing inner fold 2</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; ...testing inner fold 3</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; ...testing inner fold 4</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; ...testing inner fold 5</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; ...testing inner fold 6</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; ...testing inner fold 7</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; ...testing inner fold 8</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; ...testing inner fold 9</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; ...testing inner fold 10</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; ...testing inner fold 11</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; ...testing inner fold 12</span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; ...testing inner fold 13</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; ...testing inner fold 14</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; ...testing inner fold 15</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>out</span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; Signature:</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt;              F1</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt; 1 -0.0006141866</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; Features:</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt; $F1</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt; &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; </span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt;      F133      F134      F135      F136      F149      F150      F151      F152 </span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot; &quot;A[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot; &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; </span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt;      F164      F165      F166      F167      F180      F181      F182       F15 </span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt; &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;C[C&gt;A]A&quot; </span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F137 </span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot; &quot;C[C&gt;A]T&quot; &quot;C[C&gt;G]A&quot; &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;C[C&gt;T]A&quot; </span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="co">#&gt;      F138      F139      F140      F153      F154      F155      F168      F169 </span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; </span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt;      F170      F171      F183      F184      F185      F186       F19      F110 </span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt; &quot;C[T&gt;C]G&quot; &quot;C[T&gt;C]T&quot; &quot;C[T&gt;G]A&quot; &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; </span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt;      F111      F112      F125      F126      F127      F128      F141      F142 </span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]G&quot; &quot;G[C&gt;G]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot; </span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt;      F143      F144      F156      F157      F158      F159      F172      F173 </span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; &quot;G[C&gt;T]G&quot; &quot;G[C&gt;T]T&quot; &quot;G[T&gt;A]A&quot; &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; </span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt;      F174      F175      F187      F188      F189      F190      F113      F114 </span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; &quot;G[T&gt;C]G&quot; &quot;G[T&gt;C]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot; </span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt;      F115      F116      F129      F130      F131      F132      F145      F146 </span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; &quot;T[C&gt;A]G&quot; &quot;T[C&gt;A]T&quot; &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; </span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt;      F147      F148      F160      F161      F162      F163      F176      F177 </span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; &quot;T[C&gt;T]G&quot; &quot;T[C&gt;T]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot; </span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt;      F178      F179      F191      F192      F193      F194 </span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="co">#&gt; &quot;T[T&gt;C]G&quot; &quot;T[T&gt;C]T&quot; &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot; </span></span>
+<span id="cb7-49"><a href="#cb7-49"></a><span class="co">#&gt; </span></span>
+<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#&gt; Model:</span></span>
+<span id="cb7-51"><a href="#cb7-51"></a><span class="co">#&gt; $Logit</span></span>
+<span id="cb7-52"><a href="#cb7-52"></a><span class="co">#&gt; </span></span>
+<span id="cb7-53"><a href="#cb7-53"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
+<span id="cb7-54"><a href="#cb7-54"></a><span class="co">#&gt; </span></span>
+<span id="cb7-55"><a href="#cb7-55"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt; (Intercept)           F1  </span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt;       8.687     -103.604  </span></span>
+<span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; </span></span>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
+<span id="cb7-60"><a href="#cb7-60"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
+<span id="cb7-61"><a href="#cb7-61"></a><span class="co">#&gt; Residual Deviance: 4.458     AIC: 8.458</span></span></code></pre></div>
 </div>
 <div id="using-your-signature" class="section level1">
 <h1>Using your signature</h1>
 <p>To apply the <code>SuperSig</code> to a new dataset, you can use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>newdata =<span class="st"> </span><span class="kw">predict_signature</span>(out, <span class="dt">newdata =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="kw">library</span>(dplyr)</span>
-<span id="cb7-5"><a href="#cb7-5"></a>})</span>
-<span id="cb7-6"><a href="#cb7-6"></a>newdata <span class="op">%&gt;%</span></span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="st">  </span><span class="kw">select</span>(IndVar, F1, score)</span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; # A tibble: 5 x 3</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;   IndVar     F1 score</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; 1      1 0.02   1.00 </span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; 2      1 0      0.333</span></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co">#&gt; 3      1 0.0139 1.00 </span></span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; 4      0 0      0.333</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; 5      0 0      0.333</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>newdata =<span class="st"> </span><span class="kw">predict_signature</span>(out, <span class="dt">newdata =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="kw">library</span>(dplyr)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>})</span>
+<span id="cb8-6"><a href="#cb8-6"></a>newdata <span class="op">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="st">  </span><span class="kw">select</span>(IndVar, F1, score)</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; # A tibble: 5 x 3</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt;   IndVar     F1 score</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; 1      1 0.06   0.922</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; 2      1 0.0909 0.325</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; 3      1 0.0417 0.988</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; 4      0 0.0943 0.252</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; 5      0 0.0833 0.513</span></span></code></pre></div>
 </div>
 
 

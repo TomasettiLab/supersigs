@@ -12,7 +12,8 @@ make_matrix(dt, genome = "hg19")
 \item{genome}{the reference genome used ("hg19" or "hg38")}
 }
 \value{
-\code{make_matrix} returns a data frame of mutations
+\code{make_matrix} returns a data frame of mutations,
+one row per sample
 }
 \description{
 Transform a data frame of mutations in VCF format into 

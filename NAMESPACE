@@ -3,6 +3,8 @@
 export(get_signature)
 export(make_matrix)
 export(predict_signature)
+export(process_vcf)
+import(VariantAnnotation)
 import(assertthat)
 import(caret)
 import(dplyr)

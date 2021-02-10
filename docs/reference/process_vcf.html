@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to predict using SuperSig object — predict_signature • supersigs</title>
+<title>Function to transform VCF object into "matrix" format — process_vcf • supersigs</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Function to predict using SuperSig object — predict_signature" />
-<meta property="og:description" content="Using a generated SuperSig, predict on a new dataset and return 
-predicted probabilities for each observation." />
+<meta property="og:title" content="Function to transform VCF object into "matrix" format — process_vcf" />
+<meta property="og:description" content="Transform a VCF object into 
+a data frame of trinucleotide mutations with flanking bases
+in a wide matrix format." />
 
 
 
@@ -120,49 +121,35 @@ predicted probabilities for each observation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to predict using SuperSig object</h1>
+    <h1>Function to transform VCF object into "matrix" format</h1>
     
-    <div class="hidden name"><code>predict_signature.Rd</code></div>
+    <div class="hidden name"><code>process_vcf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Using a generated SuperSig, predict on a new dataset and return 
-predicted probabilities for each observation.</p>
+    <p>Transform a VCF object into 
+a data frame of trinucleotide mutations with flanking bases
+in a wide matrix format.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>predict_signature</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>newdata</span>, <span class='va'>factor</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>process_vcf</span><span class='op'>(</span><span class='va'>vcf</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>an object of class "SuperSig"</p></td>
-    </tr>
-    <tr>
-      <th>newdata</th>
-      <td><p>a data frame of mutations</p></td>
-    </tr>
-    <tr>
-      <th>factor</th>
-      <td><p>the factor/exposure (e.g. "age", "smoking")</p></td>
+      <th>vcf</th>
+      <td><p>a VCF object (from `VariantAnnotation` package)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>predict_signature</code> returns the original data frame with 
-additional columns for the feature counts and classification score</p>
+    <p><code>make_matrix</code> returns a data frame of mutations, 
+one row per mutation</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># print(example_dt) # use example data from package</span>
-<span class='co'># input_dt = make_matrix(example_dt) # convert to correct format</span>
-<span class='co'># out = get_signature(dt = input_dt, factor = "age") # get SuperSig</span>
-
-<span class='co'># newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")</span>
-<span class='co'># newdata %&gt;% select(IndVar, F1, score)</span>
-
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

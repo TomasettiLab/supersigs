@@ -24,7 +24,8 @@
 #' 
 #' @export
 #' 
-#' @return \code{make_matrix} returns a data frame of mutations
+#' @return \code{make_matrix} returns a data frame of mutations,
+#' one row per sample
 #' 
 #' @examples
 #' 

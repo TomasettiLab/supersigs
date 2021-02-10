@@ -55,6 +55,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HRWJPS4FR0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-HRWJPS4FR0');
+</script>
+
 
   </head>
 
@@ -125,13 +135,14 @@
     
 
 <dl>
-<dt><code>Signature</code></dt><dd><p>data frame of features and their difference in mean rates 
-(or counts if the factor is "age")</p></dd>
+<dt><code>Signature</code></dt><dd><p>data frame of features and their 
+difference in mean rates (or counts if the factor is "age")</p></dd>
 
 <dt><code>Features</code></dt><dd><p>list of features that comprise the signature and 
 their representation in terms of the fundamental (trinucleotide) mutations</p></dd>
 
-<dt><code>AUC</code></dt><dd><p>length-one numeric vector of the apparent AUC (i.e. not cross-validated)</p></dd>
+<dt><code>AUC</code></dt><dd><p>length-one numeric vector of the apparent AUC 
+(i.e. not cross-validated)</p></dd>
 
 <dt><code>Model</code></dt><dd><p>list of a glm class for the trained logistic regression model</p></dd>
 
