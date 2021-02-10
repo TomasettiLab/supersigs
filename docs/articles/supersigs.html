@@ -159,7 +159,7 @@
 <p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">input_dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/make_matrix.html">make_matrix</a></span><span class="op">(</span><span class="va">example_dt</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 98</span>
 <span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span>
 <span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
@@ -210,7 +210,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Generate synthetic IndVar column</span>
 <span class="va">input_dt</span><span class="op">$</span><span class="va">IndVar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 99</span>
 <span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span>
 <span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
