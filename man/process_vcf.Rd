@@ -10,13 +10,15 @@ process_vcf(vcf)
 \item{vcf}{a VCF object (from `VariantAnnotation` package)}
 }
 \value{
-\code{make_matrix} returns a data frame of mutations, 
+\code{process_vcf} returns a data frame of mutations, 
 one row per mutation
 }
 \description{
 Transform a VCF object into 
 a data frame of trinucleotide mutations with flanking bases
-in a wide matrix format.
+in a wide matrix format. The function assumes that the VCF object
+contains only one sample and that each row in rowRanges 
+represents an observed mutation in the sample.
 }
 \examples{
 
