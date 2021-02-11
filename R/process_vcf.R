@@ -1,7 +1,7 @@
 # process_vcf.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Feb 9, 2021
+# Date last modified: Feb 11, 2021
 #
 # (Export) Function to transform VCF object into correct format
 
@@ -24,7 +24,7 @@
 #' 
 #' @export
 #' 
-#' @return \code{make_matrix} returns a data frame of mutations, 
+#' @return \code{process_vcf} returns a data frame of mutations, 
 #' one row per mutation
 #' 
 #' @examples
@@ -45,15 +45,18 @@ process_vcf <- function(vcf){
   dt_ls <- vector("list", n_samples)
   for(i in seq_len(n_samples)){
     dt_ls[[i]] <- data.frame(rowRanges(vcf[positions[, i],])) %>%
-      dplyr::filter(width == 1) %>%
       dplyr::mutate(chromosome = paste0("chr", seqnames)) %>%
-      dplyr::select(chromosome, start, REF, ALT) %>%
-      dplyr::rename(position = start,
-                    ref = REF,
-                    alt = ALT) %>%
-      dplyr::mutate(sample_id = sample_ids[i],
-                    age = ages[i]) %>%
-      dplyr::relocate(sample_id, age)
+      dplyr::rename(position = start) %>%
+      dplyr::mutate(ref = vapply(REF, function(x)
+      {as.character(x)[[1]][[1]]},
+      FUN.VALUE = character(1)),
+      alt = vapply(ALT, function(x)
+      {as.character(x)[[1]][[1]]},
+      FUN.VALUE = character(1)),
+      sample_id = sample_ids[i],
+      age = ages[i]) %>%
+      dplyr::filter(nchar(ref) == 1 & nchar(alt) == 1) %>%
+      dplyr::select(sample_id, age, chromosome, position, ref, alt)
   }
   dt <- rbind(dt_ls[[i]])
   
