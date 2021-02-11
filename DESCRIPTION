@@ -24,7 +24,8 @@ Imports:
         rlang,
 	utils,
 	Biostrings,
-	stats
+	stats,
+        SummarizedExperiment
 Suggests: 
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38,

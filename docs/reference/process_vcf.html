@@ -42,7 +42,9 @@
 <meta property="og:title" content="Function to transform VCF object into "matrix" format — process_vcf" />
 <meta property="og:description" content="Transform a VCF object into 
 a data frame of trinucleotide mutations with flanking bases
-in a wide matrix format." />
+in a wide matrix format. The function assumes that the VCF object
+contains only one sample and that each row in rowRanges 
+represents an observed mutation in the sample." />
 
 
 
@@ -129,7 +131,9 @@ in a wide matrix format." />
     <div class="ref-description">
     <p>Transform a VCF object into 
 a data frame of trinucleotide mutations with flanking bases
-in a wide matrix format.</p>
+in a wide matrix format. The function assumes that the VCF object
+contains only one sample and that each row in rowRanges 
+represents an observed mutation in the sample.</p>
     </div>
 
     <pre class="usage"><span class='fu'>process_vcf</span><span class='op'>(</span><span class='va'>vcf</span><span class='op'>)</span></pre>
@@ -145,7 +149,7 @@ in a wide matrix format.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>make_matrix</code> returns a data frame of mutations, 
+    <p><code>process_vcf</code> returns a data frame of mutations, 
 one row per mutation</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

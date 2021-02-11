@@ -1,8 +1,11 @@
 # SaveExternalData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Feb 9, 2021
+# Date last modified: Feb 11, 2021
 # Save rds files to external data for R package
+
+# Save models
+supersig_ls = readRDS(here("data-files", "supersig_ls.rds"))
 
 # Generate example VCF data for vignette
 example_dt = data.frame(sample_id = rep(1:5, each = 5),
@@ -29,4 +32,6 @@ example_dt = data.frame(sample_id = rep(1:5, each = 5),
                                 "C", "A", "A", "T", "T"))
 
 # Save external data
-usethis::use_data(example_dt, overwrite = TRUE)
+usethis::use_data(example_dt, 
+                  supersig_ls,
+                  overwrite = TRUE)

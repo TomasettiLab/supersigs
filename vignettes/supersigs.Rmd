@@ -38,8 +38,13 @@ suppressPackageStartupMessages({
 })
 
 fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
-vcf <- VariantAnnotation::readVcf(fl, "hg19") # VCF object
-colData(vcf)$age <- (1:5)*20    # Add patient age to colData
+vcf <- VariantAnnotation::readVcf(fl, "hg19") 
+# Subset to first sample
+vcf <- vcf[, 1]
+# Subset to row positions with homozygous or heterozygous alt
+positions <- geno(vcf)$GT != "0|0" 
+vcf <- vcf[positions[, 1],]
+colData(vcf)$age <- 50    # Add patient age to colData
 dt <- process_vcf(vcf)
 head(dt)
 ```
@@ -107,22 +112,32 @@ Once you have the correct data format, apply `get_signature` to the dataset to g
 * `Model` is the list of a glm class for the trained logistic regression model
 
 ```{r}
-out = get_signature(dt = input_dt, factor = "Smoking")
-out
+supersig = get_signature(dt = input_dt, factor = "Smoking")
+supersig
 ```
 
-# Using your signature
+# Using a signature
 
 To apply the `SuperSig` to a new dataset, you can use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
 
+Below is an example for the `SuperSig` we trained in the previous section.
+
 ```{r}
-newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")
+newdata = predict_signature(supersig, newdata = input_dt, factor = "Smoking")
 
 suppressPackageStartupMessages({
   library(dplyr)
 })
 newdata %>%
   select(IndVar, F1, score)
+```
+
+In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. These are accessible from the package in `supersig_ls`, where each element of the list is a `SuperSig`. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as "factor (tissue)"). Details regarding the training of these signatures are discussed in the following paper:
+
+* Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
+
+```{r}
+names(supersig_ls)
 ```
 
 ```{r eval = F, include=F}

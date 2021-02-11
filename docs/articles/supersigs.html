@@ -104,17 +104,22 @@
 <span class="op">}</span><span class="op">)</span>
 
 <span class="va">fl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"chr22.vcf.gz"</span>, package<span class="op">=</span><span class="st">"VariantAnnotation"</span><span class="op">)</span>
-<span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html">readVcf</a></span><span class="op">(</span><span class="va">fl</span>, <span class="st">"hg19"</span><span class="op">)</span> <span class="co"># VCF object</span>
-<span class="fu">colData</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">*</span><span class="fl">20</span>    <span class="co"># Add patient age to colData</span>
+<span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html">readVcf</a></span><span class="op">(</span><span class="va">fl</span>, <span class="st">"hg19"</span><span class="op">)</span> 
+<span class="co"># Subset to first sample</span>
+<span class="va">vcf</span> <span class="op">&lt;-</span> <span class="va">vcf</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>
+<span class="co"># Subset to row positions with homozygous or heterozygous alt</span>
+<span class="va">positions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html">geno</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">GT</span> <span class="op">!=</span> <span class="st">"0|0"</span> 
+<span class="va">vcf</span> <span class="op">&lt;-</span> <span class="va">vcf</span><span class="op">[</span><span class="va">positions</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,<span class="op">]</span>
+<span class="fu">colData</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="fl">50</span>    <span class="co"># Add patient age to colData</span>
 <span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_vcf.html">process_vcf</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dt</span><span class="op">)</span>
 <span class="co">#&gt;   sample_id age chromosome position ref alt</span>
-<span class="co">#&gt; 1   HG00101 100      chr22 50330345   G   A</span>
-<span class="co">#&gt; 2   HG00101 100      chr22 50332324   T   C</span>
-<span class="co">#&gt; 3   HG00101 100      chr22 50344912   C   G</span>
-<span class="co">#&gt; 4   HG00101 100      chr22 50345729   T   C</span>
-<span class="co">#&gt; 5   HG00101 100      chr22 50345868   G   C</span>
-<span class="co">#&gt; 6   HG00101 100      chr22 50347045   G   A</span></code></pre></div>
+<span class="co">#&gt; 1   HG00096  50      chr22 50326116   C   T</span>
+<span class="co">#&gt; 2   HG00096  50      chr22 50336761   G   A</span>
+<span class="co">#&gt; 3   HG00096  50      chr22 50346072   C   T</span>
+<span class="co">#&gt; 4   HG00096  50      chr22 50350418   T   C</span>
+<span class="co">#&gt; 5   HG00096  50      chr22 50351413   C   T</span>
+<span class="co">#&gt; 6   HG00096  50      chr22 50351977   G   A</span></code></pre></div>
 </div>
 <div id="example-data" class="section level2">
 <h2 class="hasAnchor">
@@ -254,9 +259,9 @@
 <code>Model</code> is the list of a glm class for the trained logistic regression model</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>dt <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">supersig</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>dt <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 <span class="co">#&gt; Begin feature engineering...</span>
-<span class="co">#&gt; Begin cross-validated selection over 3 features and 15 inner folds...</span>
+<span class="co">#&gt; Begin cross-validated selection over 4 features and 15 inner folds...</span>
 <span class="co">#&gt; ...testing inner fold 1</span>
 <span class="co">#&gt; ...testing inner fold 2</span>
 <span class="co">#&gt; ...testing inner fold 3</span>
@@ -272,36 +277,36 @@
 <span class="co">#&gt; ...testing inner fold 13</span>
 <span class="co">#&gt; ...testing inner fold 14</span>
 <span class="co">#&gt; ...testing inner fold 15</span>
-<span class="va">out</span>
+<span class="va">supersig</span>
 <span class="co">#&gt; Signature:</span>
 <span class="co">#&gt;              F1</span>
-<span class="co">#&gt; 1 -0.0006141866</span>
+<span class="co">#&gt; 1 -0.0007475199</span>
 <span class="co">#&gt; Features:</span>
 <span class="co">#&gt; $F1</span>
 <span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span>
 <span class="co">#&gt; "A[C&gt;A]A" "A[C&gt;A]C" "A[C&gt;A]G" "A[C&gt;A]T" "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;G]T" </span>
-<span class="co">#&gt;      F133      F134      F135      F136      F149      F150      F151      F152 </span>
+<span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span>
 <span class="co">#&gt; "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" "A[T&gt;A]C" "A[T&gt;A]G" "A[T&gt;A]T" </span>
-<span class="co">#&gt;      F164      F165      F166      F167      F180      F181      F182       F15 </span>
+<span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span>
 <span class="co">#&gt; "A[T&gt;C]A" "A[T&gt;C]C" "A[T&gt;C]G" "A[T&gt;C]T" "A[T&gt;G]A" "A[T&gt;G]C" "A[T&gt;G]G" "C[C&gt;A]A" </span>
-<span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F137 </span>
+<span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span>
 <span class="co">#&gt; "C[C&gt;A]C" "C[C&gt;A]G" "C[C&gt;A]T" "C[C&gt;G]A" "C[C&gt;G]C" "C[C&gt;G]G" "C[C&gt;G]T" "C[C&gt;T]A" </span>
-<span class="co">#&gt;      F138      F139      F140      F153      F154      F155      F168      F169 </span>
+<span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span>
 <span class="co">#&gt; "C[C&gt;T]C" "C[C&gt;T]G" "C[C&gt;T]T" "C[T&gt;A]C" "C[T&gt;A]G" "C[T&gt;A]T" "C[T&gt;C]A" "C[T&gt;C]C" </span>
-<span class="co">#&gt;      F170      F171      F183      F184      F185      F186       F19      F110 </span>
+<span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span>
 <span class="co">#&gt; "C[T&gt;C]G" "C[T&gt;C]T" "C[T&gt;G]A" "C[T&gt;G]C" "C[T&gt;G]G" "C[T&gt;G]T" "G[C&gt;A]A" "G[C&gt;A]C" </span>
-<span class="co">#&gt;      F111      F112      F125      F126      F127      F128      F141      F142 </span>
-<span class="co">#&gt; "G[C&gt;A]G" "G[C&gt;A]T" "G[C&gt;G]A" "G[C&gt;G]C" "G[C&gt;G]G" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" </span>
-<span class="co">#&gt;      F143      F144      F156      F157      F158      F159      F172      F173 </span>
-<span class="co">#&gt; "G[C&gt;T]G" "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" </span>
-<span class="co">#&gt;      F174      F175      F187      F188      F189      F190      F113      F114 </span>
-<span class="co">#&gt; "G[T&gt;C]G" "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;A]A" "T[C&gt;A]C" </span>
-<span class="co">#&gt;      F115      F116      F129      F130      F131      F132      F145      F146 </span>
-<span class="co">#&gt; "T[C&gt;A]G" "T[C&gt;A]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" </span>
-<span class="co">#&gt;      F147      F148      F160      F161      F162      F163      F176      F177 </span>
-<span class="co">#&gt; "T[C&gt;T]G" "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" </span>
-<span class="co">#&gt;      F178      F179      F191      F192      F193      F194 </span>
-<span class="co">#&gt; "T[T&gt;C]G" "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" </span>
+<span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span>
+<span class="co">#&gt; "G[C&gt;A]G" "G[C&gt;A]T" "G[C&gt;G]A" "G[C&gt;G]C" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" "G[C&gt;T]G" </span>
+<span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span>
+<span class="co">#&gt; "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" "G[T&gt;C]G" </span>
+<span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span>
+<span class="co">#&gt; "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;A]A" "T[C&gt;A]C" "T[C&gt;A]G" </span>
+<span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span>
+<span class="co">#&gt; "T[C&gt;A]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" "T[C&gt;T]G" </span>
+<span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span>
+<span class="co">#&gt; "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" "T[T&gt;C]G" </span>
+<span class="co">#&gt;      F178      F190      F191      F192      F193 </span>
+<span class="co">#&gt; "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Model:</span>
 <span class="co">#&gt; $Logit</span>
@@ -310,18 +315,19 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt; (Intercept)           F1  </span>
-<span class="co">#&gt;       8.687     -103.604  </span>
+<span class="co">#&gt;       7.118      -86.601  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span>
 <span class="co">#&gt; Null Deviance:       6.73 </span>
-<span class="co">#&gt; Residual Deviance: 4.458     AIC: 8.458</span></code></pre></div>
+<span class="co">#&gt; Residual Deviance: 4.279     AIC: 8.279</span></code></pre></div>
 </div>
-<div id="using-your-signature" class="section level1">
+<div id="using-a-signature" class="section level1">
 <h1 class="hasAnchor">
-<a href="#using-your-signature" class="anchor"></a>Using your signature</h1>
+<a href="#using-a-signature" class="anchor"></a>Using a signature</h1>
 <p>To apply the <code>SuperSig</code> to a new dataset, you can use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
+<p>Below is an example for the <code>SuperSig</code> we trained in the previous section.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">out</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
@@ -331,11 +337,35 @@
 <span class="co">#&gt; # A tibble: 5 x 3</span>
 <span class="co">#&gt;   IndVar     F1 score</span>
 <span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1      1 0.06   0.922</span>
-<span class="co">#&gt; 2      1 0.0909 0.325</span>
-<span class="co">#&gt; 3      1 0.0417 0.988</span>
-<span class="co">#&gt; 4      0 0.0943 0.252</span>
-<span class="co">#&gt; 5      0 0.0833 0.513</span></code></pre></div>
+<span class="co">#&gt; 1      1 0.04   0.975</span>
+<span class="co">#&gt; 2      1 0.0909 0.320</span>
+<span class="co">#&gt; 3      1 0.0417 0.971</span>
+<span class="co">#&gt; 4      0 0.0943 0.259</span>
+<span class="co">#&gt; 5      0 0.0833 0.475</span></code></pre></div>
+<p>In addition, you may wish to use a <code>SuperSig</code> pre-trained on TCGA data. These are accessible from the package in <code>supersig_ls</code>, where each element of the list is a <code>SuperSig</code>. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as “factor (tissue)”). Details regarding the training of these signatures are discussed in the following paper:</p>
+<ul>
+<li>Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., &amp; Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. <a href="https://doi.org/10.7554/eLife.61082">https://doi.org/10.7554/elife.61082</a>
+</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">supersig_ls</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "AGE (LAML)"      "AGE (BLCA)"      "AGE (LUAD)"      "AGE (LGG)"      </span>
+<span class="co">#&gt;  [5] "AGE (HNSCC)"     "AGE (KIRC)"      "AGE (KIRP)"      "AGE (KICH)"     </span>
+<span class="co">#&gt;  [9] "AGE (LIHC)"      "AGE (STAD)"      "AGE (THCA)"      "AGE (UVM)"      </span>
+<span class="co">#&gt; [13] "AGE (SKCM)"      "AGE (ACC)"       "AGE (CHOL)"      "AGE (GBM)"      </span>
+<span class="co">#&gt; [17] "AGE (CESC)"      "AGE (COAD)"      "AGE (PCPG)"      "AGE (PAAD)"     </span>
+<span class="co">#&gt; [21] "AGE (PRAD)"      "AGE (ESCSQ)"     "AGE (ESCAD)"     "AGE (UCEC)"     </span>
+<span class="co">#&gt; [25] "AGE (UCS)"       "AGE (BRCA)"      "AGE (SARC)"      "AGE (TGCT)"     </span>
+<span class="co">#&gt; [29] "AGE (THYM)"      "AGE (OV)"        "SMOKING (BLCA)"  "SMOKING (LUAD)" </span>
+<span class="co">#&gt; [33] "SMOKING (HNSCC)" "SMOKING (KIRP)"  "SMOKING (PAAD)"  "SMOKING (ESCSQ)"</span>
+<span class="co">#&gt; [37] "SMOKING (ESCAD)" "SMOKING (CESC)"  "POLE (UCEC)"     "POLE (STAD)"    </span>
+<span class="co">#&gt; [41] "POLE (COAD)"     "POLE (BRCA)"     "MSI (UCEC)"      "MSI (STAD)"     </span>
+<span class="co">#&gt; [45] "MSI (COAD)"      "BRCA (BRCA)"     "BRCA (OV)"       "UV* (SKCM)"     </span>
+<span class="co">#&gt; [49] "POLD (UCEC)"     "POLD (STAD)"     "MGMT (GBM)"      "MGMT (LGG)"     </span>
+<span class="co">#&gt; [53] "IDH (LGG)"       "IDH (GBM)"       "BMI (UCEC)"      "BMI (KIRP)"     </span>
+<span class="co">#&gt; [57] "BMI (ESCA)"      "BMI (COAD)"      "ALCOHOL (HNSCC)" "ALCOHOL (ESCA)" </span>
+<span class="co">#&gt; [61] "ALCOHOL (LIHC)"  "HepB (LIHC)"     "HepC (LIHC)"     "AAcid (BLCA)"   </span>
+<span class="co">#&gt; [65] "Asb* (MESO)"     "APOPEC (CESC)"   "APOPEC (KIRC)"</span></code></pre></div>
 </div>
   </div>
 
