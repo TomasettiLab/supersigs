@@ -19,9 +19,7 @@
 #' @param vcf a VCF object (from `VariantAnnotation` package)
 #' 
 #' @import dplyr
-#' @import tidyr
-#' @import VariantAnnotation
-#' @importFrom Biostrings getSeq
+#' @importFrom SummarizedExperiment colData rowRanges
 #' @importFrom rlang .data
 #' 
 #' @export
@@ -36,26 +34,27 @@ process_vcf <- function(vcf){
   n_samples <- nrow(colData(vcf))
   assert_that(n_samples == 1, msg = "Number of samples not equal to 1 in VCF")
   
-  sample_ids <- rownames(colData(vcf))
-  if("age" %in% colnames(colData(vcf))){
+  sample_ids <- rownames(SummarizedExperiment::colData(vcf))
+  if("age" %in% colnames(SummarizedExperiment::colData(vcf))){
     ages <- colData(vcf)$age
   } else {
     ages <- rep(NA, n = n_samples)
   }
   
-  dt <- data.frame(rowRanges(vcf)) %>%
-      dplyr::mutate(chromosome = paste0("chr", seqnames)) %>%
-      dplyr::rename(position = start) %>%
-      dplyr::mutate(ref = vapply(REF, function(x)
+  dt <- data.frame(SummarizedExperiment::rowRanges(vcf)) %>%
+      dplyr::mutate(chromosome = paste0("chr", .data$seqnames)) %>%
+      dplyr::rename(position = .data$start) %>%
+      dplyr::mutate(ref = vapply(.data$REF, function(x)
       {as.character(x)[[1]][[1]]},
       FUN.VALUE = character(1)),
-      alt = vapply(ALT, function(x)
+      alt = vapply(.data$ALT, function(x)
       {as.character(x)[[1]][[1]]},
       FUN.VALUE = character(1)),
       sample_id = sample_ids[1],
       age = ages[1]) %>%
-      dplyr::filter(nchar(ref) == 1 & nchar(alt) == 1) %>%
-      dplyr::select(sample_id, age, chromosome, position, ref, alt)
+      dplyr::filter(nchar(.data$ref) == 1 & nchar(.data$alt) == 1) %>%
+      dplyr::select(.data$sample_id, .data$age, .data$chromosome, 
+                    .data$position, .data$ref, .data$alt)
   
   return(dt)
 }
