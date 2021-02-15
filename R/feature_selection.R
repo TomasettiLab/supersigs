@@ -221,14 +221,6 @@ feature_selection <- function(dt,
                                FUN.VALUE = numeric(1)))
     n_star <- ifelse(identical(n_star, integer(0)), NA, n_star)
     
-    # n_star <- try(vapply(methods, function(method){
-    #   which.max(vapply(auc_ls, function(x) x[method],
-    #                    FUN.VALUE = numeric(1))) %>% unname()},
-    #   FUN.VALUE = numeric(1)))
-    # n_star <- vapply(n_star, function(x){
-    #   ifelse(identical(x, integer(0)), NA, x)}, 
-    #   FUN.VALUE = numeric(1))
-    
     # Save n_star for each method
     n_star_ls[[ij]] <- tibble(!!paste0("methods_", ij) := methods,
                               !!paste0("n_star_", ij) := n_star)

@@ -136,7 +136,7 @@ supersig_classifier <- function(dt, test_ind = NULL,
                               select_n = select_n)
       }
       
-      out$auc["Logit"] <-my_auc(test_indvar, logit_prediction)
+      out$auc["Logit"] <- my_auc(test_indvar, logit_prediction)
       if(keep_classifier) 
         out$classifier$Logit <- logit_classifier
     })

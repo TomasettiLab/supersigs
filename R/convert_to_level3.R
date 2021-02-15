@@ -17,7 +17,7 @@
 #' 
 convert_to_level3 = function(features){
   if(length(features) > 1){
-    out <- sapply(features, function(x) muts_children_level3[[x]],
+    out <- vapply(features, function(x) muts_children_level3[[x]],
                   FUN.VALUE = character(1))
     out <- unname(unlist(out))
   } else {
