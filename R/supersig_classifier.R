@@ -1,7 +1,7 @@
 # supersig_classifier.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jan 11, 2021
+# Date last modified: Feb 15, 2021
 #
 # Function for classification logistic regression
 
@@ -21,8 +21,6 @@
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' @param keep_classifier an optional logical value indicating whether to save
 #' the classifier model (default is \code{FALSE})
-#' @param adjusted_formula an optional logical value indicating whether to
-#' use the adjusted formula for non-age factors (default is \code{FALSE})
 #' @param features_selected a vector of candidate features ranked by AUC
 #' @param select_n the number of top features to retain for each method
 #' 
@@ -44,7 +42,6 @@
 supersig_classifier <- function(dt, test_ind = NULL,
                                factor,
                                keep_classifier = FALSE,
-                               adjusted_formula = FALSE,
                                features_selected,
                                select_n){
   # Split training and test set
@@ -65,33 +62,9 @@ supersig_classifier <- function(dt, test_ind = NULL,
 
   # Transform data
   if(factor != "AGE"){
-    if(adjusted_formula){
-      # Calculate grouped median rates
-      grouped_rates <- train %>%
-        group_by(.data$IndVar) %>%
-        summarize_at(.vars = features_selected,
-                     .funs = funs(median(., na.rm=TRUE)/
-                                    median(.data$AGE, na.rm=TRUE)))
-      
-      unexposed_rates <- grouped_rates %>% filter(.data$IndVar == FALSE) %>% 
-        select(-.data$IndVar)
-      exposed_rates <- grouped_rates %>% filter(.data$IndVar == TRUE) %>% 
-        select(-.data$IndVar)
-      
-      # Remove unexposed median rate (i.e. aging rate) from train and test data
-      remove_age_formula <- colnames(unexposed_rates) %>%
-        sapply(FUN = function(x) paste0("`", x, "`", "-AGE*", 
-                                        unexposed_rates[x]))
-      
-      dt <- dt %>%
-        mutate_(.dots = remove_age_formula) %>%
-        mutate_at(.vars = features_selected,
-                  .funs = funs(./.data$TOTAL_MUTATIONS))
-    } else {
-      dt <- dt %>%
-        mutate_at(.vars = features_selected,
-                  .funs = funs(./.data$AGE))
-    }
+    dt <- dt %>%
+      mutate_at(.vars = features_selected,
+                .funs = funs(./.data$AGE))
     
     # Remove observations missing age
     missing_ind <- which(is.na(dt$AGE))
