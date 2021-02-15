@@ -22,4 +22,19 @@ represents an observed mutation in the sample.
 }
 \examples{
 
+# Use example vcf from VariantAnnotation
+library(VariantAnnotation)
+fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
+vcf <- VariantAnnotation::readVcf(fl, "hg19") 
+
+# Subset to first sample
+vcf <- vcf[, 1]
+# Subset to row positions with homozygous or heterozygous alt
+positions <- geno(vcf)$GT != "0|0" 
+vcf <- vcf[positions[, 1],]
+colData(vcf)$age <- 50    # Add patient age to colData (optional)
+
+# Run function
+dt <- process_vcf(vcf)
+
 }

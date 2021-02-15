@@ -22,8 +22,7 @@ in a wide matrix format.
 }
 \examples{
 
-# print(example_dt) # use example data from package
-# input_dt = make_matrix(example_dt) # convert to correct format
-# get_signature(dt = input_dt, factor = "age") # get SuperSig
+head(example_dt) # use example data from package
+input_dt <- make_matrix(example_dt) # convert to correct format
 
 }

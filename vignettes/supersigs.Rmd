@@ -83,7 +83,7 @@ suppressPackageStartupMessages({
 We apply `make_matrix` to transform our example dataset (`example_dt`) into a data frame of trinucleotide mutations (`input_dt`), which is the format required by the `supersigs` R package. Each row in `input_dt` corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.
 
 ```{r}
-input_dt = make_matrix(example_dt)
+input_dt <- make_matrix(example_dt)
 head(input_dt)
 ```
 
@@ -112,7 +112,7 @@ Once you have the correct data format, apply `get_signature` to the dataset to g
 * `Model` is the list of a glm class for the trained logistic regression model
 
 ```{r}
-supersig = get_signature(dt = input_dt, factor = "Smoking")
+supersig <- get_signature(dt = input_dt, factor = "Smoking")
 supersig
 ```
 

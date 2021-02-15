@@ -33,7 +33,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations. The methodology is based on the paper "Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer."
+Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations in the cancer genome. Functions included in the package allow the user to learn SuperSigs from their data and apply them to new data. The methodology for learning SuperSigs is based on the following paper (Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10.).
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -121,7 +121,7 @@ feature_selection <- function(dt,
   new_partition_combined <- Reduce(function(a, b){
     generate_min_sigma_algebra(list(var0 = a, var1 = b), 
                                partitioned_features = TRUE)},
-                                   new_partition_ls)
+    new_partition_ls)
   
   # Transform data
   new_partition <- new_partition_combined
