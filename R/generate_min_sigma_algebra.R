@@ -1,7 +1,7 @@
 # generate_min_sigma_algebra.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Dec 21, 2020
+# Date last modified: Feb 15, 2021
 #
 # Function to create the smallest non-overlapping partition that generates 
 # the minimal sigma algebra containing two sets of mutation features
@@ -53,8 +53,9 @@ generate_min_sigma_algebra <- function(input_ls,
   
   # Create matrix of indicator values
   temp <- setNames(rep(FALSE, length(muts_level3)), muts_level3)
-  M <- sapply(feat_ls, FUN = function(mutation)
-    {out <- temp; out[mutation] <- TRUE; out})
+  M <- vapply(feat_ls, FUN = function(mutation)
+    {out <- temp; out[mutation] <- TRUE; out},
+    FUN.VALUE = vector("logical", length = length(muts_level3)))
   
   # Separate mutations that do not appear in any of feat_ls
   any_ind <- apply(M, MARGIN = 1, FUN = any)

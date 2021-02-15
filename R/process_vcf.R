@@ -19,7 +19,7 @@
 #' @param vcf a VCF object (from `VariantAnnotation` package)
 #' 
 #' @import dplyr
-#' @importFrom SummarizedExperiment colData rowRanges
+#' @importFrom SummarizedExperiment colData rowRanges seqinfo
 #' @importFrom rlang .data
 #' 
 #' @export
@@ -30,7 +30,7 @@
 #' @examples
 #' 
 process_vcf <- function(vcf){
-  genome <- unname(genome(seqinfo(vcf)))
+  genome <- unname(genome(SummarizedExperiment::seqinfo(vcf)))
   n_samples <- nrow(colData(vcf))
   assert_that(n_samples == 1, msg = "Number of samples not equal to 1 in VCF")
   

@@ -1,7 +1,7 @@
 # make_matrix.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Feb 9, 2021
+# Date last modified: Feb 15, 2021
 #
 # (Export) Function to transform data frame of mutations into correct format
 
@@ -73,7 +73,8 @@ make_matrix <- function(dt, genome = "hg19"){
                              .data$ref, ">", .data$alt, "]",
                              substr(.data$aligned, 3, 3)),
            mutation_std = unname(sapply(.data$mutation, 
-                                        function(x) transform_muts_vec[[x]])))
+                                        function(x) {transform_muts_vec[[x]]},
+                                        FUN.VALUE = character(1))))
   
   # Count mutations for each patient
   dt_counts <- dt %>%

@@ -1,7 +1,7 @@
 # transform_data.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Dec 21, 2020
+# Date last modified: Feb 15, 2021
 
 # library(dplyr)
 # library(here)
@@ -35,8 +35,9 @@ transform_data <- function(dt,
   features_selected <- names(new_partition)
   
   # Count features by directly summing
-  new_partition_formula <- sapply(new_partition, function(x) 
-    paste0("(", paste("`", x, "`", sep = "", collapse = "+"), ")"))
+  new_partition_formula <- vapply(new_partition, function(x) 
+    paste0("(", paste("`", x, "`", sep = "", collapse = "+"), ")"),
+    FUN.VALUE = character(1))
   
   dt_new <- dt %>% 
     mutate_(.dots = new_partition_formula)

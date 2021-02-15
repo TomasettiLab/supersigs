@@ -1,7 +1,7 @@
 # context_matters.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jan 11, 2021
+# Date last modified: Feb 15, 2021
 #
 # Function for binomial testing using a hierarchical tree structure
 
@@ -55,7 +55,7 @@ context_matters <- function(muts_df,
     muts_counts[feature] <- muts_counts[feature] + 
       all_possible_tri[feature]*tot_pseudo/3
   }
-  muts_counts <- sapply(muts_counts, round)
+  muts_counts <- vapply(muts_counts, round, FUN.VALUE = numeric(1))
   bonf_correction <- 150
   
   # Create "tree"

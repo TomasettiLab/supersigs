@@ -1,7 +1,7 @@
 # feature_selection.R
 # -----------------------------------------------------------------------------
 # Author:             Bahman Afsari, Albert Kuo
-# Date last modified: Jan 11, 2021
+# Date last modified: Feb 15, 2021
 #
 # Function for selecting features
 
@@ -67,9 +67,10 @@ feature_selection <- function(dt,
   message(paste("Begin feature engineering..."))
   n_iter = 5
   n_fold = 3
-  inner_partitions <- sapply(seq_len(n_iter), 
+  inner_partitions <- vapply(seq_len(n_iter), 
                              FUN = function(x) createFolds(y = train$IndVar, 
-                                                           k = n_fold))
+                                                           k = n_fold),
+                             FUN.VALUE = vector("list", length = n_fold))
   new_partition_ls <- vector(length = length(inner_partitions), mode = "list")
   for(ij in seq_along(inner_partitions)){
     i <- (ij-1) %% n_fold + 1
@@ -146,8 +147,9 @@ feature_selection <- function(dt,
     
     # Calculate rank of trinucleotide equivalents
     feature_to_trinucleotides <- tibble(feature = rep(feature_names, 
-                                                      sapply(new_partition, 
-                                                             length)),
+                                                      vapply(new_partition, 
+                                                             length,
+                                                             numeric(1))),
                                         trinucleotide = unlist(new_partition))
     rank_trinucleotides <- rank_mutations %>%
       left_join(., feature_to_trinucleotides, 
@@ -216,10 +218,13 @@ feature_selection <- function(dt,
                                          features_selected = features_selected,
                                          select_n = c("Logit" = k))$auc
     }
-    n_star <- try(sapply(methods, function(method){
-      which.max(sapply(auc_ls, function(x) x[method])) %>% unname()}))
-    n_star <- sapply(n_star, function(x){
-      ifelse(identical(x, integer(0)), NA, x)})
+    n_star <- try(vapply(methods, function(method){
+      which.max(vapply(auc_ls, function(x) x[method],
+                       numeric(1))) %>% unname()},
+      FUN.VALUE = numeric(1)))
+    n_star <- vapply(n_star, function(x){
+      ifelse(identical(x, integer(0)), NA, x)},
+      FUN.VALUE = numeric(1))
     
     # Save n_star for each method
     n_star_ls[[ij]] <- tibble(!!paste0("methods_", ij) := methods,
@@ -242,7 +247,8 @@ feature_selection <- function(dt,
   auc_mat <- all_my_auc(dt_new %>% select(c(features_selected, "IndVar")), 
                         IndVar = "IndVar")
   max_n <- sum(auc_mat > 0.6)
-  select_n <- sapply(select_n, function(x) min(max_n, x))
+  select_n <- vapply(select_n, function(x) min(max_n, x),
+                     FUN.VALUE = numeric(1))
   
   # Return output
   assert_that(length(features_selected) >= 1, 
