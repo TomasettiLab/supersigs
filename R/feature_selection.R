@@ -214,17 +214,20 @@ feature_selection <- function(dt,
                                          test_ind = test_inner_ind,
                                          factor,
                                          keep_classifier = FALSE,
-                                         adjusted_formula = FALSE,
                                          features_selected = features_selected,
                                          select_n = c("Logit" = k))$auc
     }
-    n_star <- try(vapply(methods, function(method){
-      which.max(vapply(auc_ls, function(x) x[method],
-                       numeric(1))) %>% unname()},
-      FUN.VALUE = numeric(1)))
-    n_star <- vapply(n_star, function(x){
-      ifelse(identical(x, integer(0)), NA, x)},
-      FUN.VALUE = numeric(1))
+    n_star <- which.max(vapply(auc_ls, function(x) x["Logit"],
+                               FUN.VALUE = numeric(1)))
+    n_star <- ifelse(identical(n_star, integer(0)), NA, n_star)
+    
+    # n_star <- try(vapply(methods, function(method){
+    #   which.max(vapply(auc_ls, function(x) x[method],
+    #                    FUN.VALUE = numeric(1))) %>% unname()},
+    #   FUN.VALUE = numeric(1)))
+    # n_star <- vapply(n_star, function(x){
+    #   ifelse(identical(x, integer(0)), NA, x)}, 
+    #   FUN.VALUE = numeric(1))
     
     # Save n_star for each method
     n_star_ls[[ij]] <- tibble(!!paste0("methods_", ij) := methods,
