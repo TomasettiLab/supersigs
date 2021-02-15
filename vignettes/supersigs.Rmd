@@ -91,16 +91,23 @@ head(input_dt)
 
 To apply the supervised method on your data, run the `get_signature` function. The function has two parameters: an input data frame `dt` and the `factor` (e.g. `factor = "Smoking"`). `dt` is a data frame with the following columns:
 
+* `IndVar` (indicator variable) is a logical indicator for whether they were exposed to the `factor` or not
 * `sample_id` is an ID for each sample
 * `age` is the age of the patient
-* `IndVar` (indicator variable) is a logical indicator for whether they were exposed to the `factor` or not
 * columns of counts for all 96 trinucleotide mutations
 
 The process of converting a VCF file to this format is covered in [Preprocessing your data]. An example for `dt` is printed below.
 
 ```{r}
-# Generate synthetic IndVar column
-input_dt$IndVar <- c(1, 1, 1, 0, 0)
+suppressPackageStartupMessages({
+  library(dplyr)
+})
+
+# Add IndVar column
+input_dt <- input_dt %>%
+  mutate(IndVar = c(1, 1, 1, 0, 0)) %>%
+  relocate(IndVar)
+
 head(input_dt)
 ```
 
@@ -118,23 +125,18 @@ supersig
 
 # Using a signature
 
-To apply the `SuperSig` to a new dataset, you can use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
+To apply the `SuperSig` to a new dataset, use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
 
 Below is an example for the `SuperSig` we trained in the previous section.
 
 ```{r}
 newdata = predict_signature(supersig, newdata = input_dt, factor = "Smoking")
 
-suppressPackageStartupMessages({
-  library(dplyr)
-})
 newdata %>%
   select(IndVar, F1, score)
 ```
 
-In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. These are accessible from the package in `supersig_ls`, where each element of the list is a `SuperSig`. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as "factor (tissue)"). Details regarding the training of these signatures are discussed in the following paper:
-
-* Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. [https://doi.org/10.7554/elife.61082](https://doi.org/10.7554/eLife.61082)
+In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. These are accessible from the package in `supersig_ls`, where each element of the list is a `SuperSig`. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as "factor (tissue)"). Details regarding the training of these signatures are discussed in *Afsari, et al. (2021, ELife)*.
 
 ```{r}
 names(supersig_ls)

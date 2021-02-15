@@ -13,10 +13,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-blue.svg)](htt
 <!-- badges: end -->
 
 `supersigs` is a companion R package to a method proposed by *Afsari, et
-al.*, which generates tissue-specific mutational signatures for the
-cancer genome.
+al. (2021, ELife)* to generate mutational signatures from single
+nucleotide variants in the cancer genome.
 
-More details on the statistical methods can be found in this paper:
+More details on the statistical method can be found in this paper:
 
   - Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L.,
     Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W.,
@@ -35,11 +35,6 @@ the `install_github()` function from the `devtools` package.
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
-## Tutorial
-
-To follow a tutorial on how to use the package, click
-`vignette("supersigs")` (or type `vignette("supersigs")` in R).
-
 ## Core functions
 
 In brief, the `supersigs` package contains two core functions:
@@ -49,12 +44,17 @@ In brief, the `supersigs` package contains two core functions:
 (e.g. smoking).
 
 ``` r
-sig <- get_signature(dt = data, factor = "smoking", wgs = F)
+supersig <- get_signature(dt = data, factor = "smoking", wgs = F)
 ```
 
 `predict_signature` uses the trained supervised signature to obtain
 predicted probabilities (e.g. probability of smoker) on a new dataset.
 
 ``` r
-pred <- predict_signature(object = sig, newdata = data, factor = "smoking")
+pred <- predict_signature(object = supersig, newdata = data, factor = "smoking")
 ```
+
+## Tutorial
+
+To follow a tutorial on how to use the package, click
+`vignette("supersigs")` (or type `vignette("supersigs")` in R).

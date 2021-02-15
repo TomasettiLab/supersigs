@@ -23,7 +23,7 @@ represents an observed mutation in the sample.
 \examples{
 
 # Use example vcf from VariantAnnotation
-library(VariantAnnotation)
+suppressPackageStartupMessages({library(VariantAnnotation)})
 fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
 vcf <- VariantAnnotation::readVcf(fl, "hg19") 
 
@@ -36,5 +36,6 @@ colData(vcf)$age <- 50    # Add patient age to colData (optional)
 
 # Run function
 dt <- process_vcf(vcf)
+head(dt)
 
 }

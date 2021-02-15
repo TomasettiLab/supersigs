@@ -30,7 +30,7 @@
 #' @examples
 #' 
 #' # Use example vcf from VariantAnnotation
-#' library(VariantAnnotation)
+#' suppressPackageStartupMessages({library(VariantAnnotation)})
 #' fl <- system.file("extdata", "chr22.vcf.gz", package="VariantAnnotation")
 #' vcf <- VariantAnnotation::readVcf(fl, "hg19") 
 #' 
@@ -43,6 +43,7 @@
 #' 
 #' # Run function
 #' dt <- process_vcf(vcf)
+#' head(dt)
 #' 
 process_vcf <- function(vcf){
   genome <- unname(genome(SummarizedExperiment::seqinfo(vcf)))

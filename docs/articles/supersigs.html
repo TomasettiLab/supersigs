@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">supersigs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -59,7 +59,14 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/TomasettiLab/supersigs">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -163,7 +170,7 @@
 <span class="op">}</span><span class="op">)</span></code></pre></div>
 <p>We apply <code>make_matrix</code> to transform our example dataset (<code>example_dt</code>) into a data frame of trinucleotide mutations (<code>input_dt</code>), which is the format required by the <code>supersigs</code> R package. Each row in <code>input_dt</code> corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">input_dt</span> <span class="op">=</span> <span class="fu"><a href="../reference/make_matrix.html">make_matrix</a></span><span class="op">(</span><span class="va">example_dt</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">input_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_matrix.html">make_matrix</a></span><span class="op">(</span><span class="va">example_dt</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 98</span>
 <span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span>
@@ -204,49 +211,56 @@
 <p>To apply the supervised method on your data, run the <code>get_signature</code> function. The function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = "Smoking"</code>). <code>dt</code> is a data frame with the following columns:</p>
 <ul>
 <li>
+<code>IndVar</code> (indicator variable) is a logical indicator for whether they were exposed to the <code>factor</code> or not</li>
+<li>
 <code>sample_id</code> is an ID for each sample</li>
 <li>
 <code>age</code> is the age of the patient</li>
-<li>
-<code>IndVar</code> (indicator variable) is a logical indicator for whether they were exposed to the <code>factor</code> or not</li>
 <li>columns of counts for all 96 trinucleotide mutations</li>
 </ul>
 <p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>dt</code> is printed below.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Generate synthetic IndVar column</span>
-<span class="va">input_dt</span><span class="op">$</span><span class="va">IndVar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span>
+
+<span class="co"># Add IndVar column</span>
+<span class="va">input_dt</span> <span class="op">&lt;-</span> <span class="va">input_dt</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>IndVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="va">IndVar</span><span class="op">)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">input_dt</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 99</span>
-<span class="co">#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`</span>
-<span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1         1    50         1         1         1         1         1         0</span>
-<span class="co">#&gt; 2         2    55         0         0         0         0         0         1</span>
-<span class="co">#&gt; 3         3    72         1         1         0         0         0         0</span>
-<span class="co">#&gt; 4         4    53         0         0         0         0         0         1</span>
-<span class="co">#&gt; 5         5    48         0         1         1         0         0         0</span>
-<span class="co">#&gt; # … with 91 more variables: `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;, `T[C&gt;A]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;, `T[T&gt;A]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;, `A[C&gt;T]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;, `A[C&gt;T]T` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;T]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;, `G[C&gt;T]G` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;, `C[C&gt;A]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;, `T[C&gt;A]G` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;, `T[C&gt;G]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;, `T[C&gt;G]T` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;, `G[C&gt;G]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;, `G[T&gt;C]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;, `G[T&gt;C]T` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;, `G[T&gt;C]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;, `C[T&gt;A]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]T` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;, `A[T&gt;A]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;, `A[T&gt;A]G` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;, `A[T&gt;G]C` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;, `C[T&gt;G]A` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;, `C[T&gt;G]G` &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;, IndVar &lt;dbl&gt;</span></code></pre></div>
+<span class="co">#&gt;   IndVar sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T`</span>
+<span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1      1         1    50         1         1         1         1         1</span>
+<span class="co">#&gt; 2      1         2    55         0         0         0         0         0</span>
+<span class="co">#&gt; 3      1         3    72         1         1         0         0         0</span>
+<span class="co">#&gt; 4      0         4    53         0         0         0         0         0</span>
+<span class="co">#&gt; 5      0         5    48         0         1         1         0         0</span>
+<span class="co">#&gt; # … with 91 more variables: `A[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;A]C` &lt;dbl&gt;, `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[T&gt;A]C` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[C&gt;A]C` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]C` &lt;dbl&gt;, `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]T` &lt;dbl&gt;, `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;G]A` &lt;dbl&gt;, `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;G]G` &lt;dbl&gt;, `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></code></pre></div>
 <p>Once you have the correct data format, apply <code>get_signature</code> to the dataset to get your <code>SuperSig</code>. This is an S4 object containing four slots:</p>
 <ul>
 <li>
@@ -259,7 +273,7 @@
 <code>Model</code> is the list of a glm class for the trained logistic regression model</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">supersig</span> <span class="op">=</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>dt <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">supersig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>dt <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 <span class="co">#&gt; Begin feature engineering...</span>
 <span class="co">#&gt; Begin cross-validated selection over 4 features and 15 inner folds...</span>
 <span class="co">#&gt; ...testing inner fold 1</span>
@@ -324,14 +338,11 @@
 <div id="using-a-signature" class="section level1">
 <h1 class="hasAnchor">
 <a href="#using-a-signature" class="anchor"></a>Using a signature</h1>
-<p>To apply the <code>SuperSig</code> to a new dataset, you can use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
+<p>To apply the <code>SuperSig</code> to a new dataset, use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
 <p>Below is an example for the <code>SuperSig</code> we trained in the previous section.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/message.html">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
 <span class="va">newdata</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">IndVar</span>, <span class="va">F1</span>, <span class="va">score</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 3</span>
@@ -342,11 +353,7 @@
 <span class="co">#&gt; 3      1 0.0417 0.971</span>
 <span class="co">#&gt; 4      0 0.0943 0.259</span>
 <span class="co">#&gt; 5      0 0.0833 0.475</span></code></pre></div>
-<p>In addition, you may wish to use a <code>SuperSig</code> pre-trained on TCGA data. These are accessible from the package in <code>supersig_ls</code>, where each element of the list is a <code>SuperSig</code>. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as “factor (tissue)”). Details regarding the training of these signatures are discussed in the following paper:</p>
-<ul>
-<li>Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., &amp; Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10. <a href="https://doi.org/10.7554/eLife.61082">https://doi.org/10.7554/elife.61082</a>
-</li>
-</ul>
+<p>In addition, you may wish to use a <code>SuperSig</code> pre-trained on TCGA data. These are accessible from the package in <code>supersig_ls</code>, where each element of the list is a <code>SuperSig</code>. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as “factor (tissue)”). Details regarding the training of these signatures are discussed in <em>Afsari, et al. (2021, ELife)</em>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">supersig_ls</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "AGE (LAML)"      "AGE (BLCA)"      "AGE (LUAD)"      "AGE (LGG)"      </span>
@@ -380,7 +387,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Albert Kuo, Yifan Zhang, Bahman Afsari.</p>
+  <p>Developed by <a href="https://albertkuo.github.io">Albert Kuo</a>, Yifan Zhang, Bahman Afsari.</p>
 </div>
 
 <div class="pkgdown">

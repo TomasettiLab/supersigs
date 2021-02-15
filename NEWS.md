@@ -1,13 +1,10 @@
-# supersigs 0.1.0 (development version)
+# supersigs 0.1.1
 
-## pending changes
-
-* Process VCF files directly with `VariantAnnotation::readVCF` and `process_vcf`
+* Add functionality to process VCF files with `VariantAnnotation::readVCF` and `process_vcf`
+* Change column names to ref/alt in `example_dt` and `make_matrix`
 * Add pre-trained SuperSigs as external data
-* Change column names from/to to ref/alt in `example_dt` and `make_matrix`
+* Add runnable examples to man pages
 
-## supersigs 0.1.0
+# supersigs 0.1.0
 
 * Initial release
-
-

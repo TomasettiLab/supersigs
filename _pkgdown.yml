@@ -1,3 +1,15 @@
 template:
   params:
     ganalytics: G-HRWJPS4FR0
+navbar:
+  type: default
+  right:
+  - icon: fab fa-github fa-lg
+    href: "https://github.com/TomasettiLab/supersigs"
+home:
+  links:
+  - text: Browse source code
+    href: "https://github.com/TomasettiLab/supersigs"
+authors:
+  Albert Kuo:
+    href: "https://albertkuo.github.io"

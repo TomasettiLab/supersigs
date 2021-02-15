@@ -84,7 +84,7 @@ the SuperSig." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">supersigs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -107,7 +107,12 @@ the SuperSig." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/TomasettiLab/supersigs">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -158,10 +163,55 @@ whole-genome (wgs = <code>TRUE</code>) or whole-exome (wgs = <code>FALSE</code>)
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># print(example_dt) # use example data from package</span>
-<span class='co'># input_dt = make_matrix(example_dt) # convert to correct format</span>
-<span class='co'># get_signature(dt = input_dt, factor = "age") # get SuperSig</span>
-
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># use example data from package</span>
+</div><div class='output co'>#&gt;   sample_id age chromosome  position ref alt
+#&gt; 1         1  50       chr1  94447621   G   C
+#&gt; 2         1  50       chr2 202005395   A   C
+#&gt; 3         1  50       chr7  20784978   T   A
+#&gt; 4         1  50       chr7  87179255   C   G
+#&gt; 5         1  50      chr19   1059712   G   T
+#&gt; 6         2  55       chr1  76226977   T   C</div><div class='input'><span class='va'>input_dt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='make_matrix.html'>make_matrix</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># convert to correct format</span>
+<span class='va'>input_dt</span><span class='op'>$</span><span class='va'>IndVar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span> <span class='co'># add IndVar column</span>
+<span class='fu'>get_signature</span><span class='op'>(</span>dt <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
+</div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='output co'>#&gt; Signature:
+#&gt;         F1
+#&gt; 1 1.166667
+#&gt; Features:
+#&gt; $F1
+#&gt;       F21       F22       F23      F216      F217      F218      F219      F232 
+#&gt; "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" 
+#&gt;      F233      F234      F235      F247      F248      F249      F250      F263 
+#&gt; "A[T&gt;A]C" "A[T&gt;A]G" "A[T&gt;A]T" "A[T&gt;C]A" "A[T&gt;C]C" "A[T&gt;C]G" "A[T&gt;C]T" "A[T&gt;G]A" 
+#&gt;      F264      F265      F266       F24       F25       F26       F27      F220 
+#&gt; "A[T&gt;G]C" "A[T&gt;G]G" "A[T&gt;G]T" "C[C&gt;G]A" "C[C&gt;G]C" "C[C&gt;G]G" "C[C&gt;G]T" "C[C&gt;T]A" 
+#&gt;      F221      F222      F223      F236      F237      F238      F251      F252 
+#&gt; "C[C&gt;T]C" "C[C&gt;T]G" "C[C&gt;T]T" "C[T&gt;A]C" "C[T&gt;A]G" "C[T&gt;A]T" "C[T&gt;C]A" "C[T&gt;C]C" 
+#&gt;      F253      F254      F267      F268      F269      F270       F28       F29 
+#&gt; "C[T&gt;C]G" "C[T&gt;C]T" "C[T&gt;G]A" "C[T&gt;G]C" "C[T&gt;G]G" "C[T&gt;G]T" "G[C&gt;G]A" "G[C&gt;G]C" 
+#&gt;      F210      F211      F224      F225      F226      F227      F239      F240 
+#&gt; "G[C&gt;G]G" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" "G[C&gt;T]G" "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" 
+#&gt;      F241      F242      F255      F256      F257      F258      F271      F272 
+#&gt; "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" "G[T&gt;C]G" "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" 
+#&gt;      F273      F274      F212      F213      F214      F215      F228      F229 
+#&gt; "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" 
+#&gt;      F230      F231      F243      F244      F245      F246      F259      F260 
+#&gt; "T[C&gt;T]G" "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" 
+#&gt;      F261      F262      F275      F276      F277      F278 
+#&gt; "T[T&gt;C]G" "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" 
+#&gt; 
+#&gt; Model:
+#&gt; $Logit
+#&gt; 
+#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           F1  
+#&gt;      -1.773        1.079  
+#&gt; 
+#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual
+#&gt; Null Deviance:	    6.73 
+#&gt; Residual Deviance: 5.384 	AIC: 9.384
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -174,7 +224,7 @@ whole-genome (wgs = <code>TRUE</code>) or whole-exome (wgs = <code>FALSE</code>)
 
       <footer>
       <div class="copyright">
-  <p>Developed by Albert Kuo, Yifan Zhang, Bahman Afsari.</p>
+  <p>Developed by <a href='https://albertkuo.github.io'>Albert Kuo</a>, Yifan Zhang, Bahman Afsari.</p>
 </div>
 
 <div class="pkgdown">

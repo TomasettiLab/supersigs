@@ -83,7 +83,7 @@ predicted probabilities for each observation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">supersigs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -106,7 +106,12 @@ predicted probabilities for each observation." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/TomasettiLab/supersigs">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -156,14 +161,29 @@ additional columns for the feature counts and classification score</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='co'># print(example_dt) # use example data from package</span>
-<span class='co'># input_dt = make_matrix(example_dt) # convert to correct format</span>
-<span class='co'># out = get_signature(dt = input_dt, factor = "age") # get SuperSig</span>
-
-<span class='co'># newdata = predict_signature(out, newdata = input_dt, factor = "Smoking")</span>
-<span class='co'># newdata %&gt;% select(IndVar, F1, score)</span>
-
-</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># use example data from package</span>
+</div><div class='output co'>#&gt;   sample_id age chromosome  position ref alt
+#&gt; 1         1  50       chr1  94447621   G   C
+#&gt; 2         1  50       chr2 202005395   A   C
+#&gt; 3         1  50       chr7  20784978   T   A
+#&gt; 4         1  50       chr7  87179255   C   G
+#&gt; 5         1  50      chr19   1059712   G   T
+#&gt; 6         2  55       chr1  76226977   T   C</div><div class='input'><span class='va'>input_dt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='make_matrix.html'>make_matrix</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># convert to correct format</span>
+<span class='va'>input_dt</span><span class='op'>$</span><span class='va'>IndVar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span> <span class='co'># add IndVar column</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_signature.html'>get_signature</a></span><span class='op'>(</span>dt <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
+</div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='input'>
+<span class='va'>newdata</span> <span class='op'>&lt;-</span> <span class='fu'>predict_signature</span><span class='op'>(</span><span class='va'>out</span>, newdata <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"Smoking"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/message.html'>suppressPackageStartupMessages</a></span><span class='op'>(</span><span class='op'>{</span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dplyr.tidyverse.org'>dplyr</a></span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>newdata</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>IndVar</span>, <span class='va'>F1</span>, <span class='va'>score</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 5 x 3</span><span>
+#&gt;   IndVar     F1 score
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>      1 0.06   0.153
+#&gt; </span><span style='color: #555555;'>2</span><span>      1 0.018</span><span style='text-decoration: underline;'>2</span><span> 0.148
+#&gt; </span><span style='color: #555555;'>3</span><span>      1 0.055</span><span style='text-decoration: underline;'>6</span><span> 0.153
+#&gt; </span><span style='color: #555555;'>4</span><span>      0 0.037</span><span style='text-decoration: underline;'>7</span><span> 0.150
+#&gt; </span><span style='color: #555555;'>5</span><span>      0 0.020</span><span style='text-decoration: underline;'>8</span><span> 0.148</div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -175,7 +195,7 @@ additional columns for the feature counts and classification score</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Albert Kuo, Yifan Zhang, Bahman Afsari.</p>
+  <p>Developed by <a href='https://albertkuo.github.io'>Albert Kuo</a>, Yifan Zhang, Bahman Afsari.</p>
 </div>
 
 <div class="pkgdown">

@@ -24,5 +24,6 @@ in a wide matrix format.
 
 head(example_dt) # use example data from package
 input_dt <- make_matrix(example_dt) # convert to correct format
+head(input_dt)
 
 }
