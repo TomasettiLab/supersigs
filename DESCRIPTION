@@ -1,5 +1,5 @@
 Package: supersigs
-Title: Generate SuperSigs (Supervised Signatures)
+Title: Supervised mutational signatures
 Version: 0.1.0
 Date: 2021-01-06
 Authors@R: c(person(given = "Albert", 
@@ -18,14 +18,14 @@ Imports:
 	assertthat, 
 	caret, 
 	dplyr, 
-        tidyr,
+    tidyr,
 	rsample,
-        methods,
-        rlang,
+    methods,
+    rlang,
 	utils,
 	Biostrings,
 	stats,
-        SummarizedExperiment
+    SummarizedExperiment
 Suggests: 
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38,
@@ -33,7 +33,8 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-Description: Generate tissue-specific SuperSigs (supervised signatures) from somatic mutations in the cancer genome. Functions included in the package allow the user to learn SuperSigs from their data and apply them to new data. The methodology for learning SuperSigs is based on the following paper (Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L., Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W., Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised mutational signatures for obesity and other tissue-specific etiological factors in cancer. ELife, 10.).
+Description: Generate SuperSigs (supervised mutational signatures) from single nucleotide variants in the cancer genome. Functions included in the package allow the user to learn mutational signatures from their data and apply them to new data, based on the methodology described in Afsari (2021, ELife).
+biocViews: FeatureExtraction, Classification, Regression, Sequencing, WholeGenome, SomaticMutation
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
