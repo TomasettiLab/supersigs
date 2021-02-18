@@ -133,13 +133,20 @@ Below is an example for the `SuperSig` we trained in the previous section.
 newdata = predict_signature(supersig, newdata = input_dt, factor = "Smoking")
 
 newdata %>%
-  select(IndVar, F1, score)
+  select(IndVar, X1, score)
 ```
 
 In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. These are accessible from the package in `supersig_ls`, where each element of the list is a `SuperSig`. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as "factor (tissue)"). Details regarding the training of these signatures are discussed in *Afsari, et al. (2021, ELife)*.
 
 ```{r}
 names(supersig_ls)
+```
+
+```{r}
+# Use pre-trained signature
+newdata = predict_signature(supersig_ls[["SMOKING (LUAD)"]], newdata = input_dt, factor = "Smoking")
+newdata %>%
+  select(IndVar, X1, X2, X3, score)
 ```
 
 ```{r eval = F, include=F}
