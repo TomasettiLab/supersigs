@@ -1,6 +1,6 @@
 # get_signature.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo, Yifan Zhang
+# Author: Albert Kuo, Yifan Zhang
 # Date last modified: Mar 12, 2019
 #
 # (Export) Function to calculate signature
@@ -32,57 +32,60 @@
 #' get_signature(dt = input_dt, factor = "age") # get SuperSig
 #' 
 get_signature <- function(dt, factor, wgs = FALSE){
-  # Capitalize factor string
-  factor = toupper(factor)
-  
-  # Check column names of dt
-  if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
-    stop('Input data frame missing sample_id column.')
-  } else {
-    colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] = "sample_id"
-  }
-  if(is.na(match("AGE",toupper(colnames(dt))))){
-    stop('Input data frame missing AGE column.')
-  } else {
-    colnames(dt)[match("AGE",toupper(colnames(dt)))] = "AGE"
-  }
-  if(is.na(match("INDVAR",toupper(colnames(dt))))){
-    stop('Input data frame missing IndVar column.')
-  } else {
-    colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
-  }
-  
-  # Check number of samples (> 5 required)
-  if(nrow(dt) < 5) {
-    stop("More than 5 samples are required to run get_signature.")
-  }
-  
-  # Check if counts of 96 trinucleotide bases are present, 
-  # and compute total mutations
-  trinucleotideBases <- unique(transform_muts_vec)
-  if(all(trinucleotideBases %in% toupper(colnames(dt)))){
-    dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases])
-  } else {
-    stop('Input data frame missing one or more trinucleotide mutations.')
-  }
-  
-  # Get features
-  features_out = suppressWarnings(feature_selection(dt, factor, wgs))
-  
-  # Get apparent AUC and model
-  classification_out = supersig_classifier(dt = features_out$dt_new,
-                                          factor = factor,
-                                          keep_classifier = TRUE,
-                                          features_selected = 
-                                            features_out$features_selected,
-                                          select_n = features_out$select_n)
-  
-  # Create S4 object output
-  feature_names = names(classification_out$signature$mean_diffs)
-  out = SuperSig(Signature = classification_out$signature$mean_diffs,
-                  Features = features_out$new_partition[feature_names],
-                  AUC = classification_out$auc,
-                  Model = classification_out$classifier)
-  
-  return(out)
+    # Capitalize factor string
+    factor = toupper(factor)
+    
+    # Check column names of dt
+    if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
+        stop('Input data frame missing sample_id column.')
+    } else {
+        colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] = "sample_id"
+    }
+    if(is.na(match("AGE",toupper(colnames(dt))))){
+        stop('Input data frame missing AGE column.')
+    } else {
+        colnames(dt)[match("AGE",toupper(colnames(dt)))] = "AGE"
+    }
+    if(is.na(match("INDVAR",toupper(colnames(dt))))){
+        stop('Input data frame missing IndVar column.')
+    } else {
+        colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
+    }
+    
+    # Check number of samples (> 5 required)
+    if(nrow(dt) < 5) {
+        stop("More than 5 samples are required to run get_signature.")
+    }
+    
+    # Check if counts of 96 trinucleotide bases are present, 
+    # and compute total mutations
+    trinucleotideBases <- unique(transform_muts_vec)
+    if(all(trinucleotideBases %in% toupper(colnames(dt)))){
+        dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases])
+    } else {
+        stop('Input data frame missing one or more trinucleotide mutations.')
+    }
+    
+    # Get features
+    features_out = suppressWarnings(feature_selection(dt, factor, wgs))
+    
+    # Get apparent AUC and model
+    classification_out = supersig_classifier(dt = features_out$dt_new,
+                                             factor = factor,
+                                             keep_classifier = TRUE,
+                                             features_selected = 
+                                               features_out$features_selected,
+                                             select_n = features_out$select_n)
+    
+    # Create S4 object output
+    feature_names = names(classification_out$signature$mean_diffs)
+    out = SuperSig(Signature = classification_out$signature$mean_diffs,
+                   Features = features_out$new_partition[feature_names],
+                   AUC = classification_out$auc,
+                   Model = classification_out$classifier)
+    
+    # Edit names
+    
+    
+    return(out)
 }

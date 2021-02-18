@@ -293,10 +293,10 @@
 <span class="co">#&gt; ...testing inner fold 15</span>
 <span class="va">supersig</span>
 <span class="co">#&gt; Signature:</span>
-<span class="co">#&gt;              F1</span>
+<span class="co">#&gt;              X1</span>
 <span class="co">#&gt; 1 -0.0007475199</span>
 <span class="co">#&gt; Features:</span>
-<span class="co">#&gt; $F1</span>
+<span class="co">#&gt; $X1</span>
 <span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span>
 <span class="co">#&gt; "A[C&gt;A]A" "A[C&gt;A]C" "A[C&gt;A]G" "A[C&gt;A]T" "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;G]T" </span>
 <span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span>
@@ -328,7 +328,7 @@
 <span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt; (Intercept)           F1  </span>
+<span class="co">#&gt; (Intercept)           X1  </span>
 <span class="co">#&gt;       7.118      -86.601  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span>
@@ -344,9 +344,9 @@
 <code class="sourceCode R"><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 
 <span class="va">newdata</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">IndVar</span>, <span class="va">F1</span>, <span class="va">score</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">IndVar</span>, <span class="va">X1</span>, <span class="va">score</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 3</span>
-<span class="co">#&gt;   IndVar     F1 score</span>
+<span class="co">#&gt;   IndVar     X1 score</span>
 <span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
 <span class="co">#&gt; 1      1 0.04   0.975</span>
 <span class="co">#&gt; 2      1 0.0909 0.320</span>
@@ -373,6 +373,19 @@
 <span class="co">#&gt; [57] "BMI (ESCA)"      "BMI (COAD)"      "ALCOHOL (HNSCC)" "ALCOHOL (ESCA)" </span>
 <span class="co">#&gt; [61] "ALCOHOL (LIHC)"  "HepB (LIHC)"     "HepC (LIHC)"     "AAcid (BLCA)"   </span>
 <span class="co">#&gt; [65] "Asb* (MESO)"     "APOPEC (CESC)"   "APOPEC (KIRC)"</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Use pre-trained signature</span>
+<span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig_ls</span><span class="op">[[</span><span class="st">"SMOKING (LUAD)"</span><span class="op">]</span><span class="op">]</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
+<span class="va">newdata</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">IndVar</span>, <span class="va">X1</span>, <span class="va">X2</span>, <span class="va">X3</span>, <span class="va">score</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 5 x 5</span>
+<span class="co">#&gt;   IndVar     X1    X2    X3 score</span>
+<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1      1 0.02       0     0 0.305</span>
+<span class="co">#&gt; 2      1 0.0182     0     0 0.303</span>
+<span class="co">#&gt; 3      1 0          0     0 0.280</span>
+<span class="co">#&gt; 4      0 0.0189     0     0 0.304</span>
+<span class="co">#&gt; 5      0 0.0417     0     0 0.333</span></code></pre></div>
 </div>
   </div>
 

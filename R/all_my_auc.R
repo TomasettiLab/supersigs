@@ -1,6 +1,6 @@
 # all_my_auc.R
 # -----------------------------------------------------------------------------
-# Author:             Bahman Afsari, Albert Kuo
+# Author: Bahman Afsari, Albert Kuo
 # Date last modified: Dec 10, 2019
 
 #' Calculate AUC for every column
@@ -17,6 +17,6 @@
 #' @noRd
 #' 
 all_my_auc <- function(z, IndVar){
-  cols <- setdiff(colnames(z), IndVar)
-  apply(z[, cols], MARGIN = 2, FUN = my_auc, y = z %>% pull(!!IndVar))
+    cols <- setdiff(colnames(z), IndVar)
+    apply(z[, cols], MARGIN = 2, FUN = my_auc, y = z %>% pull(!!IndVar))
 }

@@ -1,6 +1,6 @@
 # predict_signature.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
+# Author: Albert Kuo
 # Date last modified: Dec 23, 2020
 #
 # (Export) Function to apply SuperSigs model on new dataset
@@ -32,36 +32,36 @@
 #' 
 #' newdata <- predict_signature(out, newdata = input_dt, factor = "Smoking")
 #' suppressPackageStartupMessages({library(dplyr)})
-#' head(newdata %>% select(IndVar, F1, score))
+#' head(newdata %>% select(IndVar, X1, score))
 #' 
 predict_signature <- function(object, newdata, factor){
-  # Extract slots from object
-  model <- Model(object)$Logit
-  features <- Features(object)
-  
-  # Add counts for features that are used in the model
-  for(j in seq_along(features)){
-    feature <- names(features)[j]
-    feature_count <- newdata %>%
-      select(features[[feature]]) %>%
-      rowSums()
+    # Extract slots from object
+    model <- Model(object)$Logit
+    features <- Features(object)
+    
+    # Add counts for features that are used in the model
+    for(j in seq_along(features)){
+        feature <- names(features)[j]
+        feature_count <- newdata %>%
+            select(features[[feature]]) %>%
+            rowSums()
+        newdata <- newdata %>%
+            mutate(!!feature := feature_count)
+    }
+    
+    # Use rates for non-age factors
+    if(factor != "AGE"){
+        newdata <- newdata %>%
+            mutate_at(names(features), ~(./age))
+    }
+    
+    # Predict using logistic regression
+    scores <- predict(model, 
+                      newdata = newdata, 
+                      type = "response")
+    
     newdata <- newdata %>%
-      mutate(!!feature := feature_count)
-  }
-  
-  # Use rates for non-age factors
-  if(factor != "AGE"){
-    newdata <- newdata %>%
-      mutate_at(names(features), ~(./age))
-  }
-  
-  # Predict using logistic regression
-  scores <- predict(model, 
-                    newdata = newdata, 
-                    type = "response")
-  
-  newdata <- newdata %>%
-    mutate(score = scores)
-  
-  return(newdata)
+        mutate(score = scores)
+    
+    return(newdata)
 }

@@ -1,6 +1,6 @@
 # condense_mutations.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
+# Author: Albert Kuo
 # Date last modified: Dec 10, 2019
 #
 # Helper function for GenerateMinSigmaAlgebra.R
@@ -15,13 +15,13 @@
 #' @noRd
 #' 
 condense_mutations = function(features){
-  out <- vector('character')
-  for(i in seq_along(muts_children_level3)){
-    v <- muts_children_level3[[i]]
-    if(all(v %in% features)){
-      out <- c(out, names(muts_children_level3)[i])
-      features <- setdiff(features, v)
+    out <- vector('character')
+    for(i in seq_along(muts_children_level3)){
+        v <- muts_children_level3[[i]]
+        if(all(v %in% features)){
+            out <- c(out, names(muts_children_level3)[i])
+            features <- setdiff(features, v)
+        }
     }
-  }
-  return(out)
+    return(out)
 }

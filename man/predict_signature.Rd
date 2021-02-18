@@ -30,6 +30,6 @@ out <- get_signature(dt = input_dt, factor = "age") # get SuperSig
 
 newdata <- predict_signature(out, newdata = input_dt, factor = "Smoking")
 suppressPackageStartupMessages({library(dplyr)})
-head(newdata \%>\% select(IndVar, F1, score))
+head(newdata \%>\% select(IndVar, X1, score))
 
 }

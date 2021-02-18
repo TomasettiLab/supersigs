@@ -32,7 +32,7 @@ vcf <- vcf[, 1]
 # Subset to row positions with homozygous or heterozygous alt
 positions <- geno(vcf)$GT != "0|0" 
 vcf <- vcf[positions[, 1],]
-colData(vcf)$age <- 50    # Add patient age to colData (optional)
+colData(vcf)$age <- 50        # Add patient age to colData (optional)
 
 # Run function
 dt <- process_vcf(vcf)

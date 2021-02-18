@@ -1,6 +1,6 @@
 # transform_data.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
+# Author: Albert Kuo
 # Date last modified: Feb 15, 2021
 
 # library(dplyr)
@@ -25,29 +25,29 @@
 #' @noRd
 #' 
 transform_data <- function(dt, 
-                          new_partition){
-  # Add columns for every type of mutation
-  dt <- dt %>% 
-    mutate_(.dots = muts_formula) %>%
-    mutate(tracking_ind = seq_len(nrow(dt)))
-  
-  # Store variables
-  features_selected <- names(new_partition)
-  
-  # Count features by directly summing
-  new_partition_formula <- vapply(new_partition, function(x) 
-    paste0("(", paste("`", x, "`", sep = "", collapse = "+"), ")"),
-    FUN.VALUE = character(1))
-  
-  dt_new <- dt %>% 
-    mutate_(.dots = new_partition_formula)
-  
-  dt_new <- dt_new %>%
-    arrange(.data$tracking_ind) %>%
-    select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", 
-             matches("DIVISION"))) 
-  
-  return(dt_new)
+                           new_partition){
+    # Add columns for every type of mutation
+    dt <- dt %>% 
+        mutate_(.dots = muts_formula) %>%
+        mutate(tracking_ind = seq_len(nrow(dt)))
+    
+    # Store variables
+    features_selected <- names(new_partition)
+    
+    # Count features by directly summing
+    new_partition_formula <- vapply(new_partition, function(x) 
+        paste0("(", paste("`", x, "`", sep = "", collapse = "+"), ")"),
+        FUN.VALUE = character(1))
+    
+    dt_new <- dt %>% 
+        mutate_(.dots = new_partition_formula)
+    
+    dt_new <- dt_new %>%
+        arrange(.data$tracking_ind) %>%
+        select(c(features_selected, "IndVar", "AGE", "TOTAL_MUTATIONS", 
+                         matches("DIVISION"))) 
+    
+    return(dt_new)
 }
 
 # Load data dependencies

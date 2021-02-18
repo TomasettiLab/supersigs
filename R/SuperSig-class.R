@@ -1,6 +1,6 @@
 # SuperSig-class.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
+# Author: Albert Kuo
 # Date last modified: Dec 22, 2020
 #' An S4 class for SuperSig
 #'
@@ -13,30 +13,30 @@
 #' @slot Model list of a glm class for the trained logistic regression model
 #' 
 SuperSig <- setClass("SuperSig",
-                      slots = list(Signature = "data.frame",
-                                   Features = "list",
-                                   AUC = "numeric",
-                                   Model = "list"),
-                      contains = "glm")
+                     slots = list(Signature = "data.frame",
+                                  Features = "list",
+                                  AUC = "numeric",
+                                  Model = "list"),
+                     contains = "glm")
 
 
 # Display ---
 # class method for show() generic
 setMethod("show",
-          "SuperSig",
-          function(object) {
-            cat("Signature:\n")
-            print(object@Signature)
-            cat("Features:\n")
-            print(object@Features)
-            cat("Model:\n")
-            print(object@Model)
-          }
+                    "SuperSig",
+                    function(object) {
+                        cat("Signature:\n")
+                        print(object@Signature)
+                        cat("Features:\n")
+                        print(object@Features)
+                        cat("Model:\n")
+                        print(object@Model)
+                    }
 )
 
 # class method for print
 print.SuperSig = function(object){
-  object
+    object
 }
 
 # Accessors ---

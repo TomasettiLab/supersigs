@@ -174,10 +174,10 @@ whole-genome (wgs = <code>TRUE</code>) or whole-exome (wgs = <code>FALSE</code>)
 <span class='va'>input_dt</span><span class='op'>$</span><span class='va'>IndVar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span> <span class='co'># add IndVar column</span>
 <span class='fu'>get_signature</span><span class='op'>(</span>dt <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
 </div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='output co'>#&gt; Signature:
-#&gt;         F1
+#&gt;         X1
 #&gt; 1 1.166667
 #&gt; Features:
-#&gt; $F1
+#&gt; $X1
 #&gt;       F21       F22       F23      F216      F217      F218      F219      F232 
 #&gt; "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" 
 #&gt;      F233      F234      F235      F247      F248      F249      F250      F263 
@@ -205,7 +205,7 @@ whole-genome (wgs = <code>TRUE</code>) or whole-exome (wgs = <code>FALSE</code>)
 #&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)
 #&gt; 
 #&gt; Coefficients:
-#&gt; (Intercept)           F1  
+#&gt; (Intercept)           X1  
 #&gt;      -1.773        1.079  
 #&gt; 
 #&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual
