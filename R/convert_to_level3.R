@@ -1,6 +1,6 @@
 # convert_to_level3.R
 # -----------------------------------------------------------------------------
-# Author:             Albert Kuo
+# Author: Albert Kuo
 # Date last modified: Feb 15, 2021
 #
 # Helper function for GenerateMinSigmaAlgebra.R
@@ -16,12 +16,11 @@
 #' @noRd
 #' 
 convert_to_level3 = function(features){
-  if(length(features) > 1){
-    out <- vapply(features, function(x) muts_children_level3[[x]],
-                  FUN.VALUE = character(1))
-    out <- unname(unlist(out))
-  } else {
-    out <- unname(muts_children_level3[[features]])
-  }
-  return(out)
+    if(length(features) > 1){
+        out <- sapply(features, function(x) muts_children_level3[[x]]) # vapply doesn't work with variable length
+        out <- unname(unlist(out))
+    } else {
+        out <- unname(muts_children_level3[[features]])
+    }
+    return(out)
 }
