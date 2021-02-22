@@ -1,12 +1,43 @@
 # make_matrix.R
 # -----------------------------------------------------------------------------
 # Author: Albert Kuo
-# Date last modified: Feb 15, 2021
+# Date last modified: Feb 22, 2021
 #
 # (Export) Function to transform data frame of mutations into correct format
 
 # library(dplyr)
 # library(tidyr)
+
+# Wrapper for getSeq given specified genome (helper function)
+getseq_wrapper <- function(dt, genome = "hg19"){
+  if(genome == "hg19"){
+    if (!requireNamespace("BSgenome.Hsapiens.UCSC.hg19", quietly = TRUE)){
+      stop("Package \"BSgenome.Hsapiens.UCSC.hg19\" 
+                 needed for this function to work. Please install it.",
+           call. = FALSE)
+    }
+    dt_ranges <- as(dt %>% 
+                      select(.data$chromosome, .data$start, .data$end), 
+                    "GRanges")
+    aligned_dna <- 
+      getSeq(BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19, 
+             dt_ranges)
+  } else if(genome == "hg38"){
+    if (!requireNamespace("BSgenome.Hsapiens.UCSC.hg38", quietly = TRUE)){
+      stop("Package \"BSgenome.Hsapiens.UCSC.hg38\" 
+                 needed for this function to work. Please install it.",
+           call. = FALSE)
+    }
+    dt_ranges <- as(dt %>% select(.data$chromosome, .data$start, .data$end), 
+                    "GRanges")
+    aligned_dna <- 
+      getSeq(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 
+             dt_ranges)
+  } else {
+    stop("Invalid genome specified")
+  }
+  return(aligned_dna)
+}
 
 #' Function to transform mutations into "matrix" format
 #' 
@@ -40,31 +71,7 @@ make_matrix <- function(dt, genome = "hg19"){
         mutate(start = .data$position - 1,
                end = .data$position + 1)
     
-    if(genome == "hg19"){
-        if (!requireNamespace("BSgenome.Hsapiens.UCSC.hg19", quietly = TRUE)){
-            stop("Package \"BSgenome.Hsapiens.UCSC.hg19\" 
-                 needed for this function to work. Please install it.",
-                 call. = FALSE)
-        }
-        dt_ranges <- as(dt %>% select(.data$chromosome, .data$start, .data$end), 
-                                        "GRanges")
-        aligned_dna <- 
-            getSeq(BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19, 
-                         dt_ranges)
-    } else if(genome == "hg38"){
-        if (!requireNamespace("BSgenome.Hsapiens.UCSC.hg38", quietly = TRUE)){
-            stop("Package \"BSgenome.Hsapiens.UCSC.hg38\" 
-                 needed for this function to work. Please install it.",
-                 call. = FALSE)
-        }
-        dt_ranges <- as(dt %>% select(.data$chromosome, .data$start, .data$end), 
-                                        "GRanges")
-        aligned_dna <- 
-            getSeq(BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38, 
-                   dt_ranges)
-    } else {
-        stop("Invalid genome specified")
-    }
+    aligned_dna <- getseq_wrapper(dt, genome)
     
     # Create mutations with surrounding base pairs
     dt <- dt %>%
