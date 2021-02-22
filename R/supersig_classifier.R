@@ -1,7 +1,7 @@
 # supersig_classifier.R
 # -----------------------------------------------------------------------------
 # Author: Bahman Afsari, Albert Kuo
-# Date last modified: Feb 15, 2021
+# Date last modified: Feb 22, 2021
 #
 # Function for classification logistic regression
 
@@ -11,6 +11,59 @@
 # library(rsample)
 # library(here)
 # source(here("code", "MyCor.R"))
+
+# Run logistic regression
+run_logit <- function(dt, factor, out, keep_classifier, features_selected,
+                      select_n, train_ind, test_ind, test_indvar){
+    z <- dt %>%
+        select(c(features_selected[seq_len(select_n["Logit"])], "IndVar")) 
+    x <- z[train_ind, ]
+    newdata <- z[test_ind, ]
+    out$auc <- c(out$auc, Logit = NA)
+    logit_prediction <- NA
+    
+    try({
+        logit_classifier <- glm(formula = IndVar ~ ., data = x,
+                                family = binomial())
+        logit_prediction <- predict(logit_classifier, 
+                                    newdata = newdata, 
+                                    type = "response")
+        
+        # Calculate empirical mean differences
+        grouped_rates <- dt %>% slice(train_ind) %>% group_by(.data$IndVar)
+        features_to_summarize <- features_selected[seq_len(select_n["Logit"])]
+        if(factor == "AGE"){
+            grouped_rates <- grouped_rates %>%
+                summarize_at(.vars = features_to_summarize,
+                             .funs = funs(mean(., na.rm = TRUE)))
+        } else {
+            grouped_rates <- grouped_rates %>%
+                summarize_at(.vars = features_to_summarize,
+                             .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
+        }
+        unexposed_rates <- grouped_rates %>% 
+            filter(.data$IndVar == FALSE) %>% 
+            select(-.data$IndVar)
+        exposed_rates <- grouped_rates %>% 
+            filter(.data$IndVar == TRUE) %>% 
+            select(-.data$IndVar)
+        mean_diffs <- exposed_rates - unexposed_rates
+        
+        # Save signature for apparent
+        if(identical(test_ind, train_ind)){
+            names(mean_diffs) <- features_selected[seq_len(select_n["Logit"])]
+            
+            out$signature <- list(mean_diffs = mean_diffs,
+                                  select_n = select_n)
+        }
+        
+        out$auc["Logit"] <- my_auc(test_indvar, logit_prediction)
+        if(keep_classifier) 
+            out$classifier$Logit <- logit_classifier
+    })
+    
+    return(out)
+}
 
 #' Classification of exposure using signatures
 #' 
@@ -39,110 +92,51 @@
 #' 
 #' @noRd
 #' 
-supersig_classifier <- function(dt, test_ind = NULL,
+supersig_classifier <- function(dt, 
+                                test_ind = NULL,
                                 factor,
                                 keep_classifier = FALSE,
                                 features_selected,
                                 select_n){
-    # Split training and test set
-    if(is.null(test_ind)){
-        train_ind <- seq_len(nrow(dt))
-        test_ind <- train_ind
-    } else {
-        train_ind <- setdiff(seq_len(nrow(dt)), test_ind)
-    }
-    
-    train <- dt[train_ind, ]
-    
-    # Initialize output
-    test_indvar <- dt[test_ind, "IndVar"]
-    out <- list(auc = c(),
-                signature = list(),
-                classifier = list())
-
-    # Transform data
-    if(factor != "AGE"){
-        dt <- dt %>%
-            mutate_at(.vars = features_selected,
-                      .funs = funs(./.data$AGE))
+        # Split training and test set
+        if(is.null(test_ind)){
+                train_ind <- seq_len(nrow(dt))
+                test_ind <- train_ind
+        } else {
+                train_ind <- setdiff(seq_len(nrow(dt)), test_ind)
+        }
         
-        # Remove observations missing age
-        missing_ind <- which(is.na(dt$AGE))
-        train_ind <- setdiff(train_ind, missing_ind)
-        test_ind <- setdiff(test_ind, missing_ind)
         train <- dt[train_ind, ]
+        # Initialize output
         test_indvar <- dt[test_ind, "IndVar"]
-    } 
-    
-    # Classification
-    # If no test data or all training data has the same IndVar
-    if(length(test_ind) == 0 || length(unique(train$IndVar)) == 1){
-        warning("No test data")
-        
-        # Return NA to AUC
-        out$auc <- c(NA)
-    } else {
-        # Logistic Regression
-        z <- dt %>%
-            select(c(features_selected[seq_len(select_n["Logit"])], "IndVar")) 
-        
-        x <- z[train_ind, ]
-        newdata <- z[test_ind, ]
-        out$auc <- c(out$auc, Logit = NA)
-        logit_prediction <- NA
-        try({
-            logit_classifier <- glm(formula = IndVar ~ ., data = x, 
-                                                            family = binomial())
-            logit_prediction <- predict(logit_classifier, newdata = newdata, 
-                                                                    type = "response")
-            logit_betas <- coef(logit_classifier) # beta vector
-            logit_betas <- coef(logit_classifier)[-1] # beta vector except beta_0
-            
-            # Calculate empirical mean differences
-            if(factor == "AGE"){
-                grouped_rates <- dt %>%
-                    slice(train_ind) %>%
-                    group_by(.data$IndVar) %>%
-                    summarize_at(.vars = features_selected[seq_len(select_n["Logit"])],
-                                 .funs = funs(mean(., na.rm = TRUE)))
-            } else {
-                grouped_rates <- dt %>%
-                    slice(train_ind) %>%
-                    group_by(.data$IndVar) %>%
-                    summarize_at(.vars = features_selected[seq_len(select_n["Logit"])],
-                                 .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
-            }
-            
-            unexposed_rates <- grouped_rates %>% 
-                filter(.data$IndVar == FALSE) %>% 
-                select(-.data$IndVar)
-            exposed_rates <- grouped_rates %>% 
-                filter(.data$IndVar == TRUE) %>% 
-                select(-.data$IndVar)
-            
-            # Calculate mean_diff = difference in counts or rates between 
-            # exposed and unexposed -> signature representation
-            mean_diffs <- exposed_rates - unexposed_rates
-            
-            # Save signature (empirical mean rates and beta coefficients) 
-            # and select_n for apparent
-            if(identical(test_ind, train_ind)){
-                # Logit beta coefficients
-                names(logit_betas) <- features_selected[seq_len(select_n["Logit"])]
-                names(mean_diffs) <- features_selected[seq_len(select_n["Logit"])]
+        out <- list(auc = c(), signature = list(), classifier = list())
+
+        # Transform data
+        if(factor != "AGE"){
+                dt <- dt %>%
+                        mutate_at(.vars = features_selected,
+                                  .funs = funs(./.data$AGE))
                 
-                out$signature <- list(mean_diffs = mean_diffs,
-                                      logit_betas = logit_betas,
-                                      select_n = select_n)
-            }
-            
-            out$auc["Logit"] <- my_auc(test_indvar, logit_prediction)
-            if(keep_classifier) 
-                out$classifier$Logit <- logit_classifier
-        })
-    }
-    
-    return(out)
+                # Remove observations missing age
+                missing_ind <- which(is.na(dt$AGE))
+                train_ind <- setdiff(train_ind, missing_ind)
+                test_ind <- setdiff(test_ind, missing_ind)
+                train <- dt[train_ind, ]
+                test_indvar <- dt[test_ind, "IndVar"]
+        } 
+        
+        # Classification
+        # If no test data or all training data has the same IndVar
+        if(length(test_ind) == 0 || length(unique(train$IndVar)) == 1){
+                warning("No valid test data")
+                out$auc <- c(NA)
+        } else {
+            out <- run_logit(dt, factor, out, 
+                             keep_classifier, features_selected, 
+                             select_n, train_ind, test_ind, test_indvar)
+        }
+        
+        return(out)
 }
 
 # No data dependencies
@@ -154,15 +148,14 @@ supersig_classifier <- function(dt, test_ind = NULL,
 # ind <- which((signature_caf["Factor",] == factor) & 
 # (signature_caf["Tissue",] == tissue))
 # dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
-#       filter(TOTAL_MUTATIONS > 0)
+#               filter(TOTAL_MUTATIONS > 0)
 # unsupervised_sig = signature_caf[["Unsupervised", ind]]
 # age_ind <- which((signature_caf["Factor",] == "AGE") & 
 # (signature_caf["Tissue",] == tissue))
 # age_sig <- signature_caf[["Unsupervised", age_ind]]
 # 
 # source(here("code", "FeatureSelection.R"))
-# features_out = FeatureSelection(dt = dt, middle_dt = NULL,
-#                                                                   factor = factor)
+# features_out = FeatureSelection(dt = dt, middle_dt = NULL, factor = factor)
 # dt = features_out$dt_new
 # classifier = c("LDA", "Logit", "RF", "NNLS")
 # keep_classifier = F
@@ -171,18 +164,18 @@ supersig_classifier <- function(dt, test_ind = NULL,
 # test_ind = NULL
 # 
 # test_out = supersig_classifier(dt = dt, test_ind = NULL,
-#                                                               factor = factor,
-#                                                               classifier = c("LDA", "Logit", "RF", "NNLS"),
-#                                                               keep_classifier = F,
-#                                                               features_selected = features_selected,
-#                                                               select_n = select_n)
+#                                factor = factor,
+#                                classifier = c("LDA", "Logit", "RF", "NNLS"),
+#                                keep_classifier = F,
+#                                features_selected = features_selected,
+#                                select_n = select_n)
 
 # Create test objects for Shiny app
 # test_model = supersig_classifier(dt = dt, test_ind = NULL,
-#                                                                   factor = factor,
-#                                                                   classifier = c("LDA"),
-#                                                                   keep_classifier = T,
-#                                       features_selected = features_selected)$classifier
+#                                  factor = factor,
+#                                  classifier = c("LDA"),
+#                                  keep_classifier = T,
+#                                  features_selected = features_selected)$classifier
 # test_formula = 
 # features_out$features_gmsa$new_partition_formula[features_selected]
 # saveRDS(list(model = test_model, formula = test_formula), 
