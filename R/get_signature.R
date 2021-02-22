@@ -53,7 +53,7 @@ get_signature <- function(dt, factor, wgs = FALSE){
     }
     
     # Check number of samples (> 5 required)
-    if(nrow(dt) < 5) stop("More than 5 samples required to run get_signature.")
+    if(nrow(dt) < 5) stop('More than 5 samples required to run get_signature.')
     
     # Check all trinucleotides are present
     trinucleotideBases <- unique(transform_muts_vec)

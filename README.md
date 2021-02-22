@@ -14,7 +14,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-blue.svg)](htt
 
 `supersigs` is a companion R package to a method proposed by *Afsari, et
 al. (2021, ELife)* to generate mutational signatures from single
-nucleotide variants in the cancer genome.
+nucleotide variants in the cancer genome. **Note: Package is under
+active development.**
 
 More details on the statistical method can be found in this paper:
 

@@ -13,7 +13,6 @@
 # source(here("R", "generate_min_sigma_algebra.R"))
 # source(here("R", "transform_data.R"))
 
-
 # Add up counts for every mutation (helper function)
 add_counts <- function(dt){
     dt <- dt %>%
@@ -27,10 +26,10 @@ add_counts <- function(dt){
 }
 
 # Apply context matters to every inner partition (helper function)
-feature_engineering <- function(train, inner_partitions, n_fold, wgs){
+feature_engineering <- function(train, factor, inner_partitions, n_fold, wgs){
     message(paste("Begin feature engineering..."))
     new_partition_ls <- vector(length = length(inner_partitions), 
-                                                             mode = "list")
+                               mode = "list")
     for(ij in seq_along(inner_partitions)){
         i <- (ij-1) %% n_fold + 1
         j <- floor((ij-1)/n_fold) + 1
@@ -138,7 +137,7 @@ repartition_with_rank <- function(rank_tri_ls){
 }
 
 # Get n star (helper function)
-n_star_features <- function(train, inner_partitions,
+n_star_features <- function(train, factor, inner_partitions,
                             n_fold, features_selected){
     n_star_ls <- vector(length = length(inner_partitions), mode = "list")
     
@@ -249,7 +248,7 @@ feature_selection <- function(dt,
                                    FUN.VALUE = vector("list", length = n_fold))
         
         # Feature engineering
-        new_partition <- feature_engineering(train, inner_partitions, 
+        new_partition <- feature_engineering(train, factor, inner_partitions, 
                                              n_fold, wgs)
         
         # Transform data
@@ -270,7 +269,7 @@ feature_selection <- function(dt,
         train <- dt_new
         
         # Find n*
-        n_star_ls <- n_star_features(train, inner_partitions, 
+        n_star_ls <- n_star_features(train, factor, inner_partitions, 
                                      n_fold, features_selected)
         select_n <- median_n_star(n_star_ls) # take medians over inner folds
         select_n <- select_n_adjust(train, features_selected, select_n)
