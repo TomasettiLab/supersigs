@@ -40,7 +40,8 @@ generate_min_sigma_algebra <- function(input_ls,
                                        condense = FALSE,
                                        partitioned_features = FALSE){
     # Check input
-    assert_that(length(input_ls) == 2, msg = "input_ls has length not equal to 2")
+    assert_that(length(input_ls) == 2, 
+                msg = "input_ls has length not equal to 2")
     assert_that(!is.null(names(input_ls)), msg = "input_ls is not named")
     
     if(partitioned_features){
