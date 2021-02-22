@@ -242,7 +242,6 @@ feature_selection <- function(dt,
         train <- dt
         n_iter <- 5
         n_fold <- 3
-        set.seed(1)
         inner_partitions <- vapply(seq_len(n_iter), 
                                    FUN = function(x){
                                      createFolds(y = train$IndVar,
