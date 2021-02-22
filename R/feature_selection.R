@@ -242,6 +242,7 @@ feature_selection <- function(dt,
         train <- dt
         n_iter <- 5
         n_fold <- 3
+        set.seed(1)
         inner_partitions <- vapply(seq_len(n_iter), 
                                    FUN = function(x){
                                      createFolds(y = train$IndVar,
@@ -280,10 +281,10 @@ feature_selection <- function(dt,
                     msg = "No predictive features found")
         
         out <- list(features_gmsa = features_gmsa, 
-                                features_selected = features_selected,
-                                new_partition = new_partition,
-                                dt_new = dt_new,
-                                select_n = select_n)
+                    features_selected = features_selected,
+                    new_partition = new_partition,
+                    dt_new = dt_new,
+                    select_n = select_n)
         return(out)
 }
 
