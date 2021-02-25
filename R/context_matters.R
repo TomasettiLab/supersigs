@@ -43,7 +43,7 @@ create_tree <- function(muts_counts, background_probs){
     survival_mutations <- tree %>%
         filter(.data$n_children == 16) %>%
         filter(.data$sig) %>% 
-        pull(feature)
+        pull(.data$feature)
     
     # Keep tests only for significant parents
     for(i in c(4, 1)){
@@ -65,7 +65,7 @@ create_tree <- function(muts_counts, background_probs){
     }
     
     survival_mutations_cache <- tree %>%
-        filter(feature %in% survival_mutations)
+        filter(.data$feature %in% survival_mutations)
     
     return(list(tree, survival_mutations_cache, survival_mutations))
 }
