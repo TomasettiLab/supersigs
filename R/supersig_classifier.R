@@ -1,7 +1,7 @@
 # supersig_classifier.R
 # -----------------------------------------------------------------------------
 # Author: Bahman Afsari, Albert Kuo
-# Date last modified: Feb 22, 2021
+# Date last modified: Feb 25, 2021
 #
 # Function for classification logistic regression
 
@@ -28,27 +28,28 @@ run_logit <- function(dt, factor, out, keep_classifier, features_selected,
         logit_prediction <- predict(logit_classifier, 
                                     newdata = newdata, 
                                     type = "response")
-        
-        # Calculate empirical mean differences
-        grouped_rates <- dt %>% slice(train_ind) %>% group_by(.data$IndVar)
-        features_to_summarize <- features_selected[seq_len(select_n["Logit"])]
+        features_to_summ <- features_selected[seq_len(select_n["Logit"])]
+        # Calculate average rates
         if(factor == "AGE"){
-            grouped_rates <- grouped_rates %>%
-                summarize_at(.vars = features_to_summarize,
-                             .funs = funs(mean(., na.rm = TRUE)))
+            dt_train <- dt %>% slice(train_ind)
+            mean_age <- mean(dt$AGE, na.rm = TRUE)
+            mean_diffs <- dt %>%
+                summarize_at(.vars = features_to_summ,
+                             .funs = ~(mean(.)/mean_age))
         } else {
+            # Calculate empirical mean differences in rates
+            grouped_rates <- dt %>% slice(train_ind) %>% group_by(.data$IndVar)
             grouped_rates <- grouped_rates %>%
-                summarize_at(.vars = features_to_summarize,
-                             .funs = funs(mean(./.data$AGE, na.rm = TRUE)))
+                summarize_at(.vars = features_to_summ,
+                             .funs = ~(mean(./.data$AGE, na.rm = TRUE)))
+            unexposed_rates <- grouped_rates %>% 
+                filter(.data$IndVar == FALSE) %>% 
+                select(-.data$IndVar)
+            exposed_rates <- grouped_rates %>% 
+                filter(.data$IndVar == TRUE) %>% 
+                select(-.data$IndVar)
+            mean_diffs <- exposed_rates - unexposed_rates
         }
-        unexposed_rates <- grouped_rates %>% 
-            filter(.data$IndVar == FALSE) %>% 
-            select(-.data$IndVar)
-        exposed_rates <- grouped_rates %>% 
-            filter(.data$IndVar == TRUE) %>% 
-            select(-.data$IndVar)
-        mean_diffs <- exposed_rates - unexposed_rates
-        
         # Save signature for apparent
         if(identical(test_ind, train_ind)){
             names(mean_diffs) <- features_selected[seq_len(select_n["Logit"])]
@@ -56,7 +57,6 @@ run_logit <- function(dt, factor, out, keep_classifier, features_selected,
             out$signature <- list(mean_diffs = mean_diffs,
                                   select_n = select_n)
         }
-        
         out$auc["Logit"] <- my_auc(test_indvar, logit_prediction)
         if(keep_classifier) 
             out$classifier$Logit <- logit_classifier
