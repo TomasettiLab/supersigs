@@ -127,7 +127,7 @@ supersig
 
 To apply the `SuperSig` to a new dataset, use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
 
-Below is an example for the `SuperSig` we trained in the previous section.
+Below is an example for the `SuperSig` we trained in the previous section. We reuse our `input_dt` for our "new data" for illustrative purposes, but in practice, you would use a different dataset from the one that was used to train the signature.
 
 ```{r}
 newdata = predict_signature(supersig, newdata = input_dt, factor = "Smoking")
@@ -148,6 +148,17 @@ newdata = predict_signature(supersig_ls[["SMOKING (LUAD)"]], newdata = input_dt,
 newdata %>%
   select(IndVar, X1, X2, X3, score)
 ```
+
+
+# Partially supervised signatures
+
+In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature. We discuss in *Afsari, et al. (2021, ELife)* how doing so can lead to better performance.
+
+```{r eval = F}
+adjusted_dt <- partial_signature(dt = input_dt, object = supersig)
+head(adjusted_dt)
+```
+
 
 ```{r eval = F, include=F}
 build_vignettes()
