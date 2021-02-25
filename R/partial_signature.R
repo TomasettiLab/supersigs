@@ -30,34 +30,34 @@
 #' partial_signature(dt = input_dt, object = supersig)
 #' 
 partial_signature <- function(dt, object){
-  # Check column names of dt
-  if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
-    stop('Input data frame missing sample_id column.')
-  } else {
-    colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] = "sample_id"
-  }
-  if(is.na(match("AGE",toupper(colnames(dt))))){
-    stop('Input data frame missing AGE column.')
-  } else {
-    colnames(dt)[match("AGE",toupper(colnames(dt)))] = "AGE"
-  }
-  if(is.na(match("INDVAR",toupper(colnames(dt))))){
-    stop('Input data frame missing IndVar column.')
-  } else {
-    colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
-  }
-  
-  # Extract slots from object
-  features <- Features(object)
-  
-  # Subtract contributions (rates*age)
-  for(i in seq_along(features)){
-    trinucleotide_features <- unname(features[[i]])
-    diff <- Signature(object)[[i]]
-    dt <- dt %>%
-      mutate_at(vars(all_of(trinucleotide_features)), ~.- diff*AGE) %>%
-      mutate_at(vars(all_of(trinucleotide_features)), ~ifelse(. < 0, 0, .))
-  }
-  
-  return(dt)
+    # Check column names of dt
+    if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
+        stop('Input data frame missing sample_id column.')
+    } else {
+        colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] = "sample_id"
+    }
+    if(is.na(match("AGE",toupper(colnames(dt))))){
+        stop('Input data frame missing AGE column.')
+    } else {
+        colnames(dt)[match("AGE",toupper(colnames(dt)))] = "AGE"
+    }
+    if(is.na(match("INDVAR",toupper(colnames(dt))))){
+        stop('Input data frame missing IndVar column.')
+    } else {
+        colnames(dt)[match("INDVAR",toupper(colnames(dt)))] = "IndVar"
+    }
+    
+    # Extract slots from object
+    features <- Features(object)
+    
+    # Subtract contributions (rates*age)
+    for(i in seq_along(features)){
+        trinucleotide_features <- unname(features[[i]])
+        diff <- Signature(object)[[i]]
+        dt <- dt %>%
+            mutate_at(vars(all_of(trinucleotide_features)), ~.- diff*AGE) %>%
+            mutate_at(vars(all_of(trinucleotide_features)), ~ifelse(. < 0, 0, .))
+    }
+    
+    return(dt)
 }

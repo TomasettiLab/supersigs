@@ -12,7 +12,8 @@ An S4 class for SuperSig
 
 \describe{
 \item{\code{Signature}}{data frame of features and their 
-difference in mean rates (or counts if the factor is "age")}
+difference in mean rates between exposed and unexposed
+(or the average rate if the factor is "age")}
 
 \item{\code{Features}}{list of features that comprise the signature and 
 their representation in terms of the fundamental (trinucleotide) mutations}
