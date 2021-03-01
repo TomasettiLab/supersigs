@@ -193,7 +193,7 @@ median_n_star <- function(n_star_ls){
     return(select_n)
 }
 
-# Adjust select n by removing features that are not > 0.6 AUC
+# Adjust select_n by removing features that are not > 0.6 AUC
 select_n_adjust <- function(train, features_selected, select_n){
     auc_mat <- all_my_auc(train %>% select(c(features_selected, "IndVar")), 
                           IndVar = "IndVar")

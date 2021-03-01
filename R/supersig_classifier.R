@@ -41,7 +41,7 @@ run_logit <- function(dt, factor, out, keep_classifier, features_selected,
             grouped_rates <- dt %>% slice(train_ind) %>% group_by(.data$IndVar)
             grouped_rates <- grouped_rates %>%
                 summarize_at(.vars = features_to_summ,
-                             .funs = ~(mean(./.data$AGE, na.rm = TRUE)))
+                             .funs = ~(mean(./AGE, na.rm = TRUE)))
             unexposed_rates <- grouped_rates %>% 
                 filter(.data$IndVar == FALSE) %>% 
                 select(-.data$IndVar)
@@ -61,7 +61,6 @@ run_logit <- function(dt, factor, out, keep_classifier, features_selected,
         if(keep_classifier) 
             out$classifier$Logit <- logit_classifier
     })
-    
     return(out)
 }
 

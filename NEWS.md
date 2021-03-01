@@ -1,4 +1,4 @@
-# supersigs 0.1.1
+# supersigs 0.1.2
 
 * Add `partial_signature` function to remove signature contribution from data
 * Rename `dt` parameter as `data` in `make_matrix` and `get_signature`

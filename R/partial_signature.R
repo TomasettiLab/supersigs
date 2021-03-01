@@ -56,7 +56,8 @@ partial_signature <- function(data, object){
         diff <- Signature(object)[[i]]
         data <- data %>%
             mutate_at(vars(all_of(trinucleotide_features)), ~.- diff*AGE) %>%
-            mutate_at(vars(all_of(trinucleotide_features)), ~ifelse(. < 0, 0, .))
+            mutate_at(vars(all_of(trinucleotide_features)), 
+                      ~ifelse(. < 0, 0, .))
     }
     
     return(data)

@@ -41,7 +41,7 @@ get_signature <- function(data, factor, wgs = FALSE){
     if(is.na(match("SAMPLE_ID",toupper(colnames(data))))){
         stop('Input data frame missing sample_id column.')
     } else {
-        colnames(data)[match("SAMPLE_ID",toupper(colnames(data)))] <- "sample_id"
+        colnames(data)[match("SAMPLE_ID",toupper(colnames(data)))]<-"sample_id"
     }
     if(is.na(match("AGE",toupper(colnames(data))))){
         stop('Input data frame missing AGE column.')

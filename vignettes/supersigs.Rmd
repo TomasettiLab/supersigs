@@ -21,13 +21,19 @@ library(supersigs)
 
 # Introduction
 
-The `supersigs` package implements the supervised method proposed by *Afsari, et al.* to find signatures ("SuperSigs"). In this vignette, we cover how to preprocess your data and run the method in `supersigs`.
+The `supersigs` package implements the supervised method proposed by
+*Afsari, et al.* to find signatures ("SuperSigs"). In this vignette, 
+we cover how to preprocess your data and run the method in `supersigs`.
 
 # Preprocessing your data
 
 ## VCF file
 
-If you have a VCF file, you can use `readVcf` from the `VariantAnnotation` package to read in your VCF file as a VCF object. The age of each patient should be stored as `age` in the `colData` of your `VCF` object. Then use `process_vcf` to transform the VCF object into a simplified data frame format, which will be explained further in [Example data].
+If you have a VCF file, you can use `readVcf` from the `VariantAnnotation` 
+package to read in your VCF file as a VCF object. The age of each patient 
+should be stored as `age` in the `colData` of your `VCF` object. Then use 
+`process_vcf` to transform the VCF object into a simplified data frame 
+format, which will be explained further in [Example data].
 
 If you do not have a VCF file, skip to [Example data].
 
@@ -51,7 +57,12 @@ head(dt)
 
 ## Example data
 
-The method uses single-base mutations in exomic data from cancer samples. Specifically, it requires data on every sample's mutations, the positions of those mutations, and the age of all patients. This data can be represented as a list of mutations. Below is an example dataset (stored and accessible from the `supersigs` R package). If you have a VCF file, read the [VCF file] section to see how to process your data into the following format. 
+The method uses single-base mutations in exomic data from cancer samples.
+Specifically, it requires data on every sample's mutations, the positions
+of those mutations, and the age of all patients. This data can be represented
+as a list of mutations. Below is an example dataset (stored and accessible 
+from the `supersigs` R package). If you have a VCF file, read the [VCF file]
+section to see how to process your data into the following format. 
 
 * `sample_id` is an ID for each sample
 * `age` is the age of the patient
@@ -65,13 +76,24 @@ head(example_dt)
 
 ## Transform data
 
-Once you've read in your data, you will need to transform it into a data frame of features that is readable by the `supersigs` package. This involves 2 steps:
+Once you've read in your data, you will need to transform it into a data 
+frame of features that is readable by the `supersigs` package. This involves 
+2 steps:
 
-1. First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C>A mutations are considered the same as G>T mutations and we will convert all G>T mutations to be denoted as C>A mutations.
+1. First, we assume that mutations are the same regardless of the strand on 
+which it occurred. For example, this means that C>A mutations are considered 
+the same as G>T mutations and we will convert all G>T mutations to be denoted 
+as C>A mutations.
 
-2. Because the features used are built upon trinucleotide features (e.g. A[C>A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the `hg19` reference genome.
+2. Because the features used are built upon trinucleotide features 
+(e.g. A[C>A]T), this will require matching your mutations to a reference genome
+to identify what the flanking bases of every mutation are. In our example 
+below, we will use the `hg19` reference genome.
 
-Both of these steps are done by the `make_matrix` function. Note that using the `make_matrix` function requires installing and loading a reference genome (`BSgenome.Hsapiens.UCSC.hg19` and `BSgenome.Hsapiens.UCSC.hg38` are supported).
+Both of these steps are done by the `make_matrix` function. Note that using
+the `make_matrix` function requires installing and loading a reference 
+genome (`BSgenome.Hsapiens.UCSC.hg19` and `BSgenome.Hsapiens.UCSC.hg38` 
+are supported).
 
 ```{r}
 # Load packages for make_matrix function
@@ -80,7 +102,11 @@ suppressPackageStartupMessages({
 })
 ```
 
-We apply `make_matrix` to transform our example dataset (`example_dt`) into a data frame of trinucleotide mutations (`input_dt`), which is the format required by the `supersigs` R package. Each row in `input_dt` corresponds to a different patient and the values in the columns are the number of mutations for each trinucleotide mutation.
+We apply `make_matrix` to transform our example dataset (`example_dt`) into
+a data frame of trinucleotide mutations (`input_dt`), which is the format 
+required by the `supersigs` R package. Each row in `input_dt` corresponds to
+a different patient and the values in the columns are the number of mutations
+for each trinucleotide mutation.
 
 ```{r}
 input_dt <- make_matrix(example_dt)
@@ -89,14 +115,18 @@ head(input_dt)
 
 # Getting your signature
 
-To apply the supervised method on your data, run the `get_signature` function. The function has two parameters: an input data frame `dt` and the `factor` (e.g. `factor = "Smoking"`). `dt` is a data frame with the following columns:
+To apply the supervised method on your data, run the `get_signature` function.
+The function has two parameters: an input data frame `dt` and the `factor` 
+(e.g. `factor = "Smoking"`). `dt` is a data frame with the following columns:
 
-* `IndVar` (indicator variable) is a logical indicator for whether they were exposed to the `factor` or not
+* `IndVar` (indicator variable) is a logical indicator for whether they were
+exposed to the `factor` or not
 * `sample_id` is an ID for each sample
 * `age` is the age of the patient
 * columns of counts for all 96 trinucleotide mutations
 
-The process of converting a VCF file to this format is covered in [Preprocessing your data]. An example for `dt` is printed below.
+The process of converting a VCF file to this format is covered in 
+[Preprocessing your data]. An example for `dt` is printed below.
 
 ```{r}
 suppressPackageStartupMessages({
@@ -111,10 +141,14 @@ input_dt <- input_dt %>%
 head(input_dt)
 ```
 
-Once you have the correct data format, apply `get_signature` to the dataset to get your `SuperSig`. This is an S4 object containing four slots:
+Once you have the correct data format, apply `get_signature` to the 
+dataset to get your `SuperSig`. This is an S4 object containing four slots:
 
-* `Signature` is the signature, represented as their differences in mean rates (or counts if the factor is "age") between the two groups (exposed versus unexposed)
-* `Features` is the list of features that comprise the signature and their representation in terms of the fundamental (trinucleotide) mutations
+* `Signature` is the signature, represented as their differences in mean 
+rates (or counts if the factor is "age") between the two groups (exposed 
+versus unexposed)
+* `Features` is the list of features that comprise the signature and their 
+representation in terms of the fundamental (trinucleotide) mutations
 * `AUC` is the apparent AUC of the model (i.e. not cross-validated)
 * `Model` is the list of a glm class for the trained logistic regression model
 
@@ -125,9 +159,14 @@ supersig
 
 # Using a signature
 
-To apply the `SuperSig` to a new dataset, use the `predict_signature` function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.
+To apply the `SuperSig` to a new dataset, use the `predict_signature` function.
+This function returns the new dataset with columns for feature counts for the 
+signature and a score column for the predicted classification score.
 
-Below is an example for the `SuperSig` we trained in the previous section. We reuse our `input_dt` for our "new data" for illustrative purposes, but in practice, you would use a different dataset from the one that was used to train the signature.
+Below is an example for the `SuperSig` we trained in the previous section. We 
+reuse our `input_dt` for our "new data" for illustrative purposes, but in 
+practice, you would use a different dataset from the one that was used to 
+train the signature (e.g. a test set).
 
 ```{r}
 newdata = predict_signature(supersig, newdata = input_dt, factor = "Smoking")
@@ -136,7 +175,12 @@ newdata %>%
   select(X1, score)
 ```
 
-In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. These are accessible from the package in `supersig_ls`, where each element of the list is a `SuperSig`. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as "factor (tissue)"). Details regarding the training of these signatures are discussed in *Afsari, et al. (2021, ELife)*.
+In addition, you may wish to use a `SuperSig` pre-trained on TCGA data. 
+These are accessible from the package in `supersig_ls`, where each element
+of the list is a `SuperSig`. There are 67 SuperSigs that have been trained 
+on various tissues and factors. The names are printed below (formatted as 
+"factor (tissue)"). Details regarding the training of these signatures are 
+discussed in *Afsari, et al. (2021, ELife)*.
 
 ```{r}
 names(supersig_ls)
@@ -144,7 +188,8 @@ names(supersig_ls)
 
 ```{r}
 # Use pre-trained signature
-newdata = predict_signature(supersig_ls[["SMOKING (LUAD)"]], newdata = input_dt, factor = "Smoking")
+newdata = predict_signature(supersig_ls[["SMOKING (LUAD)"]], 
+                            newdata = input_dt, factor = "Smoking")
 newdata %>%
   select(IndVar, X1, X2, X3, score)
 ```
@@ -152,7 +197,14 @@ newdata %>%
 
 # Partially supervised signatures
 
-In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature. We discuss in *Afsari, et al. (2021, ELife)* how doing so can lead to better performance.
+In some cases, you may be interested in removing the contribution of a 
+supervised signature from your data frame of mutations as a way to adjust 
+for a particular factor. For example, suppose that we are interested in the
+deciphering a signature for smoking in lung cancer. We can first remove the 
+contribution of the aging signature in lung cancer, before learning the 
+smoking signature with a supervised or unsupervised method.
+We discuss in *Afsari, et al. (2021, ELife)* how doing so can lead to 
+better performance.
 
 ```{r eval = F}
 adjusted_dt <- partial_signature(data = input_dt, object = supersig)

@@ -10,6 +10,4 @@ test_that("condense_mutations works", {
 test_that("convert_to_level3 works", {
     expect_equal(convert_to_level3(x), x_div)
     expect_equal(convert_to_level3(y), y)
-    expect_equal(convert_to_level3(c(y, x)),
-                             c(y, x_div))
 })

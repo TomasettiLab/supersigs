@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Function to obtain a SuperSig — get_signature" />
 <meta property="og:description" content="Generate a tissue-specific SuperSig for a given dataset of mutations and
-exposure factor. Returns the SuperSig and a classification model trained with
-the SuperSig." />
+exposure factor. Returns the SuperSig and a classification model trained 
+with the SuperSig." />
 
 
 
@@ -84,7 +84,7 @@ the SuperSig." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">supersigs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -133,22 +133,24 @@ the SuperSig." />
 
     <div class="ref-description">
     <p>Generate a tissue-specific SuperSig for a given dataset of mutations and
-exposure factor. Returns the SuperSig and a classification model trained with
-the SuperSig.</p>
+exposure factor. Returns the SuperSig and a classification model trained 
+with the SuperSig.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_signature</span><span class='op'>(</span><span class='va'>dt</span>, <span class='va'>factor</span>, wgs <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_signature</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>factor</span>, wgs <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dt</th>
+      <th>data</th>
       <td><p>a data frame of mutations (see vignette for details)</p></td>
     </tr>
     <tr>
       <th>factor</th>
-      <td><p>the factor/exposure (e.g. "age", "smoking")</p></td>
+      <td><p>the factor/exposure (e.g. "age", "smoking"). If the 
+factor = "age", the SuperSig is computed using
+counts. Otherwise, rates (counts/age) are used.</p></td>
     </tr>
     <tr>
       <th>wgs</th>
@@ -172,9 +174,133 @@ whole-genome (wgs = <code>TRUE</code>) or whole-exome (wgs = <code>FALSE</code>)
 #&gt; 5         1  50      chr19   1059712   G   T
 #&gt; 6         2  55       chr1  76226977   T   C</div><div class='input'><span class='va'>input_dt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='make_matrix.html'>make_matrix</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># convert to correct format</span>
 <span class='va'>input_dt</span><span class='op'>$</span><span class='va'>IndVar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span> <span class='co'># add IndVar column</span>
-<span class='fu'>get_signature</span><span class='op'>(</span>dt <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
-</div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='output co'>#&gt; Signature:
-#&gt; <span style='color: #555555;'># A tibble: 1 x 1</span><span>
+<span class='fu'>get_signature</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"Age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
+</div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='output co'>#&gt; $features_gmsa
+#&gt; $features_gmsa$new_partition
+#&gt; $features_gmsa$new_partition$X1
+#&gt;       F21       F22       F23      F216      F217      F218      F219      F232 
+#&gt; "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" 
+#&gt;      F233      F234      F235      F247      F248      F249      F250      F263 
+#&gt; "A[T&gt;A]C" "A[T&gt;A]G" "A[T&gt;A]T" "A[T&gt;C]A" "A[T&gt;C]C" "A[T&gt;C]G" "A[T&gt;C]T" "A[T&gt;G]A" 
+#&gt;      F264      F265      F266       F24       F25       F26       F27      F220 
+#&gt; "A[T&gt;G]C" "A[T&gt;G]G" "A[T&gt;G]T" "C[C&gt;G]A" "C[C&gt;G]C" "C[C&gt;G]G" "C[C&gt;G]T" "C[C&gt;T]A" 
+#&gt;      F221      F222      F223      F236      F237      F238      F251      F252 
+#&gt; "C[C&gt;T]C" "C[C&gt;T]G" "C[C&gt;T]T" "C[T&gt;A]C" "C[T&gt;A]G" "C[T&gt;A]T" "C[T&gt;C]A" "C[T&gt;C]C" 
+#&gt;      F253      F254      F267      F268      F269      F270       F28       F29 
+#&gt; "C[T&gt;C]G" "C[T&gt;C]T" "C[T&gt;G]A" "C[T&gt;G]C" "C[T&gt;G]G" "C[T&gt;G]T" "G[C&gt;G]A" "G[C&gt;G]C" 
+#&gt;      F210      F211      F224      F225      F226      F227      F239      F240 
+#&gt; "G[C&gt;G]G" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" "G[C&gt;T]G" "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" 
+#&gt;      F241      F242      F255      F256      F257      F258      F271      F272 
+#&gt; "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" "G[T&gt;C]G" "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" 
+#&gt;      F273      F274      F212      F213      F214      F215      F228      F229 
+#&gt; "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" 
+#&gt;      F230      F231      F243      F244      F245      F246      F259      F260 
+#&gt; "T[C&gt;T]G" "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" 
+#&gt;      F261      F262      F275      F276      F277      F278 
+#&gt; "T[T&gt;C]G" "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" 
+#&gt; 
+#&gt; $features_gmsa$new_partition$X2
+#&gt;        F4 
+#&gt; "C[T&gt;A]A" 
+#&gt; 
+#&gt; $features_gmsa$new_partition$X3
+#&gt;       F11       F12       F13       F14       F15       F16       F17       F18 
+#&gt; "A[C&gt;A]A" "A[C&gt;A]C" "A[C&gt;A]G" "A[C&gt;A]T" "C[C&gt;A]A" "C[C&gt;A]C" "C[C&gt;A]G" "C[C&gt;A]T" 
+#&gt;       F19      F110      F111      F112      F113      F114      F115      F116 
+#&gt; "G[C&gt;A]A" "G[C&gt;A]C" "G[C&gt;A]G" "G[C&gt;A]T" "T[C&gt;A]A" "T[C&gt;A]C" "T[C&gt;A]G" "T[C&gt;A]T" 
+#&gt; 
+#&gt; $features_gmsa$new_partition$X4
+#&gt;        F3 
+#&gt; "A[C&gt;G]T" 
+#&gt; 
+#&gt; 
+#&gt; 
+#&gt; $features_selected
+#&gt; [1] "X1" "X2" "X3" "X4"
+#&gt; 
+#&gt; $new_partition
+#&gt; $new_partition$X1
+#&gt;       F21       F22       F23      F216      F217      F218      F219      F232 
+#&gt; "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" 
+#&gt;      F233      F234      F235      F247      F248      F249      F250      F263 
+#&gt; "A[T&gt;A]C" "A[T&gt;A]G" "A[T&gt;A]T" "A[T&gt;C]A" "A[T&gt;C]C" "A[T&gt;C]G" "A[T&gt;C]T" "A[T&gt;G]A" 
+#&gt;      F264      F265      F266       F24       F25       F26       F27      F220 
+#&gt; "A[T&gt;G]C" "A[T&gt;G]G" "A[T&gt;G]T" "C[C&gt;G]A" "C[C&gt;G]C" "C[C&gt;G]G" "C[C&gt;G]T" "C[C&gt;T]A" 
+#&gt;      F221      F222      F223      F236      F237      F238      F251      F252 
+#&gt; "C[C&gt;T]C" "C[C&gt;T]G" "C[C&gt;T]T" "C[T&gt;A]C" "C[T&gt;A]G" "C[T&gt;A]T" "C[T&gt;C]A" "C[T&gt;C]C" 
+#&gt;      F253      F254      F267      F268      F269      F270       F28       F29 
+#&gt; "C[T&gt;C]G" "C[T&gt;C]T" "C[T&gt;G]A" "C[T&gt;G]C" "C[T&gt;G]G" "C[T&gt;G]T" "G[C&gt;G]A" "G[C&gt;G]C" 
+#&gt;      F210      F211      F224      F225      F226      F227      F239      F240 
+#&gt; "G[C&gt;G]G" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" "G[C&gt;T]G" "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" 
+#&gt;      F241      F242      F255      F256      F257      F258      F271      F272 
+#&gt; "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" "G[T&gt;C]G" "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" 
+#&gt;      F273      F274      F212      F213      F214      F215      F228      F229 
+#&gt; "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" 
+#&gt;      F230      F231      F243      F244      F245      F246      F259      F260 
+#&gt; "T[C&gt;T]G" "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" 
+#&gt;      F261      F262      F275      F276      F277      F278 
+#&gt; "T[T&gt;C]G" "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" 
+#&gt; 
+#&gt; $new_partition$X2
+#&gt;        F4 
+#&gt; "C[T&gt;A]A" 
+#&gt; 
+#&gt; $new_partition$X3
+#&gt;       F11       F12       F13       F14       F15       F16       F17       F18 
+#&gt; "A[C&gt;A]A" "A[C&gt;A]C" "A[C&gt;A]G" "A[C&gt;A]T" "C[C&gt;A]A" "C[C&gt;A]C" "C[C&gt;A]G" "C[C&gt;A]T" 
+#&gt;       F19      F110      F111      F112      F113      F114      F115      F116 
+#&gt; "G[C&gt;A]A" "G[C&gt;A]C" "G[C&gt;A]G" "G[C&gt;A]T" "T[C&gt;A]A" "T[C&gt;A]C" "T[C&gt;A]G" "T[C&gt;A]T" 
+#&gt; 
+#&gt; $new_partition$X4
+#&gt;        F3 
+#&gt; "A[C&gt;G]T" 
+#&gt; 
+#&gt; 
+#&gt; $dt_new
+#&gt; <span style='color: #555555;'># A tibble: 5 x 7</span><span>
+#&gt;      X1    X2    X3    X4 IndVar   AGE TOTAL_MUTATIONS
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>     3     1     1     0      1    50               5
+#&gt; </span><span style='color: #555555;'>2</span><span>     1     0     3     1      1    55               5
+#&gt; </span><span style='color: #555555;'>3</span><span>     4     1     0     0      1    72               5
+#&gt; </span><span style='color: #555555;'>4</span><span>     2     0     2     1      0    53               5
+#&gt; </span><span style='color: #555555;'>5</span><span>     1     1     3     0      0    48               5
+#&gt; 
+#&gt; $select_n
+#&gt; Logit 
+#&gt;     1 
+#&gt; 
+#&gt; $auc
+#&gt;     Logit 
+#&gt; 0.6666667 
+#&gt; 
+#&gt; $signature
+#&gt; $signature$mean_diffs
+#&gt; </span><span style='color: #555555;'># A tibble: 1 x 1</span><span>
+#&gt;       X1
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> 0.039</span><span style='text-decoration: underline;'>6</span><span>
+#&gt; 
+#&gt; $signature$select_n
+#&gt; Logit 
+#&gt;     1 
+#&gt; 
+#&gt; 
+#&gt; $classifier
+#&gt; $classifier$Logit
+#&gt; 
+#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           X1  
+#&gt;      -1.773        1.079  
+#&gt; 
+#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual
+#&gt; Null Deviance:	    6.73 
+#&gt; Residual Deviance: 5.384 	AIC: 9.384
+#&gt; 
+#&gt; </div><div class='output co'>#&gt; Signature:
+#&gt; </span><span style='color: #555555;'># A tibble: 1 x 1</span><span>
 #&gt;       X1
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span> 0.039</span><span style='text-decoration: underline;'>6</span><span>

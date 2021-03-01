@@ -1,6 +1,6 @@
 Package: supersigs
 Title: Supervised mutational signatures
-Version: 0.1.1
+Version: 0.1.2
 Date: 2021-01-06
 Authors@R: c(person(given = "Albert", 
                     family = "Kuo",
@@ -33,7 +33,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
-Description: Generate SuperSigs (supervised mutational signatures) from single nucleotide variants in the cancer genome. Functions included in the package allow the user to learn mutational signatures from their data and apply them to new data, based on the methodology described in Afsari (2021, ELife).
+Description: Generate SuperSigs (supervised mutational signatures) from single nucleotide variants in the cancer genome. Functions included in the package allow the user to learn supervised mutational signatures from their data and apply them to new data. The methodology is based on the one described in Afsari (2021, ELife).
 biocViews: FeatureExtraction, Classification, Regression, Sequencing, WholeGenome, SomaticMutation
 License: GPL-3
 Encoding: UTF-8
