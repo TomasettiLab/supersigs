@@ -28,13 +28,23 @@
 #' head(example_dt) # use example data from package
 #' input_dt <- make_matrix(example_dt) # convert to correct format
 #' input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-#' out <- get_signature(dt = input_dt, factor = "age") # get SuperSig
+#' out <- get_signature(dt = input_dt, factor = "Age") # get SuperSig
 #' 
-#' newdata <- predict_signature(out, newdata = input_dt, factor = "Smoking")
+#' newdata <- predict_signature(out, newdata = input_dt, factor = "age")
 #' suppressPackageStartupMessages({library(dplyr)})
-#' head(newdata %>% select(IndVar, X1, score))
+#' head(newdata %>% select(X1, score))
 #' 
 predict_signature <- function(object, newdata, factor){
+    # Capitalize factor string
+    factor <- toupper(factor)
+    
+    # Check column names of dt
+    if(is.na(match("AGE",toupper(colnames(newdata))))){
+      stop('Input data frame missing AGE column.')
+    } else {
+      colnames(newdata)[match("AGE",toupper(colnames(newdata)))] <- "AGE"
+    }
+    
     # Extract slots from object
     model <- Model(object)$Logit
     features <- Features(object)
@@ -52,7 +62,7 @@ predict_signature <- function(object, newdata, factor){
     # Use rates for non-age factors
     if(factor != "AGE"){
         newdata <- newdata %>%
-            mutate_at(names(features), ~(./age))
+            mutate_at(names(features), ~(./AGE))
     }
     
     # Predict using logistic regression

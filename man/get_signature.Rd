@@ -9,7 +9,9 @@ get_signature(dt, factor, wgs = FALSE)
 \arguments{
 \item{dt}{a data frame of mutations (see vignette for details)}
 
-\item{factor}{the factor/exposure (e.g. "age", "smoking")}
+\item{factor}{the factor/exposure (e.g. "age", "smoking"). If the 
+factor = "age", the SuperSig is computed using
+counts. Otherwise, rates (counts/age) are used.}
 
 \item{wgs}{logical value indicating whether sequencing data is 
 whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE})}
@@ -19,14 +21,14 @@ whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE})}
 }
 \description{
 Generate a tissue-specific SuperSig for a given dataset of mutations and
-exposure factor. Returns the SuperSig and a classification model trained with
-the SuperSig.
+exposure factor. Returns the SuperSig and a classification model trained 
+with the SuperSig.
 }
 \examples{
 
 head(example_dt) # use example data from package
 input_dt <- make_matrix(example_dt) # convert to correct format
 input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-get_signature(dt = input_dt, factor = "age") # get SuperSig
+get_signature(dt = input_dt, factor = "Age") # get SuperSig
 
 }

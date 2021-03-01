@@ -32,7 +32,7 @@ create_tree <- function(muts_counts, background_probs){
     tree <- tibble(feature = names(h_muts_index),
                    n_children = h_muts_index) %>%
         right_join(. , background_probs, by = "feature") %>%
-        mutate(q = muts_counts[feature],
+        mutate(q = muts_counts[.data$feature],
                size = muts_counts[.data$parent_name],
                prop = .data$q/.data$size)
     

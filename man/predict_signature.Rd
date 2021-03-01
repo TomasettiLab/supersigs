@@ -26,10 +26,10 @@ predicted probabilities for each observation.
 head(example_dt) # use example data from package
 input_dt <- make_matrix(example_dt) # convert to correct format
 input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-out <- get_signature(dt = input_dt, factor = "age") # get SuperSig
+out <- get_signature(dt = input_dt, factor = "Age") # get SuperSig
 
-newdata <- predict_signature(out, newdata = input_dt, factor = "Smoking")
+newdata <- predict_signature(out, newdata = input_dt, factor = "age")
 suppressPackageStartupMessages({library(dplyr)})
-head(newdata \%>\% select(IndVar, X1, score))
+head(newdata \%>\% select(X1, score))
 
 }
