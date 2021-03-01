@@ -13,7 +13,7 @@
 #' exposure factor. Returns the SuperSig and a classification model trained 
 #' with the SuperSig.
 #' 
-#' @param dt a data frame of mutations (see vignette for details)
+#' @param data a data frame of mutations (see vignette for details)
 #' @param factor the factor/exposure (e.g. "age", "smoking"). If the 
 #' factor = "age", the SuperSig is computed using
 #' counts. Otherwise, rates (counts/age) are used.
@@ -31,42 +31,41 @@
 #' head(example_dt) # use example data from package
 #' input_dt <- make_matrix(example_dt) # convert to correct format
 #' input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-#' get_signature(dt = input_dt, factor = "Age") # get SuperSig
+#' get_signature(data = input_dt, factor = "Age") # get SuperSig
 #' 
-get_signature <- function(dt, factor, wgs = FALSE){
+get_signature <- function(data, factor, wgs = FALSE){
     # Capitalize factor string
     factor <- toupper(factor)
     
-    # Check column names of dt
-    if(is.na(match("SAMPLE_ID",toupper(colnames(dt))))){
+    # Check column names of data
+    if(is.na(match("SAMPLE_ID",toupper(colnames(data))))){
         stop('Input data frame missing sample_id column.')
     } else {
-        colnames(dt)[match("SAMPLE_ID",toupper(colnames(dt)))] <- "sample_id"
+        colnames(data)[match("SAMPLE_ID",toupper(colnames(data)))] <- "sample_id"
     }
-    if(is.na(match("AGE",toupper(colnames(dt))))){
+    if(is.na(match("AGE",toupper(colnames(data))))){
         stop('Input data frame missing AGE column.')
     } else {
-        colnames(dt)[match("AGE",toupper(colnames(dt)))] <- "AGE"
+        colnames(data)[match("AGE",toupper(colnames(data)))] <- "AGE"
     }
-    if(is.na(match("INDVAR",toupper(colnames(dt))))){
+    if(is.na(match("INDVAR",toupper(colnames(data))))){
         stop('Input data frame missing IndVar column.')
     } else {
-        colnames(dt)[match("INDVAR",toupper(colnames(dt)))] <- "IndVar"
+        colnames(data)[match("INDVAR",toupper(colnames(data)))] <- "IndVar"
     }
-    
-    # Check number of samples (> 5 required)
-    if(nrow(dt) < 5) stop('More than 5 samples required to run get_signature.')
+
+    if(nrow(data) < 5) stop('More than 5 samples required for get_signature.')
     
     # Check all trinucleotides are present
     trinucleotideBases <- unique(transform_muts_vec)
-    if(all(trinucleotideBases %in% toupper(colnames(dt)))){
-        dt$TOTAL_MUTATIONS <- rowSums(dt[,trinucleotideBases])
+    if(all(trinucleotideBases %in% toupper(colnames(data)))){
+        data$TOTAL_MUTATIONS <- rowSums(data[,trinucleotideBases])
     } else {
         stop('Input data frame missing one or more trinucleotide mutations.')
     }
     
     # Get features
-    features_out <- suppressWarnings(feature_selection(dt, factor, wgs))
+    features_out <- suppressWarnings(feature_selection(data, factor, wgs))
     
     # Get apparent AUC and model
     classification_out <- supersig_classifier(dt = features_out$dt_new,

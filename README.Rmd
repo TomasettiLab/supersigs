@@ -37,17 +37,32 @@ You can install the development version of supersigs from github using the `inst
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
+## Data Format
+
+At a minimum, the data you will need are the age and mutations for each patient. An example is provided below.
+
+```{r echo = F}
+library(supersigs)
+head(example_dt)
+```
+
 ## Core functions
 
-In brief, the `supersigs` package contains two core functions: `get_signature` and `predict_signature`. 
+In brief, the `supersigs` package contains three core functions: `get_signature`, `predict_signature`, and `partial_signature`.
 
 `get_signature` trains a supervised signature for a given factor (e.g. smoking).
 
 ```{r eval = F}
-supersig <- get_signature(dt = data, factor = "smoking", wgs = F)
+supersig <- get_signature(data = data, factor = "smoking", wgs = F)
 ```
 
 `predict_signature` uses the trained supervised signature to obtain predicted probabilities (e.g. probability of smoker) on a new dataset.
+
+```{r eval = F}
+pred <- predict_signature(object = supersig, newdata = data, factor = "smoking")
+```
+
+`partial_signature` removes the contribution of a trained signature from the dataset.
 
 ```{r eval = F}
 pred <- predict_signature(object = supersig, newdata = data, factor = "smoking")
@@ -59,4 +74,4 @@ devtools::build_readme()
 
 ## Tutorial
 
-To follow a tutorial on how to use the package, click `vignette("supersigs")` (or type `vignette("supersigs")` in R).
+To follow a tutorial on how to use the package, see `vignette("supersigs")` (or type `vignette("supersigs")` in R).

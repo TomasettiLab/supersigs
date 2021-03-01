@@ -119,7 +119,7 @@ Once you have the correct data format, apply `get_signature` to the dataset to g
 * `Model` is the list of a glm class for the trained logistic regression model
 
 ```{r}
-supersig <- get_signature(dt = input_dt, factor = "Smoking")
+supersig <- get_signature(data = input_dt, factor = "Smoking")
 supersig
 ```
 
@@ -155,7 +155,7 @@ newdata %>%
 In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature. We discuss in *Afsari, et al. (2021, ELife)* how doing so can lead to better performance.
 
 ```{r eval = F}
-adjusted_dt <- partial_signature(dt = input_dt, object = supersig)
+adjusted_dt <- partial_signature(data = input_dt, object = supersig)
 head(adjusted_dt)
 ```
 

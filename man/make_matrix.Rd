@@ -4,10 +4,10 @@
 \alias{make_matrix}
 \title{Function to transform mutations into "matrix" format}
 \usage{
-make_matrix(dt, genome = "hg19")
+make_matrix(data, genome = "hg19")
 }
 \arguments{
-\item{dt}{a data frame of mutations in VCF format (see vignette for details)}
+\item{data}{a data frame of mutations in VCF format (see vignette for details)}
 
 \item{genome}{the reference genome used ("hg19" or "hg38")}
 }

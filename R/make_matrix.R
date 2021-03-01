@@ -45,7 +45,7 @@ getseq_wrapper <- function(dt, genome = "hg19"){
 #' a data frame of trinucleotide mutations with flanking bases
 #' in a wide matrix format.
 #' 
-#' @param dt a data frame of mutations in VCF format (see vignette for details)
+#' @param data a data frame of mutations in VCF format (see vignette for details)
 #' @param genome the reference genome used ("hg19" or "hg38")
 #' 
 #' @import dplyr
@@ -64,17 +64,17 @@ getseq_wrapper <- function(dt, genome = "hg19"){
 #' input_dt <- make_matrix(example_dt) # convert to correct format
 #' head(input_dt)
 #' 
-make_matrix <- function(dt, genome = "hg19"){
-    dt <- dt %>%
+make_matrix <- function(data, genome = "hg19"){
+    data <- data %>%
         select(.data$sample_id, .data$age, .data$chromosome, .data$position, 
                .data$ref, .data$alt) %>%
         mutate(start = .data$position - 1,
                end = .data$position + 1)
     
-    aligned_dna <- getseq_wrapper(dt, genome)
+    aligned_dna <- getseq_wrapper(data, genome)
     
     # Create mutations with surrounding base pairs
-    dt <- dt %>%
+    data <- data %>%
         mutate(aligned = as.character(aligned_dna),
                mutation = paste0(substr(.data$aligned, 1, 1), "[", 
                                  .data$ref, ">", .data$alt, "]",
@@ -84,7 +84,7 @@ make_matrix <- function(dt, genome = "hg19"){
                                      FUN.VALUE = character(1)) %>% unname())
     
     # Count mutations for each patient
-    dt_counts <- dt %>%
+    dt_counts <- data %>%
         group_by(.data$sample_id, .data$age, .data$mutation_std) %>%
         summarize(mut_count = n()) %>%
         ungroup() %>%

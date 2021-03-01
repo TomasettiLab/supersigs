@@ -4,10 +4,10 @@
 \alias{get_signature}
 \title{Function to obtain a SuperSig}
 \usage{
-get_signature(dt, factor, wgs = FALSE)
+get_signature(data, factor, wgs = FALSE)
 }
 \arguments{
-\item{dt}{a data frame of mutations (see vignette for details)}
+\item{data}{a data frame of mutations (see vignette for details)}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking"). If the 
 factor = "age", the SuperSig is computed using
@@ -29,6 +29,6 @@ with the SuperSig.
 head(example_dt) # use example data from package
 input_dt <- make_matrix(example_dt) # convert to correct format
 input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-get_signature(dt = input_dt, factor = "Age") # get SuperSig
+get_signature(data = input_dt, factor = "Age") # get SuperSig
 
 }
