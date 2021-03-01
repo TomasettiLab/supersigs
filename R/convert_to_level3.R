@@ -1,26 +1,21 @@
 # convert_to_level3.R
 # -----------------------------------------------------------------------------
 # Author: Albert Kuo
-# Date last modified: Feb 15, 2021
+# Date last modified: Mar 1, 2021
 #
 # Helper function for GenerateMinSigmaAlgebra.R
 
-#' Given a set of features, convert them to a union set of 
+#' Given a feature, convert it to a set of 
 #' fundamental (level 3) mutation features
 #' 
-#' @param features a vector of features
+#' @param feature a feature (e.g. "C>T")
 #' 
 #' @return \code{convert_to_level3} returns a vector of 
 #' fundamental (level 3) features
 #' 
 #' @noRd
 #' 
-convert_to_level3 = function(features){
-    if(length(features) > 1){
-        out <- sapply(features, function(x) muts_children_level3[[x]]) # vapply doesn't work with variable length
-        out <- unname(unlist(out))
-    } else {
-        out <- unname(muts_children_level3[[features]])
-    }
+convert_to_level3 = function(feature){
+    out <- unname(muts_children_level3[[feature]])
     return(out)
 }
