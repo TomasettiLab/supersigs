@@ -10,6 +10,8 @@ home:
   links:
   - text: Browse source code
     href: "https://github.com/TomasettiLab/supersigs"
+  - text: Report a bug at
+    href: "https://github.com/TomasettiLab/supersigs/issues"
 authors:
   Albert Kuo:
     href: "https://albertkuo.github.io"

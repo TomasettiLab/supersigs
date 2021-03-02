@@ -21,7 +21,6 @@ their representation in terms of the fundamental (trinucleotide) mutations}
 \item{\code{AUC}}{length-one numeric vector of the apparent AUC 
 (i.e. not cross-validated)}
 
-\item{\code{Model}}{list of a glm class for the trained 
-logistic regression model}
+\item{\code{Model}}{list of a glm class for the trained logistic regression model}
 }}
 

@@ -16,7 +16,7 @@ make_matrix(data, genome = "hg19")
 one row per sample
 }
 \description{
-Transform a data frame of mutations in VCF format into 
+Transform a data frame of mutations in long format into 
 a data frame of trinucleotide mutations with flanking bases
 in a wide matrix format.
 }

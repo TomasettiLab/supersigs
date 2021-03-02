@@ -100,7 +100,7 @@
 <div id="data-format" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-format" class="anchor"></a>Data Format</h2>
-<p>At a minimum, the data you will need are the age and mutations for each patient. An example is provided below.</p>
+<p>At a minimum, the data you will need are the age and mutations for each patient. An example is provided below. (Note that you will need to process the data before running the core functions, see <code><a href="articles/supersigs.html">vignette("supersigs")</a></code> for details.)</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#&gt;   sample_id age chromosome  position ref alt</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; 1         1  50       chr1  94447621   G   C</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; 2         1  50       chr2 202005395   A   C</span></span>
@@ -121,7 +121,7 @@
 <code class="sourceCode R"><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predict_signature.html">predict_signature</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">data</span>, factor <span class="op">=</span> <span class="st">"smoking"</span><span class="op">)</span></code></pre></div>
 <p><code>partial_signature</code> removes the contribution of a trained signature from the dataset.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/predict_signature.html">predict_signature</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">data</span>, factor <span class="op">=</span> <span class="st">"smoking"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/partial_signature.html">partial_signature</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>, object <span class="op">=</span> <span class="va">supersig</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="tutorial" class="section level2">
 <h2 class="hasAnchor">
@@ -136,6 +136,8 @@
 <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Browse source code at <br><a href="https://github.com/TomasettiLab/supersigs">https://​github.com/​TomasettiLab/​supersigs</a>
+</li>
+<li>Report a bug at at <br><a href="https://github.com/TomasettiLab/supersigs/issues">https://​github.com/​TomasettiLab/​supersigs/​issues</a>
 </li>
 </ul>
 </div>

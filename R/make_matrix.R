@@ -41,7 +41,7 @@ getseq_wrapper <- function(dt, genome = "hg19"){
 
 #' Function to transform mutations into "matrix" format
 #' 
-#' Transform a data frame of mutations in VCF format into 
+#' Transform a data frame of mutations in long format into 
 #' a data frame of trinucleotide mutations with flanking bases
 #' in a wide matrix format.
 #' 

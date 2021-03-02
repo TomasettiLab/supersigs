@@ -383,7 +383,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="transform-data" class="section level2">
 <h2>Transform data</h2>
-<p>Once you’ve read in your data, you will need to transform it into a data frame of features that is readable by the <code>supersigs</code> package. This involves 2 steps:</p>
+<p>Once you’ve read in your data, you will need to transform it into a data frame of features before running the core functions. This involves 2 steps:</p>
 <ol style="list-style-type: decimal">
 <li><p>First, we assume that mutations are the same regardless of the strand on which it occurred. For example, this means that C&gt;A mutations are considered the same as G&gt;T mutations and we will convert all G&gt;T mutations to be denoted as C&gt;A mutations.</p></li>
 <li><p>Because the features used are built upon trinucleotide features (e.g. A[C&gt;A]T), this will require matching your mutations to a reference genome to identify what the flanking bases of every mutation are. In our example below, we will use the <code>hg19</code> reference genome.</p></li>
@@ -431,14 +431,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="getting-your-signature" class="section level1">
 <h1>Getting your signature</h1>
-<p>To apply the supervised method on your data, run the <code>get_signature</code> function. The function has two parameters: an input data frame <code>dt</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>dt</code> is a data frame with the following columns:</p>
+<p>To apply the supervised method on your data, run the <code>get_signature</code> function. The function has two parameters: an input data frame <code>data</code> and the <code>factor</code> (e.g. <code>factor = &quot;Smoking&quot;</code>). <code>data</code> is a data frame with the following columns:</p>
 <ul>
 <li><code>IndVar</code> (indicator variable) is a logical indicator for whether they were exposed to the <code>factor</code> or not</li>
 <li><code>sample_id</code> is an ID for each sample</li>
 <li><code>age</code> is the age of the patient</li>
 <li>columns of counts for all 96 trinucleotide mutations</li>
 </ul>
-<p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>dt</code> is printed below.</p>
+<p>The process of converting a VCF file to this format is covered in <a href="#preprocessing-your-data">Preprocessing your data</a>. An example for <code>data</code> is printed below.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">suppressPackageStartupMessages</span>({</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="kw">library</span>(dplyr)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>})</span>
@@ -480,12 +480,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-39"><a href="#cb6-39"></a><span class="co">#&gt; #   `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;,</span></span>
 <span id="cb6-40"><a href="#cb6-40"></a><span class="co">#&gt; #   `C[T&gt;G]A` &lt;dbl&gt;, `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;,</span></span>
 <span id="cb6-41"><a href="#cb6-41"></a><span class="co">#&gt; #   `C[T&gt;G]G` &lt;dbl&gt;, `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></span></code></pre></div>
-<p>Once you have the correct data format, apply <code>get_signature</code> to the dataset to get your <code>SuperSig</code>. This is an S4 object containing four slots:</p>
+<p>Once you have the correct data format, apply <code>get_signature</code> to the dataset to get your <code>SuperSig</code>, which is an S4 object containing four slots:</p>
 <ul>
-<li><code>Signature</code> is the signature, represented as their differences in mean rates (or counts if the factor is “age”) between the two groups (exposed versus unexposed)</li>
+<li><code>Signature</code> is the signature, represented as their differences in mean rates (or the overall mean rate if the factor is “age”) between the two groups (exposed versus unexposed)</li>
 <li><code>Features</code> is the list of features that comprise the signature and their representation in terms of the fundamental (trinucleotide) mutations</li>
 <li><code>AUC</code> is the apparent AUC of the model (i.e. not cross-validated)</li>
-<li><code>Model</code> is the list of a glm class for the trained logistic regression model</li>
+<li><code>Model</code> is the list containing the trained logistic regression model (glm class)</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>supersig &lt;-<span class="st"> </span><span class="kw">get_signature</span>(<span class="dt">data =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; Begin feature engineering...</span></span>
@@ -505,179 +505,54 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; ...testing inner fold 13</span></span>
 <span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; ...testing inner fold 14</span></span>
 <span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; ...testing inner fold 15</span></span>
-<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; $features_gmsa</span></span>
-<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; $features_gmsa$new_partition</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt; $features_gmsa$new_partition$X1</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span></span>
-<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; </span></span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span></span>
-<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot; &quot;A[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot; &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; </span></span>
-<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span></span>
-<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt; &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;C[C&gt;A]A&quot; </span></span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span></span>
-<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot; &quot;C[C&gt;A]T&quot; &quot;C[C&gt;G]A&quot; &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;C[C&gt;T]A&quot; </span></span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span></span>
-<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; </span></span>
-<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span></span>
-<span id="cb7-33"><a href="#cb7-33"></a><span class="co">#&gt; &quot;C[T&gt;C]G&quot; &quot;C[T&gt;C]T&quot; &quot;C[T&gt;G]A&quot; &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; </span></span>
-<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span></span>
-<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot; &quot;G[C&gt;T]G&quot; </span></span>
-<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span></span>
-<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt; &quot;G[C&gt;T]T&quot; &quot;G[T&gt;A]A&quot; &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; &quot;G[T&gt;C]G&quot; </span></span>
-<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span></span>
-<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt; &quot;G[T&gt;C]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot; &quot;T[C&gt;A]G&quot; </span></span>
-<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span></span>
-<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; &quot;T[C&gt;A]T&quot; &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; &quot;T[C&gt;T]G&quot; </span></span>
-<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span></span>
-<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; &quot;T[C&gt;T]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot; &quot;T[T&gt;C]G&quot; </span></span>
-<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt;      F178      F190      F191      F192      F193 </span></span>
-<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; &quot;T[T&gt;C]T&quot; &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot; </span></span>
-<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; </span></span>
-<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt; $features_gmsa$new_partition$X2</span></span>
-<span id="cb7-48"><a href="#cb7-48"></a><span class="co">#&gt;        F2 </span></span>
-<span id="cb7-49"><a href="#cb7-49"></a><span class="co">#&gt; &quot;G[C&gt;G]G&quot; </span></span>
-<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#&gt; </span></span>
-<span id="cb7-51"><a href="#cb7-51"></a><span class="co">#&gt; $features_gmsa$new_partition$X3</span></span>
-<span id="cb7-52"><a href="#cb7-52"></a><span class="co">#&gt;        F3 </span></span>
-<span id="cb7-53"><a href="#cb7-53"></a><span class="co">#&gt; &quot;C[T&gt;A]A&quot; </span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>supersig</span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; Signature:</span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt;              X1</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt; 1 -0.0007475199</span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; Features:</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt; $X1</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt; &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; </span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot; &quot;A[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot; &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; </span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt; &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;C[C&gt;A]A&quot; </span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot; &quot;C[C&gt;A]T&quot; &quot;C[C&gt;G]A&quot; &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;C[C&gt;T]A&quot; </span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; </span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt; &quot;C[T&gt;C]G&quot; &quot;C[T&gt;C]T&quot; &quot;C[T&gt;G]A&quot; &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; </span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot; &quot;G[C&gt;T]G&quot; </span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; &quot;G[C&gt;T]T&quot; &quot;G[T&gt;A]A&quot; &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; &quot;G[T&gt;C]G&quot; </span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; &quot;G[T&gt;C]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot; &quot;T[C&gt;A]G&quot; </span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; &quot;T[C&gt;A]T&quot; &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; &quot;T[C&gt;T]G&quot; </span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; &quot;T[C&gt;T]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot; &quot;T[T&gt;C]G&quot; </span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt;      F178      F190      F191      F192      F193 </span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="co">#&gt; &quot;T[T&gt;C]T&quot; &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot; </span></span>
+<span id="cb7-49"><a href="#cb7-49"></a><span class="co">#&gt; </span></span>
+<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#&gt; Model:</span></span>
+<span id="cb7-51"><a href="#cb7-51"></a><span class="co">#&gt; $Logit</span></span>
+<span id="cb7-52"><a href="#cb7-52"></a><span class="co">#&gt; </span></span>
+<span id="cb7-53"><a href="#cb7-53"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
 <span id="cb7-54"><a href="#cb7-54"></a><span class="co">#&gt; </span></span>
-<span id="cb7-55"><a href="#cb7-55"></a><span class="co">#&gt; $features_gmsa$new_partition$X4</span></span>
-<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt;        F4 </span></span>
-<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt; &quot;A[T&gt;G]T&quot; </span></span>
+<span id="cb7-55"><a href="#cb7-55"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt; (Intercept)           X1  </span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt;       7.118      -86.601  </span></span>
 <span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; </span></span>
-<span id="cb7-59"><a href="#cb7-59"></a><span class="co">#&gt; </span></span>
-<span id="cb7-60"><a href="#cb7-60"></a><span class="co">#&gt; </span></span>
-<span id="cb7-61"><a href="#cb7-61"></a><span class="co">#&gt; $features_selected</span></span>
-<span id="cb7-62"><a href="#cb7-62"></a><span class="co">#&gt; [1] &quot;X1&quot; &quot;X2&quot; &quot;X3&quot; &quot;X4&quot;</span></span>
-<span id="cb7-63"><a href="#cb7-63"></a><span class="co">#&gt; </span></span>
-<span id="cb7-64"><a href="#cb7-64"></a><span class="co">#&gt; $new_partition</span></span>
-<span id="cb7-65"><a href="#cb7-65"></a><span class="co">#&gt; $new_partition$X1</span></span>
-<span id="cb7-66"><a href="#cb7-66"></a><span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span></span>
-<span id="cb7-67"><a href="#cb7-67"></a><span class="co">#&gt; &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; </span></span>
-<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span></span>
-<span id="cb7-69"><a href="#cb7-69"></a><span class="co">#&gt; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot; &quot;A[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot; &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; </span></span>
-<span id="cb7-70"><a href="#cb7-70"></a><span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span></span>
-<span id="cb7-71"><a href="#cb7-71"></a><span class="co">#&gt; &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;C[C&gt;A]A&quot; </span></span>
-<span id="cb7-72"><a href="#cb7-72"></a><span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span></span>
-<span id="cb7-73"><a href="#cb7-73"></a><span class="co">#&gt; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot; &quot;C[C&gt;A]T&quot; &quot;C[C&gt;G]A&quot; &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;C[C&gt;T]A&quot; </span></span>
-<span id="cb7-74"><a href="#cb7-74"></a><span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span></span>
-<span id="cb7-75"><a href="#cb7-75"></a><span class="co">#&gt; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; </span></span>
-<span id="cb7-76"><a href="#cb7-76"></a><span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span></span>
-<span id="cb7-77"><a href="#cb7-77"></a><span class="co">#&gt; &quot;C[T&gt;C]G&quot; &quot;C[T&gt;C]T&quot; &quot;C[T&gt;G]A&quot; &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; </span></span>
-<span id="cb7-78"><a href="#cb7-78"></a><span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span></span>
-<span id="cb7-79"><a href="#cb7-79"></a><span class="co">#&gt; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot; &quot;G[C&gt;T]G&quot; </span></span>
-<span id="cb7-80"><a href="#cb7-80"></a><span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span></span>
-<span id="cb7-81"><a href="#cb7-81"></a><span class="co">#&gt; &quot;G[C&gt;T]T&quot; &quot;G[T&gt;A]A&quot; &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; &quot;G[T&gt;C]G&quot; </span></span>
-<span id="cb7-82"><a href="#cb7-82"></a><span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span></span>
-<span id="cb7-83"><a href="#cb7-83"></a><span class="co">#&gt; &quot;G[T&gt;C]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot; &quot;T[C&gt;A]G&quot; </span></span>
-<span id="cb7-84"><a href="#cb7-84"></a><span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span></span>
-<span id="cb7-85"><a href="#cb7-85"></a><span class="co">#&gt; &quot;T[C&gt;A]T&quot; &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; &quot;T[C&gt;T]G&quot; </span></span>
-<span id="cb7-86"><a href="#cb7-86"></a><span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span></span>
-<span id="cb7-87"><a href="#cb7-87"></a><span class="co">#&gt; &quot;T[C&gt;T]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot; &quot;T[T&gt;C]G&quot; </span></span>
-<span id="cb7-88"><a href="#cb7-88"></a><span class="co">#&gt;      F178      F190      F191      F192      F193 </span></span>
-<span id="cb7-89"><a href="#cb7-89"></a><span class="co">#&gt; &quot;T[T&gt;C]T&quot; &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot; </span></span>
-<span id="cb7-90"><a href="#cb7-90"></a><span class="co">#&gt; </span></span>
-<span id="cb7-91"><a href="#cb7-91"></a><span class="co">#&gt; $new_partition$X2</span></span>
-<span id="cb7-92"><a href="#cb7-92"></a><span class="co">#&gt;        F2 </span></span>
-<span id="cb7-93"><a href="#cb7-93"></a><span class="co">#&gt; &quot;G[C&gt;G]G&quot; </span></span>
-<span id="cb7-94"><a href="#cb7-94"></a><span class="co">#&gt; </span></span>
-<span id="cb7-95"><a href="#cb7-95"></a><span class="co">#&gt; $new_partition$X3</span></span>
-<span id="cb7-96"><a href="#cb7-96"></a><span class="co">#&gt;        F3 </span></span>
-<span id="cb7-97"><a href="#cb7-97"></a><span class="co">#&gt; &quot;C[T&gt;A]A&quot; </span></span>
-<span id="cb7-98"><a href="#cb7-98"></a><span class="co">#&gt; </span></span>
-<span id="cb7-99"><a href="#cb7-99"></a><span class="co">#&gt; $new_partition$X4</span></span>
-<span id="cb7-100"><a href="#cb7-100"></a><span class="co">#&gt;        F4 </span></span>
-<span id="cb7-101"><a href="#cb7-101"></a><span class="co">#&gt; &quot;A[T&gt;G]T&quot; </span></span>
-<span id="cb7-102"><a href="#cb7-102"></a><span class="co">#&gt; </span></span>
-<span id="cb7-103"><a href="#cb7-103"></a><span class="co">#&gt; </span></span>
-<span id="cb7-104"><a href="#cb7-104"></a><span class="co">#&gt; $dt_new</span></span>
-<span id="cb7-105"><a href="#cb7-105"></a><span class="co">#&gt; # A tibble: 5 x 7</span></span>
-<span id="cb7-106"><a href="#cb7-106"></a><span class="co">#&gt;      X1    X2    X3    X4 IndVar   AGE TOTAL_MUTATIONS</span></span>
-<span id="cb7-107"><a href="#cb7-107"></a><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;           &lt;dbl&gt;</span></span>
-<span id="cb7-108"><a href="#cb7-108"></a><span class="co">#&gt; 1     2     1     1     1      1    50               5</span></span>
-<span id="cb7-109"><a href="#cb7-109"></a><span class="co">#&gt; 2     5     0     0     0      1    55               5</span></span>
-<span id="cb7-110"><a href="#cb7-110"></a><span class="co">#&gt; 3     3     0     1     1      1    72               5</span></span>
-<span id="cb7-111"><a href="#cb7-111"></a><span class="co">#&gt; 4     5     0     0     0      0    53               5</span></span>
-<span id="cb7-112"><a href="#cb7-112"></a><span class="co">#&gt; 5     4     0     1     0      0    48               5</span></span>
-<span id="cb7-113"><a href="#cb7-113"></a><span class="co">#&gt; </span></span>
-<span id="cb7-114"><a href="#cb7-114"></a><span class="co">#&gt; $select_n</span></span>
-<span id="cb7-115"><a href="#cb7-115"></a><span class="co">#&gt; Logit </span></span>
-<span id="cb7-116"><a href="#cb7-116"></a><span class="co">#&gt;     1 </span></span>
-<span id="cb7-117"><a href="#cb7-117"></a><span class="co">#&gt; </span></span>
-<span id="cb7-118"><a href="#cb7-118"></a><span class="co">#&gt; $auc</span></span>
-<span id="cb7-119"><a href="#cb7-119"></a><span class="co">#&gt;     Logit </span></span>
-<span id="cb7-120"><a href="#cb7-120"></a><span class="co">#&gt; 0.8333333 </span></span>
-<span id="cb7-121"><a href="#cb7-121"></a><span class="co">#&gt; </span></span>
-<span id="cb7-122"><a href="#cb7-122"></a><span class="co">#&gt; $signature</span></span>
-<span id="cb7-123"><a href="#cb7-123"></a><span class="co">#&gt; $signature$mean_diffs</span></span>
-<span id="cb7-124"><a href="#cb7-124"></a><span class="co">#&gt;              X1</span></span>
-<span id="cb7-125"><a href="#cb7-125"></a><span class="co">#&gt; 1 -0.0007475199</span></span>
-<span id="cb7-126"><a href="#cb7-126"></a><span class="co">#&gt; </span></span>
-<span id="cb7-127"><a href="#cb7-127"></a><span class="co">#&gt; $signature$select_n</span></span>
-<span id="cb7-128"><a href="#cb7-128"></a><span class="co">#&gt; Logit </span></span>
-<span id="cb7-129"><a href="#cb7-129"></a><span class="co">#&gt;     1 </span></span>
-<span id="cb7-130"><a href="#cb7-130"></a><span class="co">#&gt; </span></span>
-<span id="cb7-131"><a href="#cb7-131"></a><span class="co">#&gt; </span></span>
-<span id="cb7-132"><a href="#cb7-132"></a><span class="co">#&gt; $classifier</span></span>
-<span id="cb7-133"><a href="#cb7-133"></a><span class="co">#&gt; $classifier$Logit</span></span>
-<span id="cb7-134"><a href="#cb7-134"></a><span class="co">#&gt; </span></span>
-<span id="cb7-135"><a href="#cb7-135"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
-<span id="cb7-136"><a href="#cb7-136"></a><span class="co">#&gt; </span></span>
-<span id="cb7-137"><a href="#cb7-137"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb7-138"><a href="#cb7-138"></a><span class="co">#&gt; (Intercept)           X1  </span></span>
-<span id="cb7-139"><a href="#cb7-139"></a><span class="co">#&gt;       7.118      -86.601  </span></span>
-<span id="cb7-140"><a href="#cb7-140"></a><span class="co">#&gt; </span></span>
-<span id="cb7-141"><a href="#cb7-141"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
-<span id="cb7-142"><a href="#cb7-142"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
-<span id="cb7-143"><a href="#cb7-143"></a><span class="co">#&gt; Residual Deviance: 4.279     AIC: 8.279</span></span>
-<span id="cb7-144"><a href="#cb7-144"></a>supersig</span>
-<span id="cb7-145"><a href="#cb7-145"></a><span class="co">#&gt; Signature:</span></span>
-<span id="cb7-146"><a href="#cb7-146"></a><span class="co">#&gt;              X1</span></span>
-<span id="cb7-147"><a href="#cb7-147"></a><span class="co">#&gt; 1 -0.0007475199</span></span>
-<span id="cb7-148"><a href="#cb7-148"></a><span class="co">#&gt; Features:</span></span>
-<span id="cb7-149"><a href="#cb7-149"></a><span class="co">#&gt; $X1</span></span>
-<span id="cb7-150"><a href="#cb7-150"></a><span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span></span>
-<span id="cb7-151"><a href="#cb7-151"></a><span class="co">#&gt; &quot;A[C&gt;A]A&quot; &quot;A[C&gt;A]C&quot; &quot;A[C&gt;A]G&quot; &quot;A[C&gt;A]T&quot; &quot;A[C&gt;G]A&quot; &quot;A[C&gt;G]C&quot; &quot;A[C&gt;G]G&quot; &quot;A[C&gt;G]T&quot; </span></span>
-<span id="cb7-152"><a href="#cb7-152"></a><span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span></span>
-<span id="cb7-153"><a href="#cb7-153"></a><span class="co">#&gt; &quot;A[C&gt;T]A&quot; &quot;A[C&gt;T]C&quot; &quot;A[C&gt;T]G&quot; &quot;A[C&gt;T]T&quot; &quot;A[T&gt;A]A&quot; &quot;A[T&gt;A]C&quot; &quot;A[T&gt;A]G&quot; &quot;A[T&gt;A]T&quot; </span></span>
-<span id="cb7-154"><a href="#cb7-154"></a><span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span></span>
-<span id="cb7-155"><a href="#cb7-155"></a><span class="co">#&gt; &quot;A[T&gt;C]A&quot; &quot;A[T&gt;C]C&quot; &quot;A[T&gt;C]G&quot; &quot;A[T&gt;C]T&quot; &quot;A[T&gt;G]A&quot; &quot;A[T&gt;G]C&quot; &quot;A[T&gt;G]G&quot; &quot;C[C&gt;A]A&quot; </span></span>
-<span id="cb7-156"><a href="#cb7-156"></a><span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span></span>
-<span id="cb7-157"><a href="#cb7-157"></a><span class="co">#&gt; &quot;C[C&gt;A]C&quot; &quot;C[C&gt;A]G&quot; &quot;C[C&gt;A]T&quot; &quot;C[C&gt;G]A&quot; &quot;C[C&gt;G]C&quot; &quot;C[C&gt;G]G&quot; &quot;C[C&gt;G]T&quot; &quot;C[C&gt;T]A&quot; </span></span>
-<span id="cb7-158"><a href="#cb7-158"></a><span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span></span>
-<span id="cb7-159"><a href="#cb7-159"></a><span class="co">#&gt; &quot;C[C&gt;T]C&quot; &quot;C[C&gt;T]G&quot; &quot;C[C&gt;T]T&quot; &quot;C[T&gt;A]C&quot; &quot;C[T&gt;A]G&quot; &quot;C[T&gt;A]T&quot; &quot;C[T&gt;C]A&quot; &quot;C[T&gt;C]C&quot; </span></span>
-<span id="cb7-160"><a href="#cb7-160"></a><span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span></span>
-<span id="cb7-161"><a href="#cb7-161"></a><span class="co">#&gt; &quot;C[T&gt;C]G&quot; &quot;C[T&gt;C]T&quot; &quot;C[T&gt;G]A&quot; &quot;C[T&gt;G]C&quot; &quot;C[T&gt;G]G&quot; &quot;C[T&gt;G]T&quot; &quot;G[C&gt;A]A&quot; &quot;G[C&gt;A]C&quot; </span></span>
-<span id="cb7-162"><a href="#cb7-162"></a><span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span></span>
-<span id="cb7-163"><a href="#cb7-163"></a><span class="co">#&gt; &quot;G[C&gt;A]G&quot; &quot;G[C&gt;A]T&quot; &quot;G[C&gt;G]A&quot; &quot;G[C&gt;G]C&quot; &quot;G[C&gt;G]T&quot; &quot;G[C&gt;T]A&quot; &quot;G[C&gt;T]C&quot; &quot;G[C&gt;T]G&quot; </span></span>
-<span id="cb7-164"><a href="#cb7-164"></a><span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span></span>
-<span id="cb7-165"><a href="#cb7-165"></a><span class="co">#&gt; &quot;G[C&gt;T]T&quot; &quot;G[T&gt;A]A&quot; &quot;G[T&gt;A]C&quot; &quot;G[T&gt;A]G&quot; &quot;G[T&gt;A]T&quot; &quot;G[T&gt;C]A&quot; &quot;G[T&gt;C]C&quot; &quot;G[T&gt;C]G&quot; </span></span>
-<span id="cb7-166"><a href="#cb7-166"></a><span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span></span>
-<span id="cb7-167"><a href="#cb7-167"></a><span class="co">#&gt; &quot;G[T&gt;C]T&quot; &quot;G[T&gt;G]A&quot; &quot;G[T&gt;G]C&quot; &quot;G[T&gt;G]G&quot; &quot;G[T&gt;G]T&quot; &quot;T[C&gt;A]A&quot; &quot;T[C&gt;A]C&quot; &quot;T[C&gt;A]G&quot; </span></span>
-<span id="cb7-168"><a href="#cb7-168"></a><span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span></span>
-<span id="cb7-169"><a href="#cb7-169"></a><span class="co">#&gt; &quot;T[C&gt;A]T&quot; &quot;T[C&gt;G]A&quot; &quot;T[C&gt;G]C&quot; &quot;T[C&gt;G]G&quot; &quot;T[C&gt;G]T&quot; &quot;T[C&gt;T]A&quot; &quot;T[C&gt;T]C&quot; &quot;T[C&gt;T]G&quot; </span></span>
-<span id="cb7-170"><a href="#cb7-170"></a><span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span></span>
-<span id="cb7-171"><a href="#cb7-171"></a><span class="co">#&gt; &quot;T[C&gt;T]T&quot; &quot;T[T&gt;A]A&quot; &quot;T[T&gt;A]C&quot; &quot;T[T&gt;A]G&quot; &quot;T[T&gt;A]T&quot; &quot;T[T&gt;C]A&quot; &quot;T[T&gt;C]C&quot; &quot;T[T&gt;C]G&quot; </span></span>
-<span id="cb7-172"><a href="#cb7-172"></a><span class="co">#&gt;      F178      F190      F191      F192      F193 </span></span>
-<span id="cb7-173"><a href="#cb7-173"></a><span class="co">#&gt; &quot;T[T&gt;C]T&quot; &quot;T[T&gt;G]A&quot; &quot;T[T&gt;G]C&quot; &quot;T[T&gt;G]G&quot; &quot;T[T&gt;G]T&quot; </span></span>
-<span id="cb7-174"><a href="#cb7-174"></a><span class="co">#&gt; </span></span>
-<span id="cb7-175"><a href="#cb7-175"></a><span class="co">#&gt; Model:</span></span>
-<span id="cb7-176"><a href="#cb7-176"></a><span class="co">#&gt; $Logit</span></span>
-<span id="cb7-177"><a href="#cb7-177"></a><span class="co">#&gt; </span></span>
-<span id="cb7-178"><a href="#cb7-178"></a><span class="co">#&gt; Call:  glm(formula = IndVar ~ ., family = binomial(), data = x)</span></span>
-<span id="cb7-179"><a href="#cb7-179"></a><span class="co">#&gt; </span></span>
-<span id="cb7-180"><a href="#cb7-180"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb7-181"><a href="#cb7-181"></a><span class="co">#&gt; (Intercept)           X1  </span></span>
-<span id="cb7-182"><a href="#cb7-182"></a><span class="co">#&gt;       7.118      -86.601  </span></span>
-<span id="cb7-183"><a href="#cb7-183"></a><span class="co">#&gt; </span></span>
-<span id="cb7-184"><a href="#cb7-184"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
-<span id="cb7-185"><a href="#cb7-185"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
-<span id="cb7-186"><a href="#cb7-186"></a><span class="co">#&gt; Residual Deviance: 4.279     AIC: 8.279</span></span></code></pre></div>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span></span>
+<span id="cb7-60"><a href="#cb7-60"></a><span class="co">#&gt; Null Deviance:       6.73 </span></span>
+<span id="cb7-61"><a href="#cb7-61"></a><span class="co">#&gt; Residual Deviance: 4.279     AIC: 8.279</span></span></code></pre></div>
 </div>
 <div id="using-a-signature" class="section level1">
 <h1>Using a signature</h1>
 <p>To apply the <code>SuperSig</code> to a new dataset, use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
-<p>Below is an example for the <code>SuperSig</code> we trained in the previous section. We reuse our <code>input_dt</code> for our “new data” for illustrative purposes, but in practice, you would use a different dataset from the one that was used to train the signature.</p>
+<p>Below is an example for the <code>SuperSig</code> we trained in the previous section. We reuse <code>input_dt</code> as our “new data” for illustrative purposes, but in practice, you would use a different dataset from the one that was used to train the signature (e.g. a test set).</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>newdata =<span class="st"> </span><span class="kw">predict_signature</span>(supersig, <span class="dt">newdata =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a></span>
 <span id="cb8-3"><a href="#cb8-3"></a>newdata <span class="op">%&gt;%</span></span>
@@ -710,23 +585,92 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; [61] &quot;ALCOHOL (LIHC)&quot;  &quot;HepB (LIHC)&quot;     &quot;HepC (LIHC)&quot;     &quot;AAcid (BLCA)&quot;   </span></span>
 <span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; [65] &quot;Asb* (MESO)&quot;     &quot;APOPEC (CESC)&quot;   &quot;APOPEC (KIRC)&quot;</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># Use pre-trained signature</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>newdata =<span class="st"> </span><span class="kw">predict_signature</span>(supersig_ls[[<span class="st">&quot;SMOKING (LUAD)&quot;</span>]], <span class="dt">newdata =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
-<span id="cb10-3"><a href="#cb10-3"></a>newdata <span class="op">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="st">  </span><span class="kw">select</span>(IndVar, X1, X2, X3, score)</span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; # A tibble: 5 x 5</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt;   IndVar     X1    X2    X3 score</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; 1      1 0.02       0     0 0.305</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; 2      1 0.0182     0     0 0.303</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; 3      1 0          0     0 0.280</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; 4      0 0.0189     0     0 0.304</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; 5      0 0.0417     0     0 0.333</span></span></code></pre></div>
+<span id="cb10-2"><a href="#cb10-2"></a>newdata =<span class="st"> </span><span class="kw">predict_signature</span>(supersig_ls[[<span class="st">&quot;SMOKING (LUAD)&quot;</span>]], </span>
+<span id="cb10-3"><a href="#cb10-3"></a>                            <span class="dt">newdata =</span> input_dt, <span class="dt">factor =</span> <span class="st">&quot;Smoking&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>newdata <span class="op">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="st">  </span><span class="kw">select</span>(IndVar, X1, X2, X3, score)</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; # A tibble: 5 x 5</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt;   IndVar     X1    X2    X3 score</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; 1      1 0.02       0     0 0.305</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; 2      1 0.0182     0     0 0.303</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; 3      1 0          0     0 0.280</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; 4      0 0.0189     0     0 0.304</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; 5      0 0.0417     0     0 0.333</span></span></code></pre></div>
 </div>
 <div id="partially-supervised-signatures" class="section level1">
 <h1>Partially supervised signatures</h1>
-<p>In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature. We discuss in <em>Afsari, et al. (2021, ELife)</em> how doing so can lead to better performance.</p>
+<p>In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature with a supervised or unsupervised method. We discuss in <em>Afsari, et al. (2021, ELife)</em> how doing so can lead to better performance.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>adjusted_dt &lt;-<span class="st"> </span><span class="kw">partial_signature</span>(<span class="dt">data =</span> input_dt, <span class="dt">object =</span> supersig)</span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="kw">head</span>(adjusted_dt)</span></code></pre></div>
+</div>
+<div id="session-info" class="section level1">
+<h1>Session info</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">sessionInfo</span>()</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; R version 4.0.3 (2020-10-10)</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt; Running under: macOS Mojave 10.14.6</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="co">#&gt; </span></span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a><span class="co">#&gt; </span></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="co">#&gt; </span></span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="co">#&gt; [1] stats4    parallel  stats     graphics  grDevices utils     datasets </span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="co">#&gt; [8] methods   base     </span></span>
+<span id="cb12-16"><a href="#cb12-16"></a><span class="co">#&gt; </span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="co">#&gt; other attached packages:</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a><span class="co">#&gt;  [1] dplyr_1.0.2                       BSgenome.Hsapiens.UCSC.hg19_1.4.3</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a><span class="co">#&gt;  [3] BSgenome_1.58.0                   rtracklayer_1.50.0               </span></span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="co">#&gt;  [5] VariantAnnotation_1.36.0          Rsamtools_2.6.0                  </span></span>
+<span id="cb12-21"><a href="#cb12-21"></a><span class="co">#&gt;  [7] Biostrings_2.58.0                 XVector_0.30.0                   </span></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="co">#&gt;  [9] SummarizedExperiment_1.20.0       Biobase_2.50.0                   </span></span>
+<span id="cb12-23"><a href="#cb12-23"></a><span class="co">#&gt; [11] GenomicRanges_1.42.0              GenomeInfoDb_1.26.2              </span></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="co">#&gt; [13] IRanges_2.24.1                    S4Vectors_0.28.1                 </span></span>
+<span id="cb12-25"><a href="#cb12-25"></a><span class="co">#&gt; [15] MatrixGenerics_1.2.0              matrixStats_0.57.0               </span></span>
+<span id="cb12-26"><a href="#cb12-26"></a><span class="co">#&gt; [17] BiocGenerics_0.36.0               supersigs_0.1.2                  </span></span>
+<span id="cb12-27"><a href="#cb12-27"></a><span class="co">#&gt; </span></span>
+<span id="cb12-28"><a href="#cb12-28"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb12-29"><a href="#cb12-29"></a><span class="co">#&gt;   [1] colorspace_2.0-0         ellipsis_0.3.1           class_7.3-17            </span></span>
+<span id="cb12-30"><a href="#cb12-30"></a><span class="co">#&gt;   [4] rprojroot_2.0.2          fs_1.5.0                 rstudioapi_0.13         </span></span>
+<span id="cb12-31"><a href="#cb12-31"></a><span class="co">#&gt;   [7] listenv_0.8.0            furrr_0.2.1              remotes_2.2.0           </span></span>
+<span id="cb12-32"><a href="#cb12-32"></a><span class="co">#&gt;  [10] bit64_4.0.5              AnnotationDbi_1.52.0     prodlim_2019.11.13      </span></span>
+<span id="cb12-33"><a href="#cb12-33"></a><span class="co">#&gt;  [13] fansi_0.4.1              lubridate_1.7.9.2        xml2_1.3.2              </span></span>
+<span id="cb12-34"><a href="#cb12-34"></a><span class="co">#&gt;  [16] codetools_0.2-18         splines_4.0.3            knitr_1.30              </span></span>
+<span id="cb12-35"><a href="#cb12-35"></a><span class="co">#&gt;  [19] pkgload_1.1.0            pROC_1.16.2              caret_6.0-86            </span></span>
+<span id="cb12-36"><a href="#cb12-36"></a><span class="co">#&gt;  [22] dbplyr_2.0.0             httr_1.4.2               compiler_4.0.3          </span></span>
+<span id="cb12-37"><a href="#cb12-37"></a><span class="co">#&gt;  [25] assertthat_0.2.1         Matrix_1.2-18            cli_2.2.0               </span></span>
+<span id="cb12-38"><a href="#cb12-38"></a><span class="co">#&gt;  [28] htmltools_0.5.0          prettyunits_1.1.1        tools_4.0.3             </span></span>
+<span id="cb12-39"><a href="#cb12-39"></a><span class="co">#&gt;  [31] gtable_0.3.0             glue_1.4.2               GenomeInfoDbData_1.2.4  </span></span>
+<span id="cb12-40"><a href="#cb12-40"></a><span class="co">#&gt;  [34] reshape2_1.4.4           rappdirs_0.3.1           Rcpp_1.0.5              </span></span>
+<span id="cb12-41"><a href="#cb12-41"></a><span class="co">#&gt;  [37] vctrs_0.3.6              nlme_3.1-151             iterators_1.0.13        </span></span>
+<span id="cb12-42"><a href="#cb12-42"></a><span class="co">#&gt;  [40] timeDate_3043.102        gower_0.2.2              xfun_0.19               </span></span>
+<span id="cb12-43"><a href="#cb12-43"></a><span class="co">#&gt;  [43] stringr_1.4.0            globals_0.14.0           ps_1.5.0                </span></span>
+<span id="cb12-44"><a href="#cb12-44"></a><span class="co">#&gt;  [46] testthat_3.0.1           lifecycle_0.2.0          devtools_2.3.2          </span></span>
+<span id="cb12-45"><a href="#cb12-45"></a><span class="co">#&gt;  [49] XML_3.99-0.5             future_1.21.0            zlibbioc_1.36.0         </span></span>
+<span id="cb12-46"><a href="#cb12-46"></a><span class="co">#&gt;  [52] MASS_7.3-53              scales_1.1.1             ipred_0.9-9             </span></span>
+<span id="cb12-47"><a href="#cb12-47"></a><span class="co">#&gt;  [55] hms_0.5.3                curl_4.3                 yaml_2.2.1              </span></span>
+<span id="cb12-48"><a href="#cb12-48"></a><span class="co">#&gt;  [58] memoise_1.1.0            ggplot2_3.3.3            biomaRt_2.46.0          </span></span>
+<span id="cb12-49"><a href="#cb12-49"></a><span class="co">#&gt;  [61] rpart_4.1-15             stringi_1.5.3            RSQLite_2.2.1           </span></span>
+<span id="cb12-50"><a href="#cb12-50"></a><span class="co">#&gt;  [64] desc_1.2.0               foreach_1.5.1            GenomicFeatures_1.42.1  </span></span>
+<span id="cb12-51"><a href="#cb12-51"></a><span class="co">#&gt;  [67] pkgbuild_1.2.0           BiocParallel_1.24.1      lava_1.6.8.1            </span></span>
+<span id="cb12-52"><a href="#cb12-52"></a><span class="co">#&gt;  [70] rlang_0.4.10             pkgconfig_2.0.3          bitops_1.0-6            </span></span>
+<span id="cb12-53"><a href="#cb12-53"></a><span class="co">#&gt;  [73] rsample_0.0.8            evaluate_0.14            lattice_0.20-41         </span></span>
+<span id="cb12-54"><a href="#cb12-54"></a><span class="co">#&gt;  [76] purrr_0.3.4              GenomicAlignments_1.26.0 recipes_0.1.15          </span></span>
+<span id="cb12-55"><a href="#cb12-55"></a><span class="co">#&gt;  [79] bit_4.0.4                processx_3.4.5           tidyselect_1.1.0        </span></span>
+<span id="cb12-56"><a href="#cb12-56"></a><span class="co">#&gt;  [82] parallelly_1.23.0        plyr_1.8.6               magrittr_2.0.1          </span></span>
+<span id="cb12-57"><a href="#cb12-57"></a><span class="co">#&gt;  [85] R6_2.5.0                 generics_0.1.0           DelayedArray_0.16.0     </span></span>
+<span id="cb12-58"><a href="#cb12-58"></a><span class="co">#&gt;  [88] DBI_1.1.0                pillar_1.4.7             withr_2.3.0             </span></span>
+<span id="cb12-59"><a href="#cb12-59"></a><span class="co">#&gt;  [91] survival_3.2-7           RCurl_1.98-1.2           nnet_7.3-14             </span></span>
+<span id="cb12-60"><a href="#cb12-60"></a><span class="co">#&gt;  [94] tibble_3.0.4             crayon_1.3.4             utf8_1.1.4              </span></span>
+<span id="cb12-61"><a href="#cb12-61"></a><span class="co">#&gt;  [97] BiocFileCache_1.14.0     rmarkdown_2.6            progress_1.2.2          </span></span>
+<span id="cb12-62"><a href="#cb12-62"></a><span class="co">#&gt; [100] usethis_2.0.0            grid_4.0.3               data.table_1.13.6       </span></span>
+<span id="cb12-63"><a href="#cb12-63"></a><span class="co">#&gt; [103] blob_1.2.1               callr_3.5.1              ModelMetrics_1.2.2.2    </span></span>
+<span id="cb12-64"><a href="#cb12-64"></a><span class="co">#&gt; [106] digest_0.6.27            tidyr_1.1.2              openssl_1.4.3           </span></span>
+<span id="cb12-65"><a href="#cb12-65"></a><span class="co">#&gt; [109] munsell_0.5.0            askpass_1.1              sessioninfo_1.1.1</span></span></code></pre></div>
 </div>
 
 

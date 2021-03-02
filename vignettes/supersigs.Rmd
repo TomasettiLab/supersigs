@@ -77,7 +77,7 @@ head(example_dt)
 ## Transform data
 
 Once you've read in your data, you will need to transform it into a data 
-frame of features that is readable by the `supersigs` package. This involves 
+frame of features before running the core functions. This involves 
 2 steps:
 
 1. First, we assume that mutations are the same regardless of the strand on 
@@ -116,8 +116,8 @@ head(input_dt)
 # Getting your signature
 
 To apply the supervised method on your data, run the `get_signature` function.
-The function has two parameters: an input data frame `dt` and the `factor` 
-(e.g. `factor = "Smoking"`). `dt` is a data frame with the following columns:
+The function has two parameters: an input data frame `data` and the `factor` 
+(e.g. `factor = "Smoking"`). `data` is a data frame with the following columns:
 
 * `IndVar` (indicator variable) is a logical indicator for whether they were
 exposed to the `factor` or not
@@ -126,7 +126,7 @@ exposed to the `factor` or not
 * columns of counts for all 96 trinucleotide mutations
 
 The process of converting a VCF file to this format is covered in 
-[Preprocessing your data]. An example for `dt` is printed below.
+[Preprocessing your data]. An example for `data` is printed below.
 
 ```{r}
 suppressPackageStartupMessages({
@@ -142,15 +142,16 @@ head(input_dt)
 ```
 
 Once you have the correct data format, apply `get_signature` to the 
-dataset to get your `SuperSig`. This is an S4 object containing four slots:
+dataset to get your `SuperSig`, which is an S4 object containing four slots:
 
 * `Signature` is the signature, represented as their differences in mean 
-rates (or counts if the factor is "age") between the two groups (exposed 
-versus unexposed)
+rates (or the overall mean rate if the factor is "age") between the two groups
+(exposed versus unexposed)
 * `Features` is the list of features that comprise the signature and their 
 representation in terms of the fundamental (trinucleotide) mutations
 * `AUC` is the apparent AUC of the model (i.e. not cross-validated)
-* `Model` is the list of a glm class for the trained logistic regression model
+* `Model` is the list containing the trained logistic regression model 
+(glm class)
 
 ```{r}
 supersig <- get_signature(data = input_dt, factor = "Smoking")
@@ -164,7 +165,7 @@ This function returns the new dataset with columns for feature counts for the
 signature and a score column for the predicted classification score.
 
 Below is an example for the `SuperSig` we trained in the previous section. We 
-reuse our `input_dt` for our "new data" for illustrative purposes, but in 
+reuse `input_dt` as our "new data" for illustrative purposes, but in 
 practice, you would use a different dataset from the one that was used to 
 train the signature (e.g. a test set).
 
@@ -211,6 +212,11 @@ adjusted_dt <- partial_signature(data = input_dt, object = supersig)
 head(adjusted_dt)
 ```
 
+# Session info
+
+```{r sessionInfo}
+sessionInfo()
+```
 
 ```{r eval = F, include=F}
 build_vignettes()

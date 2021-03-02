@@ -39,7 +39,9 @@ devtools::install_github("TomasettiLab/supersigs")
 ## Data Format
 
 At a minimum, the data you will need are the age and mutations for each
-patient. An example is provided below.
+patient. An example is provided below. (Note that you will need to
+process the data before running the core functions, see
+`vignette("supersigs")` for details.)
 
     #>   sample_id age chromosome  position ref alt
     #> 1         1  50       chr1  94447621   G   C
@@ -72,7 +74,7 @@ pred <- predict_signature(object = supersig, newdata = data, factor = "smoking")
 the dataset.
 
 ``` r
-pred <- predict_signature(object = supersig, newdata = data, factor = "smoking")
+data <- partial_signature(data = data, object = supersig)
 ```
 
 ## Tutorial
