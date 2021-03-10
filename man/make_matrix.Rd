@@ -7,7 +7,8 @@
 make_matrix(data, genome = "hg19")
 }
 \arguments{
-\item{data}{a data frame of mutations in VCF format (see vignette for details)}
+\item{data}{a data frame of mutations in VCF format 
+(see vignette for details)}
 
 \item{genome}{the reference genome used ("hg19" or "hg38")}
 }
