@@ -4,7 +4,7 @@ x3 <- list(A = c("A[C>A]T"), B = c("A[C>A]T"))
 
 test_that("gmsa valid input", {
     expect_error(generate_min_sigma_algebra(x1),
-                 "input_ls has length not equal to 2")
+                 "input_ls length not equal to 2")
     expect_error(generate_min_sigma_algebra(x2), 
                  "input_ls is not named")
 })
