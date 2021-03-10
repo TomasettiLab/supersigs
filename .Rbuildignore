@@ -9,3 +9,4 @@
 ^README\.Rmd$
 ^\.github$
 ^data-files$
+[.]DS_Store$
