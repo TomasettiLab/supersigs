@@ -5,12 +5,6 @@
 #
 # Function for binomial testing using a hierarchical tree structure
 
-# library(dplyr)
-# library(rsample)
-# library(assertthat)
-# library(here)
-
-
 # Binomial test for all features in tree (helper function)
 binom_test_tree <- function(tree){
     p_thresh <- 0.05
@@ -234,21 +228,3 @@ context_matters <- function(muts_df,
         return(survival_mutations)
     }
 }
-
-# Load data dependencies
-# background_probs <- readRDS(here("data", "background_probs.rds"))
-# background_probs_wgs <- readRDS(here("data", "background_probs_wgs.rds"))
-# muts_children_level3_df <- 
-# readRDS(here("data", "muts_children_level3_df.rds"))
-# muts_formula <- readRDS(here("data", "muts_formula.rds"))
-# h_muts_index <- readRDS(here("data", "h_muts_index.rds"))
-# all_possible_tri <- readRDS(here("data", "all_possible_tri.rds"))
-
-# Test function
-# signature_caf <- readRDS(here("data", "signature_caf.rds"))
-# test_1 = signature_caf[["Data", "ALCOHOL (ESCA)"]]$DataSetFiltered %>%
-#       filter(IndVar == 0) %>%
-#       transmute_(.dots = muts_formula) %>% 
-#       mutate(TOTAL_MUTATIONS = select(., 1:6) %>% rowSums())
-# 
-# context_matters(test_1)

@@ -6,13 +6,6 @@
 # Function to create the smallest non-overlapping partition that generates 
 # the minimal sigma algebra containing two sets of mutation features
 
-# library(dplyr)
-# library(assertthat)
-# library(here)
-
-# source(here("code", "condense_mutations.R"))
-# source(here("code", "convert_to_level3.R"))
-
 #' Generate partition of features
 #' 
 #' Find the smallest non-overlapping partition that generates 
@@ -40,8 +33,7 @@ generate_min_sigma_algebra <- function(input_ls,
                                        condense = FALSE,
                                        partitioned_features = FALSE){
     # Check input
-    assert_that(length(input_ls) == 2, 
-                msg = "input_ls has length not equal to 2")
+    assert_that(length(input_ls) == 2, msg = "input_ls length not equal to 2")
     assert_that(!is.null(names(input_ls)), msg = "input_ls is not named")
     
     if(partitioned_features){
@@ -87,15 +79,3 @@ generate_min_sigma_algebra <- function(input_ls,
     # Return output
     return(new_partition)
 }
-
-# Load data dependencies
-# muts_level3 = readRDS(here("data", "muts_level3.rds"))
-# muts_children_level3 = readRDS(here("data", "muts_children_level3.rds"))
-
-# Test function
-# h_mix = readRDS(here("data", "h_mix.rds"))
-# test_1 <- h_mix[c("A[T>G]G","C[T>G]G")]
-# generate_min_sigma_algebra(test_1)
-# 
-# test_2 <- h_mix[c("(TG)[T>C](CTG)","(AG)[T>C](CTG)")]
-# generate_min_sigma_algebra(test_2)

@@ -49,7 +49,3 @@ transform_data <- function(dt,
     
     return(dt_new)
 }
-
-# Load data dependencies
-# prop_muts_all <- readRDS(here("data", "prop_muts_all.rds"))
-# muts_formula <- readRDS(here("data", "muts_formula.rds"))

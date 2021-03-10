@@ -5,13 +5,6 @@
 #
 # Function for classification logistic regression
 
-# library(randomForest)
-# library(MASS)
-# library(dplyr) 
-# library(rsample)
-# library(here)
-# source(here("code", "MyCor.R"))
-
 # Run logistic regression
 run_logit <- function(dt, factor, out, keep_classifier, features_selected,
                       select_n, train_ind, test_ind, test_indvar){
@@ -137,47 +130,3 @@ supersig_classifier <- function(dt,
         
         return(out)
 }
-
-# No data dependencies
-
-# Test function
-# signature_caf <- readRDS(here("data", "signature_caf.rds"))
-# factor <- "AGE"
-# tissue <- "LUAD"
-# ind <- which((signature_caf["Factor",] == factor) & 
-# (signature_caf["Tissue",] == tissue))
-# dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
-#               filter(TOTAL_MUTATIONS > 0)
-# unsupervised_sig = signature_caf[["Unsupervised", ind]]
-# age_ind <- which((signature_caf["Factor",] == "AGE") & 
-# (signature_caf["Tissue",] == tissue))
-# age_sig <- signature_caf[["Unsupervised", age_ind]]
-# 
-# source(here("code", "FeatureSelection.R"))
-# features_out = FeatureSelection(dt = dt, middle_dt = NULL, factor = factor)
-# dt = features_out$dt_new
-# classifier = c("LDA", "Logit", "RF", "NNLS")
-# keep_classifier = F
-# features_selected = features_out$features_selected
-# select_n = features_out$select_n
-# test_ind = NULL
-# 
-# test_out = supersig_classifier(dt = dt, test_ind = NULL,
-#                                factor = factor,
-#                                classifier = c("LDA", "Logit", "RF", "NNLS"),
-#                                keep_classifier = F,
-#                                features_selected = features_selected,
-#                                select_n = select_n)
-
-# Create test objects for Shiny app
-# test_model = supersig_classifier(dt = dt, test_ind = NULL,
-#                                  factor = factor,
-#                                  classifier = c("LDA"),
-#                                  keep_classifier = T,
-#                                  features_selected = features_selected)$classifier
-# test_formula = 
-# features_out$features_gmsa$new_partition_formula[features_selected]
-# saveRDS(list(model = test_model, formula = test_formula), 
-# "app/data/test_shiny.rds")
-# write.csv(signature_caf[["Data", ind]]$DataSetFiltered[1, ], 
-# "app/data/dt.csv", row.names = F)

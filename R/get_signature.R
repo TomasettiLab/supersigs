@@ -5,8 +5,6 @@
 #
 # (Export) Function to calculate signature
 
-# library(dplyr)
-
 #' Function to obtain a SuperSig
 #' 
 #' Generate a tissue-specific SuperSig for a given dataset of mutations and

@@ -5,14 +5,6 @@
 #
 # Function for selecting features
 
-# library(dplyr)
-# library(assertthat)
-# library(caret)
-# library(here)
-# source(here("R", "context_matters.R"))
-# source(here("R", "generate_min_sigma_algebra.R"))
-# source(here("R", "transform_data.R"))
-
 # Add up counts for every mutation (helper function)
 add_counts <- function(dt){
     dt <- dt %>%
@@ -285,26 +277,3 @@ feature_selection <- function(dt,
                     select_n = select_n)
         return(out)
 }
-
-# Load data dependencies
-# muts_formula <- readRDS(here("data", "muts_formula.rds"))
-
-# Test function
-# signature_caf <- readRDS(here("super_sigs", "data", "signature_caf.rds"))
-# factor <- "AGE"
-# tissue <- "UCEC"
-# ind <- which((signature_caf["Factor",] == factor) &
-# (signature_caf["Tissue",] == tissue))
-# dt <- signature_caf[["Data", ind]]$DataSetFiltered %>%
-#               filter(TOTAL_MUTATIONS > 0)
-# 
-# test_ind = NULL
-# middle_dt = NULL
-# 
-# if(factor == "AGE"){
-#               middle_dt <- signature_caf[["Data", ind]]$DataSetFilteredKeepMiddle %>%
-#                       filter(!(SAMPLE %in% dt$SAMPLE)) %>%
-#                       mutate(IndVar = NA)
-# }
-# 
-# test_out = feature_selection(dt = dt, middle_dt = middle_dt, factor = factor)

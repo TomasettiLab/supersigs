@@ -5,9 +5,6 @@
 #
 # (Export) Function to transform data frame of mutations into correct format
 
-# library(dplyr)
-# library(tidyr)
-
 # Wrapper for getSeq given specified genome (helper function)
 getseq_wrapper <- function(dt, genome = "hg19"){
   if(genome == "hg19"){
@@ -45,7 +42,8 @@ getseq_wrapper <- function(dt, genome = "hg19"){
 #' a data frame of trinucleotide mutations with flanking bases
 #' in a wide matrix format.
 #' 
-#' @param data a data frame of mutations in VCF format (see vignette for details)
+#' @param data a data frame of mutations in VCF format 
+#' (see vignette for details)
 #' @param genome the reference genome used ("hg19" or "hg38")
 #' 
 #' @import dplyr
