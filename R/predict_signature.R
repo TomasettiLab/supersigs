@@ -10,8 +10,10 @@
 #' Using a generated SuperSig, predict on a new dataset and return 
 #' predicted probabilities for each observation. 
 #' 
-#' @param object an object of class "SuperSig" 
-#' @param newdata a data frame of mutations
+#' @param object an object of class \code{SuperSig}
+#' @param newdata a data frame of mutations containing columns for
+#' \code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+#' mutations (see vignette for details)
 #' @param factor the factor/exposure (e.g. "age", "smoking")
 #' 
 #' @import dplyr

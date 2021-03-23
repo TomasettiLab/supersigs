@@ -16,7 +16,7 @@
 #' contains only one sample and that each row in rowRanges 
 #' represents an observed mutation in the sample.
 #' 
-#' @param vcf a VCF object (from `VariantAnnotation` package)
+#' @param vcf a VCF object (from \code{VariantAnnotation} package)
 #' 
 #' @import dplyr
 #' @importFrom SummarizedExperiment colData rowRanges seqinfo

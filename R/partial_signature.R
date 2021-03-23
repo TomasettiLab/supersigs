@@ -11,8 +11,10 @@
 #' 
 #' Remove the contribution of a SuperSig from the data and return the data.
 #' 
-#' @param data a data frame of mutations (see vignette for details)
-#' @param object an object of class "SuperSig"
+#' @param data a data frame of mutations containing columns for
+#' \code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+#' mutations (see vignette for details)
+#' @param object an object of class \code{SuperSig}
 #' 
 #' @import dplyr
 #' 

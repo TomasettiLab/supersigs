@@ -11,7 +11,9 @@
 #' exposure factor. Returns the SuperSig and a classification model trained 
 #' with the SuperSig.
 #' 
-#' @param data a data frame of mutations (see vignette for details)
+#' @param data a data frame of mutations containing columns for
+#' \code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+#' mutations (see vignette for details)
 #' @param factor the factor/exposure (e.g. "age", "smoking"). If the 
 #' factor = "age", the SuperSig is computed using
 #' counts. Otherwise, rates (counts/age) are used.
@@ -22,7 +24,7 @@
 #' 
 #' @export
 #' 
-#' @return \code{get_signature} returns an object of class "SuperSig"
+#' @return \code{get_signature} returns an object of class \code{SuperSig}
 #' 
 #' @examples
 #' 

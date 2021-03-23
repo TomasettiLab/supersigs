@@ -12,6 +12,9 @@ Authors@R: c(person(given = "Albert",
                     role = c("aut")),
              person(given = "Bahman", 
                     family = "Afsari",
+                    role = c("aut")),
+             person(given = "Cristian", 
+                    family = "Tomasetti",
                     role = c("aut"))) 
 Depends: R (>= 4.0)
 Imports: 

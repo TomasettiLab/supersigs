@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function to transform mutations into "matrix" format — make_matrix • supersigs</title>
+<title>Function to remove the contribution of a SuperSig — partial_signature • supersigs</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Function to transform mutations into "matrix" format — make_matrix" />
-<meta property="og:description" content="Transform a data frame of mutations in long format into 
-a data frame of trinucleotide mutations with flanking bases
-in a wide matrix format." />
+<meta property="og:title" content="Function to remove the contribution of a SuperSig — partial_signature" />
+<meta property="og:description" content="Remove the contribution of a SuperSig from the data and return the data." />
 
 
 
@@ -126,37 +124,36 @@ in a wide matrix format." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Function to transform mutations into "matrix" format</h1>
+    <h1>Function to remove the contribution of a SuperSig</h1>
     
-    <div class="hidden name"><code>make_matrix.Rd</code></div>
+    <div class="hidden name"><code>partial_signature.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Transform a data frame of mutations in long format into 
-a data frame of trinucleotide mutations with flanking bases
-in a wide matrix format.</p>
+    <p>Remove the contribution of a SuperSig from the data and return the data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>make_matrix</span><span class='op'>(</span><span class='va'>data</span>, genome <span class='op'>=</span> <span class='st'>"hg19"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>partial_signature</span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>data</th>
-      <td><p>a data frame of mutations in VCF format 
-(see vignette for details)</p></td>
+      <td><p>a data frame of mutations containing columns for
+<code>sample_id</code>, <code>age</code>, <code>IndVar</code>, and the 96 trinucleotide
+mutations (see vignette for details)</p></td>
     </tr>
     <tr>
-      <th>genome</th>
-      <td><p>the reference genome used ("hg19" or "hg38")</p></td>
+      <th>object</th>
+      <td><p>an object of class <code>SuperSig</code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>make_matrix</code> returns a data frame of mutations,
-one row per sample</p>
+    <p><code>predict_signature</code> returns the original data frame with 
+the contribution of a supervised signature removed</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -167,17 +164,19 @@ one row per sample</p>
 #&gt; 3         1  50       chr7  20784978   T   A
 #&gt; 4         1  50       chr7  87179255   C   G
 #&gt; 5         1  50      chr19   1059712   G   T
-#&gt; 6         2  55       chr1  76226977   T   C</div><div class='input'><span class='va'>input_dt</span> <span class='op'>&lt;-</span> <span class='fu'>make_matrix</span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># convert to correct format</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>input_dt</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 5 x 98</span><span>
-#&gt;   sample_id   age `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`
+#&gt; 6         2  55       chr1  76226977   T   C</div><div class='input'><span class='va'>input_dt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='make_matrix.html'>make_matrix</a></span><span class='op'>(</span><span class='va'>example_dt</span><span class='op'>)</span> <span class='co'># convert to correct format</span>
+<span class='va'>input_dt</span><span class='op'>$</span><span class='va'>IndVar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span> <span class='co'># add IndVar column</span>
+<span class='va'>supersig</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_signature.html'>get_signature</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>input_dt</span>, factor <span class='op'>=</span> <span class='st'>"age"</span><span class='op'>)</span> <span class='co'># get SuperSig</span>
+</div><div class='output co'>#&gt; <span class='message'>Begin feature engineering...</span></div><div class='output co'>#&gt; <span class='message'>Begin cross-validated selection over 4 features and 15 inner folds...</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 1</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 2</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 3</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 4</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 5</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 6</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 7</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 8</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 9</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 10</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 11</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 12</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 13</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 14</span></div><div class='output co'>#&gt; <span class='message'>...testing inner fold 15</span></div><div class='input'><span class='fu'>partial_signature</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>input_dt</span>, object <span class='op'>=</span> <span class='va'>supersig</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 5 x 99</span><span>
+#&gt;   sample_id   AGE `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T` `A[C&gt;G]T`
 #&gt;       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>         1    50         1         1         1         1         1         0
+#&gt; </span><span style='color: #555555;'>1</span><span>         1    50         0         1         1         0         0         0
 #&gt; </span><span style='color: #555555;'>2</span><span>         2    55         0         0         0         0         0         1
-#&gt; </span><span style='color: #555555;'>3</span><span>         3    72         1         1         0         0         0         0
+#&gt; </span><span style='color: #555555;'>3</span><span>         3    72         0         1         0         0         0         0
 #&gt; </span><span style='color: #555555;'>4</span><span>         4    53         0         0         0         0         0         1
 #&gt; </span><span style='color: #555555;'>5</span><span>         5    48         0         1         1         0         0         0
-#&gt; </span><span style='color: #555555;'># … with 90 more variables: `C[C&gt;A]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;C]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[C&gt;A]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
+#&gt; </span><span style='color: #555555;'># … with 91 more variables: `C[C&gt;A]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;C]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[C&gt;A]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   `T[C&gt;A]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[T&gt;C]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;C]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[T&gt;A]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   `C[C&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `G[C&gt;T]A` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[C&gt;A]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[C&gt;A]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   `G[T&gt;G]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[C&gt;T]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[C&gt;T]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[C&gt;T]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
@@ -199,7 +198,7 @@ one row per sample</p>
 #&gt; </span><span style='color: #555555;'>#   `G[T&gt;A]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;G]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[T&gt;G]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[T&gt;G]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   `G[T&gt;G]C` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;G]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `T[T&gt;G]T` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;G]A` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
 #&gt; </span><span style='color: #555555;'>#   `T[T&gt;G]A` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[T&gt;G]A` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `G[T&gt;G]A` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `C[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>,</span><span>
-#&gt; </span><span style='color: #555555;'>#   `T[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `G[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>#   `T[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `A[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, `G[T&gt;G]G` </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, IndVar </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

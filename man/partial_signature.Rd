@@ -7,9 +7,11 @@
 partial_signature(data, object)
 }
 \arguments{
-\item{data}{a data frame of mutations (see vignette for details)}
+\item{data}{a data frame of mutations containing columns for
+\code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+mutations (see vignette for details)}
 
-\item{object}{an object of class "SuperSig"}
+\item{object}{an object of class \code{SuperSig}}
 }
 \value{
 \code{predict_signature} returns the original data frame with 

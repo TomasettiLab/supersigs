@@ -7,7 +7,9 @@
 get_signature(data, factor, wgs = FALSE)
 }
 \arguments{
-\item{data}{a data frame of mutations (see vignette for details)}
+\item{data}{a data frame of mutations containing columns for
+\code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+mutations (see vignette for details)}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking"). If the 
 factor = "age", the SuperSig is computed using
@@ -17,7 +19,7 @@ counts. Otherwise, rates (counts/age) are used.}
 whole-genome (wgs = \code{TRUE}) or whole-exome (wgs = \code{FALSE})}
 }
 \value{
-\code{get_signature} returns an object of class "SuperSig"
+\code{get_signature} returns an object of class \code{SuperSig}
 }
 \description{
 Generate a tissue-specific SuperSig for a given dataset of mutations and

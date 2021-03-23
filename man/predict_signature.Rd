@@ -7,9 +7,11 @@
 predict_signature(object, newdata, factor)
 }
 \arguments{
-\item{object}{an object of class "SuperSig"}
+\item{object}{an object of class \code{SuperSig}}
 
-\item{newdata}{a data frame of mutations}
+\item{newdata}{a data frame of mutations containing columns for
+\code{sample_id}, \code{age}, \code{IndVar}, and the 96 trinucleotide
+mutations (see vignette for details)}
 
 \item{factor}{the factor/exposure (e.g. "age", "smoking")}
 }

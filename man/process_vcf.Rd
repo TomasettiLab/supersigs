@@ -7,7 +7,7 @@
 process_vcf(vcf)
 }
 \arguments{
-\item{vcf}{a VCF object (from `VariantAnnotation` package)}
+\item{vcf}{a VCF object (from \code{VariantAnnotation} package)}
 }
 \value{
 \code{process_vcf} returns a data frame of mutations, 
