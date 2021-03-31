@@ -158,6 +158,26 @@ supersig <- get_signature(data = input_dt, factor = "Smoking")
 supersig
 ```
 
+To obtain a signature representation that is more interpretable, 
+you can group the trinucleotide features within each feature 
+using the `simplify_signature` function (with an option to use
+[IUPAC](https://www.bioinformatics.org/sms/iupac.html) labels). 
+This is useful for making plots of signatures.
+
+```{r}
+features <- simplify_signature(object = supersig, iupac = FALSE)
+features <- simplify_signature(object = supersig, iupac = TRUE)
+```
+
+```{r}
+library(ggplot2)
+data.frame(features = names(features),
+           differences = features) %>%
+  ggplot(aes(x = features, y = differences)) +
+  geom_col() +
+  theme_minimal()
+```
+
 # Using a signature
 
 To apply the `SuperSig` to a new dataset, use the `predict_signature` function.

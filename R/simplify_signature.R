@@ -64,7 +64,8 @@ transform_to_iupac <- function(z){
 #' 
 #' Take a signature representation from SuperSig
 #' and group trinucleotides within each feature into
-#' interpretable features, with optional IUPAC labeling
+#' interpretable labels, with optional IUPAC labeling
+#' from IUPAC_CODE_MAP in the Biostrings package
 #' 
 #' @param object an object of class \code{SuperSig}
 #' @param iupac logical value indicating whether to use IUPAC labels
@@ -87,7 +88,6 @@ transform_to_iupac <- function(z){
 #' simplify_signature(object = supersig, iupac = FALSE)
 #' 
 simplify_signature <- function(object, iupac){
-  # Apply labels to signature with projected rates
   signature <- Signature(object)
   features_partition <- Features(s)
   signature_labeled = c()
