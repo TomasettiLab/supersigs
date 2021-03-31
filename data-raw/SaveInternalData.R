@@ -6,18 +6,31 @@
 
 library(here)
 library(devtools)
+library(Biostrings)
+library(combinat)
+library(dplyr)
 
 # Data created by Bahman
 
 all_possible_tri = readRDS(here("data-files", "all_possible_tri.rds"))
 background_probs = readRDS(here("data-files", "background_probs.rds"))
 background_probs_wgs = readRDS(here("data-files", "background_probs_wgs.rds"))
+h_mix = readRDS(here("data-files", "h_mix.rds"))
 h_muts_index = readRDS(here("data-files", "h_muts_index.rds"))
 muts_children_level3_df = readRDS(here("data-files", "muts_children_level3_df.rds"))
 muts_children_level3 = readRDS(here("data-files", "muts_children_level3.rds"))
 muts_formula = readRDS(here("data-files", "muts_formula.rds"))
 muts_level3 = readRDS(here("data-files", "muts_level3.rds"))
 prop_muts_all = readRDS(here("data-files", "prop_muts_all.rds"))
+
+# Convert label to IUPAC naming
+transform_iupac_grep <- IUPAC_CODE_MAP %>% 
+  strsplit(split = "") %>% 
+  vapply(FUN = function(z) 
+    permn(z,fun = function(x) 
+      paste("\\(",paste(x,sep="",collapse = ""),"\\)",sep = "")) %>% 
+      paste(sep = "",collapse = "|"),
+    character(1))
 
 # Create transform_muts_vec, a named vector that converts mutations to a standard format,
 # i.e. its fundamental mutation must begin with "C" or T"
@@ -58,12 +71,14 @@ transform_muts_vec <- StandardizeMutations() # named vector
 # Write internal data to R/sysdata.rda
 use_data(all_possible_tri,
          background_probs,
+         h_mix,
          h_muts_index,
          muts_children_level3_df,
          muts_children_level3,
          muts_formula,
          muts_level3,
          prop_muts_all, 
+         transform_iupac_grep,
          transform_muts_vec,
          internal = TRUE,
          overwrite = TRUE)
