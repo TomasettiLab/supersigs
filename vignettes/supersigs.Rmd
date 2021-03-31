@@ -166,13 +166,13 @@ This is useful for making plots of signatures.
 
 ```{r}
 features <- simplify_signature(object = supersig, iupac = FALSE)
-features <- simplify_signature(object = supersig, iupac = TRUE)
+features_iupac <- simplify_signature(object = supersig, iupac = TRUE)
 ```
 
 ```{r}
 library(ggplot2)
-data.frame(features = names(features),
-           differences = features) %>%
+data.frame(features = names(features_iupac),
+           differences = features_iupac) %>%
   ggplot(aes(x = features, y = differences)) +
   geom_col() +
   theme_minimal()
