@@ -28,7 +28,7 @@
 #' head(example_dt) # use example data from package
 #' input_dt <- make_matrix(example_dt) # convert to correct format
 #' input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
-#' supersig <- get_signature(data = input_dt, factor = "age") # get SuperSig
+#' supersig <- get_signature(data = input_dt, factor = "Age") # get SuperSig
 #' partial_signature(data = input_dt, object = supersig)
 #' 
 partial_signature <- function(data, object){
