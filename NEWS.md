@@ -1,3 +1,8 @@
+# supersigs 0.99.0
+
+* Adhere to Bioconductor submission guidelines
+* Add `simplify_signature` function
+
 # supersigs 0.1.2
 
 * Add `partial_signature` function to remove signature contribution from data

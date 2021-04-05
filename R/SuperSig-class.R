@@ -11,7 +11,7 @@
 #' their representation in terms of the fundamental (trinucleotide) mutations
 #' @slot AUC length-one numeric vector of the apparent AUC 
 #' (i.e. not cross-validated)
-#' @slot Model list of a glm class for the trained logistic regression model
+#' @slot Model list of a glm class for trained logistic regression model
 #' 
 SuperSig <- setClass("SuperSig",
                      slots = list(Signature = "data.frame",

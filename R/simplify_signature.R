@@ -15,7 +15,7 @@ features_to_labels <- function(feature_name, features_partition){
     return(list(label = label, 
                 multiplier = 1))
   } else {
-    # If no exact match in h_mix, pick labels recursively to build up the feature
+    # If no exact match in h_mix, pick labels recursively to build up feature
     label <- c()
     multiplier <- c()
     denominator <- sum(vapply(mutations, function(x){
@@ -83,13 +83,13 @@ transform_to_iupac <- function(z){
 #' head(example_dt) # use example data from package
 #' input_dt <- make_matrix(example_dt) # convert to correct format
 #' input_dt$IndVar <- c(1, 1, 1, 0, 0) # add IndVar column
+#' set.seed(1)
 #' supersig <- get_signature(data = input_dt, factor = "age") # get SuperSig
-#' simplify_signature(object = supersig, iupac = TRUE)
 #' simplify_signature(object = supersig, iupac = FALSE)
 #' 
 simplify_signature <- function(object, iupac){
   signature <- Signature(object)
-  features_partition <- Features(s)
+  features_partition <- Features(object)
   signature_labeled = c()
   for(j in seq_along(signature)){
     feature_name <- names(signature[j])

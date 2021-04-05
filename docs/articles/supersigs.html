@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">supersigs</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.0</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Using supersigs</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/TomasettiLab/supersigs/blob/master/vignettes/supersigs.Rmd"><code>vignettes/supersigs.Rmd</code></a></small>
       <div class="hidden name"><code>supersigs.Rmd</code></div>
 
     </div>
@@ -90,7 +90,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">supersigs</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tomasettilab.github.io/supersigs/">supersigs</a></span><span class="op">)</span></code></pre></div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -273,9 +273,10 @@
 <code>Model</code> is the list containing the trained logistic regression model (glm class)</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">supersig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">supersig</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_signature.html">get_signature</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 <span class="co">#&gt; Begin feature engineering...</span>
-<span class="co">#&gt; Begin cross-validated selection over 3 features and 15 inner folds...</span>
+<span class="co">#&gt; Begin cross-validated selection over 4 features and 15 inner folds...</span>
 <span class="co">#&gt; ...testing inner fold 1</span>
 <span class="co">#&gt; ...testing inner fold 2</span>
 <span class="co">#&gt; ...testing inner fold 3</span>
@@ -294,33 +295,33 @@
 <span class="va">supersig</span>
 <span class="co">#&gt; Signature:</span>
 <span class="co">#&gt;              X1</span>
-<span class="co">#&gt; 1 -0.0006141866</span>
+<span class="co">#&gt; 1 -0.0007475199</span>
 <span class="co">#&gt; Features:</span>
 <span class="co">#&gt; $X1</span>
 <span class="co">#&gt;       F11       F12       F13       F14      F117      F118      F119      F120 </span>
 <span class="co">#&gt; "A[C&gt;A]A" "A[C&gt;A]C" "A[C&gt;A]G" "A[C&gt;A]T" "A[C&gt;G]A" "A[C&gt;G]C" "A[C&gt;G]G" "A[C&gt;G]T" </span>
-<span class="co">#&gt;      F133      F134      F135      F136      F149      F150      F151      F152 </span>
+<span class="co">#&gt;      F132      F133      F134      F135      F148      F149      F150      F151 </span>
 <span class="co">#&gt; "A[C&gt;T]A" "A[C&gt;T]C" "A[C&gt;T]G" "A[C&gt;T]T" "A[T&gt;A]A" "A[T&gt;A]C" "A[T&gt;A]G" "A[T&gt;A]T" </span>
-<span class="co">#&gt;      F164      F165      F166      F167      F180      F181      F182       F15 </span>
+<span class="co">#&gt;      F163      F164      F165      F166      F179      F180      F181       F15 </span>
 <span class="co">#&gt; "A[T&gt;C]A" "A[T&gt;C]C" "A[T&gt;C]G" "A[T&gt;C]T" "A[T&gt;G]A" "A[T&gt;G]C" "A[T&gt;G]G" "C[C&gt;A]A" </span>
-<span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F137 </span>
+<span class="co">#&gt;       F16       F17       F18      F121      F122      F123      F124      F136 </span>
 <span class="co">#&gt; "C[C&gt;A]C" "C[C&gt;A]G" "C[C&gt;A]T" "C[C&gt;G]A" "C[C&gt;G]C" "C[C&gt;G]G" "C[C&gt;G]T" "C[C&gt;T]A" </span>
-<span class="co">#&gt;      F138      F139      F140      F153      F154      F155      F168      F169 </span>
+<span class="co">#&gt;      F137      F138      F139      F152      F153      F154      F167      F168 </span>
 <span class="co">#&gt; "C[C&gt;T]C" "C[C&gt;T]G" "C[C&gt;T]T" "C[T&gt;A]C" "C[T&gt;A]G" "C[T&gt;A]T" "C[T&gt;C]A" "C[T&gt;C]C" </span>
-<span class="co">#&gt;      F170      F171      F183      F184      F185      F186       F19      F110 </span>
+<span class="co">#&gt;      F169      F170      F182      F183      F184      F185       F19      F110 </span>
 <span class="co">#&gt; "C[T&gt;C]G" "C[T&gt;C]T" "C[T&gt;G]A" "C[T&gt;G]C" "C[T&gt;G]G" "C[T&gt;G]T" "G[C&gt;A]A" "G[C&gt;A]C" </span>
-<span class="co">#&gt;      F111      F112      F125      F126      F127      F128      F141      F142 </span>
-<span class="co">#&gt; "G[C&gt;A]G" "G[C&gt;A]T" "G[C&gt;G]A" "G[C&gt;G]C" "G[C&gt;G]G" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" </span>
-<span class="co">#&gt;      F143      F144      F156      F157      F158      F159      F172      F173 </span>
-<span class="co">#&gt; "G[C&gt;T]G" "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" </span>
-<span class="co">#&gt;      F174      F175      F187      F188      F189      F190      F113      F114 </span>
-<span class="co">#&gt; "G[T&gt;C]G" "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;A]A" "T[C&gt;A]C" </span>
-<span class="co">#&gt;      F115      F116      F129      F130      F131      F132      F145      F146 </span>
-<span class="co">#&gt; "T[C&gt;A]G" "T[C&gt;A]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" </span>
-<span class="co">#&gt;      F147      F148      F160      F161      F162      F163      F176      F177 </span>
-<span class="co">#&gt; "T[C&gt;T]G" "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" </span>
-<span class="co">#&gt;      F178      F179      F191      F192      F193      F194 </span>
-<span class="co">#&gt; "T[T&gt;C]G" "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" </span>
+<span class="co">#&gt;      F111      F112      F125      F126      F127      F140      F141      F142 </span>
+<span class="co">#&gt; "G[C&gt;A]G" "G[C&gt;A]T" "G[C&gt;G]A" "G[C&gt;G]C" "G[C&gt;G]T" "G[C&gt;T]A" "G[C&gt;T]C" "G[C&gt;T]G" </span>
+<span class="co">#&gt;      F143      F155      F156      F157      F158      F171      F172      F173 </span>
+<span class="co">#&gt; "G[C&gt;T]T" "G[T&gt;A]A" "G[T&gt;A]C" "G[T&gt;A]G" "G[T&gt;A]T" "G[T&gt;C]A" "G[T&gt;C]C" "G[T&gt;C]G" </span>
+<span class="co">#&gt;      F174      F186      F187      F188      F189      F113      F114      F115 </span>
+<span class="co">#&gt; "G[T&gt;C]T" "G[T&gt;G]A" "G[T&gt;G]C" "G[T&gt;G]G" "G[T&gt;G]T" "T[C&gt;A]A" "T[C&gt;A]C" "T[C&gt;A]G" </span>
+<span class="co">#&gt;      F116      F128      F129      F130      F131      F144      F145      F146 </span>
+<span class="co">#&gt; "T[C&gt;A]T" "T[C&gt;G]A" "T[C&gt;G]C" "T[C&gt;G]G" "T[C&gt;G]T" "T[C&gt;T]A" "T[C&gt;T]C" "T[C&gt;T]G" </span>
+<span class="co">#&gt;      F147      F159      F160      F161      F162      F175      F176      F177 </span>
+<span class="co">#&gt; "T[C&gt;T]T" "T[T&gt;A]A" "T[T&gt;A]C" "T[T&gt;A]G" "T[T&gt;A]T" "T[T&gt;C]A" "T[T&gt;C]C" "T[T&gt;C]G" </span>
+<span class="co">#&gt;      F178      F190      F191      F192      F193 </span>
+<span class="co">#&gt; "T[T&gt;C]T" "T[T&gt;G]A" "T[T&gt;G]C" "T[T&gt;G]G" "T[T&gt;G]T" </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Model:</span>
 <span class="co">#&gt; $Logit</span>
@@ -329,18 +330,30 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt; (Intercept)           X1  </span>
-<span class="co">#&gt;       8.687     -103.604  </span>
+<span class="co">#&gt;       7.118      -86.601  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Degrees of Freedom: 4 Total (i.e. Null);  3 Residual</span>
 <span class="co">#&gt; Null Deviance:       6.73 </span>
-<span class="co">#&gt; Residual Deviance: 4.458     AIC: 8.458</span></code></pre></div>
+<span class="co">#&gt; Residual Deviance: 4.279     AIC: 8.279</span></code></pre></div>
+<p>To obtain a signature representation that is more interpretable, you can group the trinucleotide features within each feature using the <code>simplify_signature</code> function (with an option to use <a href="https://www.bioinformatics.org/sms/iupac.html">IUPAC</a> labels). This is useful for making plots of signatures.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">features</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simplify_signature.html">simplify_signature</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">supersig</span>, iupac <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">features_iupac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simplify_signature.html">simplify_signature</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">supersig</span>, iupac <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">features_iupac</span><span class="op">)</span>,
+           differences <span class="op">=</span> <span class="va">features_iupac</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">features</span>, y <span class="op">=</span> <span class="va">differences</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p><img src="supersigs_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div id="using-a-signature" class="section level1">
 <h1 class="hasAnchor">
 <a href="#using-a-signature" class="anchor"></a>Using a signature</h1>
 <p>To apply the <code>SuperSig</code> to a new dataset, use the <code>predict_signature</code> function. This function returns the new dataset with columns for feature counts for the signature and a score column for the predicted classification score.</p>
 <p>Below is an example for the <code>SuperSig</code> we trained in the previous section. We reuse <code>input_dt</code> as our “new data” for illustrative purposes, but in practice, you would use a different dataset from the one that was used to train the signature (e.g. a test set).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig</span>, newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
 
 <span class="va">newdata</span> <span class="op">%&gt;%</span>
@@ -348,13 +361,13 @@
 <span class="co">#&gt; # A tibble: 5 x 2</span>
 <span class="co">#&gt;       X1 score</span>
 <span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 0.06   0.922</span>
-<span class="co">#&gt; 2 0.0909 0.325</span>
-<span class="co">#&gt; 3 0.0417 0.988</span>
-<span class="co">#&gt; 4 0.0943 0.252</span>
-<span class="co">#&gt; 5 0.0833 0.513</span></code></pre></div>
+<span class="co">#&gt; 1 0.04   0.975</span>
+<span class="co">#&gt; 2 0.0909 0.320</span>
+<span class="co">#&gt; 3 0.0417 0.971</span>
+<span class="co">#&gt; 4 0.0943 0.259</span>
+<span class="co">#&gt; 5 0.0833 0.475</span></code></pre></div>
 <p>In addition, you may wish to use a <code>SuperSig</code> pre-trained on TCGA data. These are accessible from the package in <code>supersig_ls</code>, where each element of the list is a <code>SuperSig</code>. There are 67 SuperSigs that have been trained on various tissues and factors. The names are printed below (formatted as “factor (tissue)”). Details regarding the training of these signatures are discussed in <em>Afsari, et al. (2021, ELife)</em>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">supersig_ls</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "AGE (LAML)"      "AGE (BLCA)"      "AGE (LUAD)"      "AGE (LGG)"      </span>
 <span class="co">#&gt;  [5] "AGE (HNSCC)"     "AGE (KIRC)"      "AGE (KIRP)"      "AGE (KICH)"     </span>
@@ -373,7 +386,7 @@
 <span class="co">#&gt; [57] "BMI (ESCA)"      "BMI (COAD)"      "ALCOHOL (HNSCC)" "ALCOHOL (ESCA)" </span>
 <span class="co">#&gt; [61] "ALCOHOL (LIHC)"  "HepB (LIHC)"     "HepC (LIHC)"     "AAcid (BLCA)"   </span>
 <span class="co">#&gt; [65] "Asb* (MESO)"     "APOPEC (CESC)"   "APOPEC (KIRC)"</span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Use pre-trained signature</span>
 <span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="../reference/predict_signature.html">predict_signature</a></span><span class="op">(</span><span class="va">supersig_ls</span><span class="op">[[</span><span class="st">"SMOKING (LUAD)"</span><span class="op">]</span><span class="op">]</span>, 
                             newdata <span class="op">=</span> <span class="va">input_dt</span>, factor <span class="op">=</span> <span class="st">"Smoking"</span><span class="op">)</span>
@@ -392,14 +405,45 @@
 <h1 class="hasAnchor">
 <a href="#partially-supervised-signatures" class="anchor"></a>Partially supervised signatures</h1>
 <p>In some cases, you may be interested in removing the contribution of a supervised signature from your data frame of mutations as a way to adjust for a particular factor. For example, suppose that we are interested in the deciphering a signature for smoking in lung cancer. We can first remove the contribution of the aging signature in lung cancer, before learning the smoking signature with a supervised or unsupervised method. We discuss in <em>Afsari, et al. (2021, ELife)</em> how doing so can lead to better performance.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">adjusted_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/partial_signature.html">partial_signature</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input_dt</span>, object <span class="op">=</span> <span class="va">supersig</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">adjusted_dt</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">adjusted_dt</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 5 x 99</span>
+<span class="co">#&gt;   IndVar sample_id   AGE `A[T&gt;G]T` `C[T&gt;A]A` `G[C&gt;A]A` `G[C&gt;G]G` `G[C&gt;G]T`</span>
+<span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt; 1      1         1    50         1         1    1.04           1    1.04  </span>
+<span class="co">#&gt; 2      1         2    55         0         0    0.0411         0    0.0411</span>
+<span class="co">#&gt; 3      1         3    72         1         1    0.0538         0    0.0538</span>
+<span class="co">#&gt; 4      0         4    53         0         0    0.0396         0    0.0396</span>
+<span class="co">#&gt; 5      0         5    48         0         1    1.04           0    0.0359</span>
+<span class="co">#&gt; # … with 91 more variables: `A[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;A]T` &lt;dbl&gt;, `C[T&gt;C]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;A]C` &lt;dbl&gt;, `T[C&gt;A]T` &lt;dbl&gt;, `A[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[T&gt;A]C` &lt;dbl&gt;, `C[C&gt;G]G` &lt;dbl&gt;, `G[C&gt;T]A` &lt;dbl&gt;, `A[C&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[C&gt;A]C` &lt;dbl&gt;, `G[T&gt;G]T` &lt;dbl&gt;, `C[C&gt;T]C` &lt;dbl&gt;, `T[C&gt;T]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]C` &lt;dbl&gt;, `G[C&gt;T]C` &lt;dbl&gt;, `C[C&gt;T]T` &lt;dbl&gt;, `T[C&gt;T]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]T` &lt;dbl&gt;, `G[C&gt;T]T` &lt;dbl&gt;, `C[C&gt;T]A` &lt;dbl&gt;, `T[C&gt;T]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[C&gt;T]A` &lt;dbl&gt;, `C[C&gt;T]G` &lt;dbl&gt;, `T[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;T]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[C&gt;T]G` &lt;dbl&gt;, `A[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]C` &lt;dbl&gt;, `G[C&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[C&gt;A]A` &lt;dbl&gt;, `T[C&gt;A]A` &lt;dbl&gt;, `A[C&gt;A]A` &lt;dbl&gt;, `C[C&gt;A]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;A]G` &lt;dbl&gt;, `A[C&gt;A]G` &lt;dbl&gt;, `G[C&gt;A]G` &lt;dbl&gt;, `C[C&gt;G]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;G]C` &lt;dbl&gt;, `A[C&gt;G]C` &lt;dbl&gt;, `G[C&gt;G]C` &lt;dbl&gt;, `C[C&gt;G]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[C&gt;G]T` &lt;dbl&gt;, `C[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]A` &lt;dbl&gt;, `A[C&gt;G]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[C&gt;G]A` &lt;dbl&gt;, `T[C&gt;G]G` &lt;dbl&gt;, `A[C&gt;G]G` &lt;dbl&gt;, `T[T&gt;C]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]C` &lt;dbl&gt;, `C[T&gt;C]T` &lt;dbl&gt;, `T[T&gt;C]T` &lt;dbl&gt;, `A[T&gt;C]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]T` &lt;dbl&gt;, `C[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]A` &lt;dbl&gt;, `A[T&gt;C]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `G[T&gt;C]A` &lt;dbl&gt;, `T[T&gt;C]G` &lt;dbl&gt;, `A[T&gt;C]G` &lt;dbl&gt;, `G[T&gt;C]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;A]C` &lt;dbl&gt;, `A[T&gt;A]C` &lt;dbl&gt;, `G[T&gt;A]C` &lt;dbl&gt;, `C[T&gt;A]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `T[T&gt;A]T` &lt;dbl&gt;, `A[T&gt;A]T` &lt;dbl&gt;, `G[T&gt;A]T` &lt;dbl&gt;, `T[T&gt;A]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;A]A` &lt;dbl&gt;, `G[T&gt;A]A` &lt;dbl&gt;, `C[T&gt;A]G` &lt;dbl&gt;, `T[T&gt;A]G` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;A]G` &lt;dbl&gt;, `G[T&gt;A]G` &lt;dbl&gt;, `C[T&gt;G]C` &lt;dbl&gt;, `T[T&gt;G]C` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `A[T&gt;G]C` &lt;dbl&gt;, `G[T&gt;G]C` &lt;dbl&gt;, `C[T&gt;G]T` &lt;dbl&gt;, `T[T&gt;G]T` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;G]A` &lt;dbl&gt;, `T[T&gt;G]A` &lt;dbl&gt;, `A[T&gt;G]A` &lt;dbl&gt;, `G[T&gt;G]A` &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   `C[T&gt;G]G` &lt;dbl&gt;, `T[T&gt;G]G` &lt;dbl&gt;, `A[T&gt;G]G` &lt;dbl&gt;, `G[T&gt;G]G` &lt;dbl&gt;</span></code></pre></div>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.0.3 (2020-10-10)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
@@ -417,52 +461,54 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] dplyr_1.0.2                       BSgenome.Hsapiens.UCSC.hg19_1.4.3</span>
-<span class="co">#&gt;  [3] BSgenome_1.58.0                   rtracklayer_1.50.0               </span>
-<span class="co">#&gt;  [5] VariantAnnotation_1.36.0          Rsamtools_2.6.0                  </span>
-<span class="co">#&gt;  [7] Biostrings_2.58.0                 XVector_0.30.0                   </span>
-<span class="co">#&gt;  [9] SummarizedExperiment_1.20.0       Biobase_2.50.0                   </span>
-<span class="co">#&gt; [11] GenomicRanges_1.42.0              GenomeInfoDb_1.26.2              </span>
-<span class="co">#&gt; [13] IRanges_2.24.1                    S4Vectors_0.28.1                 </span>
-<span class="co">#&gt; [15] MatrixGenerics_1.2.0              matrixStats_0.57.0               </span>
-<span class="co">#&gt; [17] BiocGenerics_0.36.0               supersigs_0.1.2                  </span>
+<span class="co">#&gt;  [1] ggplot2_3.3.3                     dplyr_1.0.2                      </span>
+<span class="co">#&gt;  [3] BSgenome.Hsapiens.UCSC.hg19_1.4.3 BSgenome_1.58.0                  </span>
+<span class="co">#&gt;  [5] rtracklayer_1.50.0                VariantAnnotation_1.36.0         </span>
+<span class="co">#&gt;  [7] Rsamtools_2.6.0                   Biostrings_2.58.0                </span>
+<span class="co">#&gt;  [9] XVector_0.30.0                    SummarizedExperiment_1.20.0      </span>
+<span class="co">#&gt; [11] Biobase_2.50.0                    GenomicRanges_1.42.0             </span>
+<span class="co">#&gt; [13] GenomeInfoDb_1.26.2               IRanges_2.24.1                   </span>
+<span class="co">#&gt; [15] S4Vectors_0.28.1                  MatrixGenerics_1.2.0             </span>
+<span class="co">#&gt; [17] matrixStats_0.57.0                BiocGenerics_0.36.0              </span>
+<span class="co">#&gt; [19] supersigs_0.99.0                 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;   [1] colorspace_2.0-0         ellipsis_0.3.1           class_7.3-17            </span>
 <span class="co">#&gt;   [4] rprojroot_2.0.2          fs_1.5.0                 rstudioapi_0.13         </span>
-<span class="co">#&gt;   [7] listenv_0.8.0            furrr_0.2.1              bit64_4.0.5             </span>
-<span class="co">#&gt;  [10] fansi_0.4.1              AnnotationDbi_1.52.0     prodlim_2019.11.13      </span>
-<span class="co">#&gt;  [13] lubridate_1.7.9.2        xml2_1.3.2               codetools_0.2-18        </span>
-<span class="co">#&gt;  [16] splines_4.0.3            knitr_1.30               pROC_1.16.2             </span>
-<span class="co">#&gt;  [19] caret_6.0-86             dbplyr_2.0.0             compiler_4.0.3          </span>
-<span class="co">#&gt;  [22] httr_1.4.2               assertthat_0.2.1         Matrix_1.2-18           </span>
-<span class="co">#&gt;  [25] cli_2.2.0                htmltools_0.5.0          prettyunits_1.1.1       </span>
-<span class="co">#&gt;  [28] tools_4.0.3              gtable_0.3.0             glue_1.4.2              </span>
-<span class="co">#&gt;  [31] GenomeInfoDbData_1.2.4   reshape2_1.4.4           rappdirs_0.3.1          </span>
-<span class="co">#&gt;  [34] Rcpp_1.0.5               pkgdown_1.6.1            vctrs_0.3.6             </span>
-<span class="co">#&gt;  [37] nlme_3.1-151             iterators_1.0.13         timeDate_3043.102       </span>
-<span class="co">#&gt;  [40] gower_0.2.2              xfun_0.21                stringr_1.4.0           </span>
-<span class="co">#&gt;  [43] globals_0.14.0           lifecycle_0.2.0          XML_3.99-0.5            </span>
-<span class="co">#&gt;  [46] future_1.21.0            zlibbioc_1.36.0          MASS_7.3-53             </span>
-<span class="co">#&gt;  [49] scales_1.1.1             ipred_0.9-9              ragg_0.4.0              </span>
-<span class="co">#&gt;  [52] hms_0.5.3                curl_4.3                 yaml_2.2.1              </span>
-<span class="co">#&gt;  [55] memoise_1.1.0            ggplot2_3.3.3            biomaRt_2.46.0          </span>
+<span class="co">#&gt;   [7] farver_2.0.3             listenv_0.8.0            furrr_0.2.1             </span>
+<span class="co">#&gt;  [10] bit64_4.0.5              fansi_0.4.1              AnnotationDbi_1.52.0    </span>
+<span class="co">#&gt;  [13] prodlim_2019.11.13       lubridate_1.7.9.2        xml2_1.3.2              </span>
+<span class="co">#&gt;  [16] codetools_0.2-18         splines_4.0.3            knitr_1.30              </span>
+<span class="co">#&gt;  [19] pROC_1.16.2              caret_6.0-86             dbplyr_2.0.0            </span>
+<span class="co">#&gt;  [22] compiler_4.0.3           httr_1.4.2               assertthat_0.2.1        </span>
+<span class="co">#&gt;  [25] Matrix_1.2-18            cli_2.2.0                htmltools_0.5.0         </span>
+<span class="co">#&gt;  [28] prettyunits_1.1.1        tools_4.0.3              gtable_0.3.0            </span>
+<span class="co">#&gt;  [31] glue_1.4.2               GenomeInfoDbData_1.2.4   reshape2_1.4.4          </span>
+<span class="co">#&gt;  [34] rappdirs_0.3.1           Rcpp_1.0.5               pkgdown_1.6.1           </span>
+<span class="co">#&gt;  [37] vctrs_0.3.6              nlme_3.1-151             iterators_1.0.13        </span>
+<span class="co">#&gt;  [40] timeDate_3043.102        gower_0.2.2              xfun_0.21               </span>
+<span class="co">#&gt;  [43] stringr_1.4.0            globals_0.14.0           lifecycle_0.2.0         </span>
+<span class="co">#&gt;  [46] XML_3.99-0.5             future_1.21.0            zlibbioc_1.36.0         </span>
+<span class="co">#&gt;  [49] MASS_7.3-53              scales_1.1.1             ipred_0.9-9             </span>
+<span class="co">#&gt;  [52] ragg_0.4.0               hms_0.5.3                curl_4.3                </span>
+<span class="co">#&gt;  [55] yaml_2.2.1               memoise_1.1.0            biomaRt_2.46.0          </span>
 <span class="co">#&gt;  [58] rpart_4.1-15             stringi_1.5.3            RSQLite_2.2.1           </span>
 <span class="co">#&gt;  [61] desc_1.2.0               foreach_1.5.1            GenomicFeatures_1.42.1  </span>
 <span class="co">#&gt;  [64] BiocParallel_1.24.1      lava_1.6.8.1             rlang_0.4.10            </span>
 <span class="co">#&gt;  [67] pkgconfig_2.0.3          systemfonts_0.3.2        bitops_1.0-6            </span>
 <span class="co">#&gt;  [70] rsample_0.0.8            evaluate_0.14            lattice_0.20-41         </span>
-<span class="co">#&gt;  [73] purrr_0.3.4              GenomicAlignments_1.26.0 recipes_0.1.15          </span>
-<span class="co">#&gt;  [76] bit_4.0.4                tidyselect_1.1.0         parallelly_1.23.0       </span>
-<span class="co">#&gt;  [79] plyr_1.8.6               magrittr_2.0.1           R6_2.5.0                </span>
-<span class="co">#&gt;  [82] generics_0.1.0           DelayedArray_0.16.0      DBI_1.1.0               </span>
-<span class="co">#&gt;  [85] pillar_1.4.7             withr_2.3.0              survival_3.2-7          </span>
-<span class="co">#&gt;  [88] RCurl_1.98-1.2           nnet_7.3-14              tibble_3.0.4            </span>
-<span class="co">#&gt;  [91] crayon_1.3.4             utf8_1.1.4               BiocFileCache_1.14.0    </span>
-<span class="co">#&gt;  [94] rmarkdown_2.6            progress_1.2.2           grid_4.0.3              </span>
-<span class="co">#&gt;  [97] data.table_1.13.6        blob_1.2.1               ModelMetrics_1.2.2.2    </span>
-<span class="co">#&gt; [100] digest_0.6.27            tidyr_1.1.2              textshaping_0.2.1       </span>
-<span class="co">#&gt; [103] openssl_1.4.3            munsell_0.5.0            askpass_1.1</span></code></pre></div>
+<span class="co">#&gt;  [73] purrr_0.3.4              labeling_0.4.2           GenomicAlignments_1.26.0</span>
+<span class="co">#&gt;  [76] recipes_0.1.15           bit_4.0.4                tidyselect_1.1.0        </span>
+<span class="co">#&gt;  [79] parallelly_1.23.0        plyr_1.8.6               magrittr_2.0.1          </span>
+<span class="co">#&gt;  [82] R6_2.5.0                 generics_0.1.0           DelayedArray_0.16.0     </span>
+<span class="co">#&gt;  [85] DBI_1.1.0                pillar_1.4.7             withr_2.3.0             </span>
+<span class="co">#&gt;  [88] survival_3.2-7           RCurl_1.98-1.2           nnet_7.3-14             </span>
+<span class="co">#&gt;  [91] tibble_3.0.4             crayon_1.3.4             utf8_1.1.4              </span>
+<span class="co">#&gt;  [94] BiocFileCache_1.14.0     rmarkdown_2.6            progress_1.2.2          </span>
+<span class="co">#&gt;  [97] grid_4.0.3               data.table_1.13.6        blob_1.2.1              </span>
+<span class="co">#&gt; [100] ModelMetrics_1.2.2.2     digest_0.6.27            tidyr_1.1.2             </span>
+<span class="co">#&gt; [103] textshaping_0.2.1        openssl_1.4.3            munsell_0.5.0           </span>
+<span class="co">#&gt; [106] askpass_1.1</span></code></pre></div>
 </div>
   </div>
 

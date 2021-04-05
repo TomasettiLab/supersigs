@@ -1,7 +1,7 @@
 Package: supersigs
 Title: Supervised mutational signatures
-Version: 0.1.2
-Date: 2021-01-06
+Version: 0.99.0
+Date: 2021-04-05
 Authors@R: c(person(given = "Albert", 
                     family = "Kuo",
                     role = c("aut", "cre"),
@@ -21,23 +21,26 @@ Imports:
 	assertthat, 
 	caret, 
 	dplyr, 
-    tidyr,
+        tidyr,
 	rsample,
-    methods,
-    rlang,
+        methods,
+        rlang,
 	utils,
 	Biostrings,
 	stats,
-    SummarizedExperiment
+        SummarizedExperiment
 Suggests: 
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38,
-    VariantAnnotation,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    ggplot2,
+    testthat,
+    VariantAnnotation
 Description: Generate SuperSigs (supervised mutational signatures) from single nucleotide variants in the cancer genome. Functions included in the package allow the user to learn supervised mutational signatures from their data and apply them to new data. The methodology is based on the one described in Afsari (2021, ELife).
 biocViews: FeatureExtraction, Classification, Regression, Sequencing, WholeGenome, SomaticMutation
+BugReports: https://github.com/TomasettiLab/supersigs/issues
+URL: https://tomasettilab.github.io/supersigs/
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

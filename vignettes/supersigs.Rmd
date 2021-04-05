@@ -154,6 +154,7 @@ representation in terms of the fundamental (trinucleotide) mutations
 (glm class)
 
 ```{r}
+set.seed(1)
 supersig <- get_signature(data = input_dt, factor = "Smoking")
 supersig
 ```
@@ -227,7 +228,7 @@ smoking signature with a supervised or unsupervised method.
 We discuss in *Afsari, et al. (2021, ELife)* how doing so can lead to 
 better performance.
 
-```{r eval = F}
+```{r}
 adjusted_dt <- partial_signature(data = input_dt, object = supersig)
 head(adjusted_dt)
 ```
