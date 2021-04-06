@@ -1,6 +1,6 @@
 Package: supersigs
 Title: Supervised mutational signatures
-Version: 0.99.0
+Version: 0.99.1
 Date: 2021-04-05
 Authors@R: c(person(given = "Albert", 
                     family = "Kuo",
@@ -16,7 +16,7 @@ Authors@R: c(person(given = "Albert",
              person(given = "Cristian", 
                     family = "Tomasetti",
                     role = c("aut"))) 
-Depends: R (>= 4.0)
+Depends: R (>= 4.1)
 Imports: 
 	assertthat, 
 	caret, 
@@ -44,6 +44,7 @@ URL: https://tomasettilab.github.io/supersigs/
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: gzip
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Config/testthat/edition: 3
