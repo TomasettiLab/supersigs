@@ -37,7 +37,7 @@ You can install the development version of supersigs from github using the `inst
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
-## Data Format
+## Data format
 
 At a minimum, the data you will need are the age and mutations for each patient. An example is provided below.
 (Note that you will need to process the data before running the core functions, see `vignette("supersigs")`

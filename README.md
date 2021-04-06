@@ -19,7 +19,7 @@ active development.**
 
 More details on the statistical method can be found in this paper:
 
-  - Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L.,
+-   Afsari, B., Kuo, A., Zhang, Y., Li, L., Lahouel, K., Danilova, L.,
     Favorov, A., Rosenquist, T. A., Grollman, A. P., Kinzler, K. W.,
     Cope, L., Vogelstein, B., & Tomasetti, C. (2021). Supervised
     mutational signatures for obesity and other tissue-specific
@@ -36,7 +36,7 @@ the `install_github()` function from the `devtools` package.
 devtools::install_github("TomasettiLab/supersigs")
 ```
 
-## Data Format
+## Data format
 
 At a minimum, the data you will need are the age and mutations for each
 patient. An example is provided below. (Note that you will need to
