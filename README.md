@@ -28,8 +28,15 @@ More details on the statistical method can be found in this paper:
 
 ## Installation
 
-You can install the development version of supersigs from github using
-the `install_github()` function from the `devtools` package.
+``` r
+# Install package from Bioconductor
+if(!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("supersigs")
+```
+
+You can also install the development version of supersigs from github
+using the `install_github()` function from the `devtools` package.
 
 ``` r
 # Install development version from GitHub
