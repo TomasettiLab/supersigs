@@ -19,7 +19,7 @@ add_counts <- function(dt){
 
 # Apply context matters to every inner partition (helper function)
 feature_engineering <- function(train, factor, inner_partitions, n_fold, wgs){
-    message(paste("Begin feature engineering..."))
+    message("Begin feature engineering...")
     new_partition_ls <- vector(length = length(inner_partitions), 
                                mode = "list")
     for(ij in seq_along(inner_partitions)){
@@ -134,11 +134,14 @@ n_star_features <- function(train, factor, inner_partitions,
     n_star_ls <- vector(length = length(inner_partitions), mode = "list")
     
     n <- length(features_selected)
-    message(paste("Begin cross-validated selection over", n, "features and", 
-                  length(inner_partitions), "inner folds..."))
+    cv_msg <- paste("Begin cross-validated selection over", n, 
+                          "features and", 
+                          length(inner_partitions), "inner folds...")
+    message(cv_msg)
     
     for(ij in seq_along(inner_partitions)){
-        message(paste("...testing inner fold", ij))
+        partition_msg <- paste("...testing inner fold", ij)
+        message(partition_msg)
         i <- (ij-1) %% n_fold + 1
         j <- floor((ij-1)/n_fold) + 1
         
