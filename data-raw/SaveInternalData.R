@@ -1,7 +1,7 @@
 # SaveInternalData.R
 # -----------------------------------------------------------------------------
 # Author:             Albert Kuo
-# Date last modified: Jan 11, 2021
+# Date last modified: Dec 2, 2021
 # Save rds files to internal data for R package
 
 library(here)
@@ -71,6 +71,7 @@ transform_muts_vec <- StandardizeMutations() # named vector
 # Write internal data to R/sysdata.rda
 use_data(all_possible_tri,
          background_probs,
+         background_probs_wgs,
          h_mix,
          h_muts_index,
          muts_children_level3_df,

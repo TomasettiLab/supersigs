@@ -1,3 +1,11 @@
+# supersigs 1.1.1
+
+* Add missing data file for `background_probs_wgs.rds`
+
+# supersigs 1.0.0
+
+* Bioconductor release
+
 # supersigs 0.99.0
 
 * Adhere to Bioconductor submission guidelines
